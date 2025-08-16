@@ -1,14 +1,14 @@
 {
-  "background_color": "#23306d",
-  "description": "Teste",
+  "background_color": "#ffffff",
+  "description": "Clube de vantagens",
   "dir": "ltr",
   "display": "standalone",
-  "name": "Grupo Fera",
+  "name": "Éppi",
   "orientation": "natural",
   "scope": "/",
-  "short_name": "Grupo Fera",
+  "short_name": "Éppi",
   "start_url": "/",
-  "theme_color": "#23306d",
+  "theme_color": "#9600a9",
   "icons": [
     {
       "src": "/icon2.png",

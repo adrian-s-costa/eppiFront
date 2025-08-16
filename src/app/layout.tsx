@@ -8,9 +8,9 @@
 
   const inter = Inter({ subsets: ["latin"] });
   const mont = Montserrat({ subsets: ["latin"] });
-  const APP_NAME = "Grupo Fera";
-  const APP_DEFAULT_TITLE = "Grupo Fera";
-  const APP_TITLE_TEMPLATE = "%s - Grupo Fera";
+  const APP_NAME = "Éppi";
+  const APP_DEFAULT_TITLE = "Éppi";
+  const APP_TITLE_TEMPLATE = "%s - Éppi";
   const APP_DESCRIPTION = "Descrição";
 
   export const metadata: Metadata = {

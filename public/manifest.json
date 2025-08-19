@@ -3,10 +3,10 @@
   "description": "Clube de vantagens",
   "dir": "ltr",
   "display": "standalone",
-  "name": "Éppi",
+  "name": "éppi",
   "orientation": "natural",
   "scope": "/",
-  "short_name": "Éppi",
+  "short_name": "éppi",
   "start_url": "/",
   "theme_color": "#9600a9",
   "icons": [

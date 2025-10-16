@@ -230,7 +230,7 @@ export default function Profile (){
           <hr className="mx-4"/>
 
           {/* Notificações */}
-          <motion.button
+          {/* <motion.button
             whileTap={{ scale: 0.98 }}
             className="w-full px-4 py-4 flex items-center justify-between"
             onClick={()=>{ os === 'Android' || os === 'iOS' ? nativeNotifications() : requestNotificationPermission() }}
@@ -240,7 +240,7 @@ export default function Profile (){
               <span className="text-black">Notificações</span>
             </div>
             <IoIosArrowForward className="text-xl text-slate-400"/>
-          </motion.button>
+          </motion.button> */}
         </motion.div>
 
         {/* Excluir conta */}

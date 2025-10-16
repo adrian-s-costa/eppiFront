@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export function DockDemo({ tabIndex }: any) {
-  const [isManuallyExpanded, setIsManuallyExpanded] = useState(false);
+  const [isManuallyExpanded, setIsManuallyExpanded] = useState(true);
   
   const isClubTab = true; // CLUBE tab
   

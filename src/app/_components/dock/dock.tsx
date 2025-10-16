@@ -29,9 +29,9 @@ export function DockDemo({ tabIndex }: any) {
   
   // Reset manual expansion when changing tabs
   React.useEffect(() => {
-    if (tabIndex !== 4) {
-      setIsManuallyExpanded(false);
-    }
+    // if (tabIndex !== 4) {
+    //   setIsManuallyExpanded(false);
+    // }
   }, [tabIndex]);
 
   return (

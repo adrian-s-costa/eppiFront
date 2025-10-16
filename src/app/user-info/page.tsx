@@ -36,6 +36,7 @@ export default function UserInfo(){
       tel: localStorage.getItem("number"),
       bornDate: localStorage.getItem("bornDate"),
       cep: localStorage.getItem("cep"),
+      initials: localStorage.getItem("cpf"),
     })
 
     setUrl(localStorage.getItem('pfpUrl'))
@@ -236,6 +237,7 @@ export default function UserInfo(){
       localStorage.setItem('localidade', newUser.localidade);
       localStorage.setItem('uf', newUser.uf);
       localStorage.setItem('pfpUrl', newUser.pfpUrl);
+      localStorage.setItem('smartToken', newUser.smart_token);
 
       notify2();
 
@@ -256,7 +258,7 @@ export default function UserInfo(){
 
       <MdArrowBackIos className='text-2xl cursor-pointer' onClick={() => { router.back(); } } />
 
-      <h1 className="text-3xl font-bold mb-2 mt-[2.5rem] text-black dark:text-gray-900">Estamos quase lá!</h1>
+      <h1 className="text-3xl font-bold mb-2 mt-[2.5rem] text-text-[#8609A3] dark:text-gray-900">Estamos quase lá!</h1>
 
       <span className='text-sm text-[#838383]'>Para podermos nos comunicar melhor informe nome e sobrenome</span>
 
@@ -317,7 +319,7 @@ export default function UserInfo(){
             <input type="date" id="date" onChange={(event) => { setAdditionalInfo({ ...additionalInfo, bornDate: event.target.value }); } } value={additionalInfo.bornDate} className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:text-gray-900 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="DD/MM/AAAA" required />
           </div>
         </div>
-        <button type="submit" className="text-white mt-5 h-10 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Confirma</button>
+        <button type="submit" className="text-white mt-5 h-10 bg-[#8609A3] font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center ">Confirma</button>
       </form>
 
       <ToastContainer

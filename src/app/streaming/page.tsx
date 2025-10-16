@@ -11,6 +11,7 @@ import { Button, Checkbox, Label, Modal, TextInput, Toast } from "flowbite-react
 import { ToastContainer, toast } from 'react-toastify';
 import { HiX } from "react-icons/hi";
 import { Badge } from "flowbite-react";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Streaming({setTabIndex}: any){
 
@@ -24,7 +25,8 @@ export default function Streaming({setTabIndex}: any){
   const [hasAcess, setHasAcess] = useState<boolean>(false);
 
 
-  const hasAcessToCourses = typeof window !== "undefined" ? window.localStorage.getItem("hasAcess") : false;  
+  const hasAcessToCourses = typeof window !== "undefined" ? window.localStorage.getItem("hasAcess") : false; 
+  const pfpUrl = typeof window !== "undefined" ? window.localStorage.getItem("pfpUrl") : false;
 
   const changeState = (n: number) => {
     return setSearchBarState( searchBarState * -1);
@@ -105,26 +107,31 @@ export default function Streaming({setTabIndex}: any){
           </div>
       </Modal>
 
-    <div className=" flex px-1 h-16 justify-between items-center bg-black">
+    <div className=" flex px-3 h-16 justify-between items-center bg-white drop-shadow-md">
       <Image 
-        className="xxs:w-[130px] xxs:h-[32.5px]"
-        src={'https://res.cloudinary.com/dmo7nzytn/image/upload/v1727832524/n1_1_1_wo6k0x.png'}
+        className="xxs:w-[70px] xxs:h-[120px]"
+        src={'https://res.cloudinary.com/dmo7nzytn/image/upload/v1758980597/home_e%CC%81ppi_4_w2xqkb.png'}
         alt="Logo"
-        width={160}
-        height={40}
+        width={200}
+        height={80}
         priority={true}
       ></Image>
 
       <div className="flex gap-4 items-center">
-        <GoBell className="xs:text-2xl xxs:text-lg text-white dark:text-white"/>
-        <GoSearch className="xs:text-2xl xxs:text-lg text-white dark:text-white cursor-pointer" onClick={()=>{changeState(searchBarState)}} />
-        <div
-          className={`rounded-full w-[1.875rem] h-[1.875rem] bg-cover`}
-          style={{ backgroundImage: `url(https://res.cloudinary.com/dmo7nzytn/image/upload/v1715983820/grupo-fera/images/felipe_fera_to4xne.jpg)` }}
-        ></div>
+        <GoBell className="xs:text-2xl xxs:text-lg text-[#8609A3] dark:text-[#8609A3]"/>
+        <GoSearch className="xs:text-2xl xxs:text-lg text-[#8609A3] dark:text-[#8609A3] cursor-pointer" onClick={()=>{changeState(searchBarState)}} />
+        {
+          pfpUrl == "" || pfpUrl == "." || !pfpUrl || pfpUrl === "null" || pfpUrl === null ?
+          <FaUserCircle className="text-gray-400 text-4xl"/>
+          :
+          <div
+            className={`rounded-full w-[1.875rem] h-[1.875rem] bg-cover`}
+            style={{ backgroundImage: `url(${pfpUrl})` }}
+          ></div>
+        }
       </div>
     </div>
-    <div className={`px-2 bg-black ${searchBarState > 0 ? null : 'py-4'}`}>
+    <div className={`px-2 bg-white ${searchBarState > 0 ? null : 'py-4'}`}>
       <input type="text" className={`bg-[#CECECE] rounded-full h-[2.15rem] w-full text-black mb-2 ${searchBarState > 0 ? 'hidden' : 'block'} `} value={ searchBar! } placeholder="Pesquise um video pelo título..." onChange={(e)=>{setSearchBar(e.target.value)}}/>
     </div>
     <div className="h-[40px] bg-[#ECECEC] flex items-center px-2">

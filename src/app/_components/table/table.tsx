@@ -3,6 +3,7 @@
 import { Tabs, Table } from "flowbite-react";
 
 export default function Tables ({ impressions, clicks, CTR }: any){
+    const formattedCTR = Number.isFinite(CTR) ? `${Math.round(Number(CTR))}%` : `${CTR}%`;
     return <Table className="flex-wrap mb-5">
     <Table.Head>
     <Table.HeadCell>Impressões</Table.HeadCell>
@@ -19,7 +20,7 @@ export default function Tables ({ impressions, clicks, CTR }: any){
             {clicks}
         </Table.Cell>
         <Table.Cell className={`whitespace-nowrap font-medium ${CTR > 0 ? "text-green-500 dark:text-green-500" : "text-red-500 dark:text-red-500"}`}>
-            {CTR}
+            {formattedCTR}
         </Table.Cell>
     </Table.Row>
     </Table.Body>

@@ -9,10 +9,9 @@ import { IoArrowUndoOutline, IoSend } from "react-icons/io5";
 import { IoMdThumbsUp } from "react-icons/io";
 import { config } from "../../../../config";
 import Link from "next/link";
-import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { AnimatePresence, motion } from "framer-motion";
 
 type Video = {
   comments: any;
@@ -45,26 +44,18 @@ export default function Video({ params }: { params: { id: string } }) {
   const [contact, setContact] = useState<Boolean>(false);
   const [activeCommentId, setActiveCommentId] = useState<any>(null);
   const [answer, setAnswer] = useState<string | null>(null);
+  const [successOpen, setSuccessOpen] = useState<boolean>(false);
 
 
   const handleReplyClick = (id: any) => {
     if (activeCommentId === id) {
-      setActiveCommentId(null); // Fechar se já estiver aberto
+      setActiveCommentId(null);
     } else {
       setActiveCommentId(id);
     }
   };
 
-  const notify = () => toast.success('Recebemos o seu contato e em breve um vendedor entrará em contato!', {
-    position: "top-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-  });
+  const openSuccess = () => setSuccessOpen(true);
 
   const userName = typeof window !== "undefined" ? window.localStorage.getItem('user') : false;
   const userId = typeof window !== "undefined" ? window.localStorage.getItem('id') : false;
@@ -100,7 +91,7 @@ export default function Video({ params }: { params: { id: string } }) {
         }
 
         const responseData = await response.json();
-        notify();  // Notifica o usuário em caso de sucesso
+        openSuccess();  // Notifica o usuário em caso de sucesso
     } catch (error) {
         console.error('Error fetching video:', error);
     } finally {
@@ -423,18 +414,54 @@ export default function Video({ params }: { params: { id: string } }) {
             </Button>
           </div>
       </div>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        />
+      {/* Success Modal */}
+      <AnimatePresence>
+        {successOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={()=> setSuccessOpen(false)}
+          >
+            <motion.div
+              initial={{ y: 24, opacity: 0, scale: 0.98 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 12, opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="relative w-full max-w-md bg-white rounded-2xl p-6 text-center shadow-2xl"
+              onClick={(e)=> e.stopPropagation()}
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 340, damping: 18 }}
+                className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-4"
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 7L9 18L4 13" stroke="#059669" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </motion.div>
+              <h3 className="text-lg font-semibold text-black">Contato enviado!</h3>
+              <p className="text-slate-600 mt-1">Recebemos seu interesse. Em breve um vendedor falará com você.</p>
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                <button
+                  className="w-full py-3 rounded-xl border border-slate-200 text-slate-700"
+                  onClick={()=> setSuccessOpen(false)}
+                >
+                  Fechar
+                </button>
+                <button
+                  className="w-full py-3 rounded-xl bg-[#8609A3] text-white font-semibold"
+                  onClick={()=> { setSuccessOpen(false); localStorage.setItem('page', "1"); window.location.href = '/tab?options=1'; }}
+                >
+                  Ir para início
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
     </div>
   );

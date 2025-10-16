@@ -61,15 +61,15 @@ export default function Home({setTabIndex, muted}: any){
       <div className="flex justify-between">
         <div className="flex flex-col justify-center">
           <h1 className="xs:text-3xl xxs:text-2xl font-bold ">Fala, {!fullName ? '' : firstName}!</h1>
-          <span className="xxs:text-sm xs:text-base">ou devo te chamar de Fera?</span>
+          <span className="xxs:text-sm xs:text-base">tá no éppi, já sabe: tá no lucro!</span>
         </div>
 
         <Image 
-          src={"https://storage.googleapis.com/videos-grupo-fera/static/logos/logo.webp"}
-          className="xxs:w-[5rem] xs:w-[7rem]"
+          src={"https://res.cloudinary.com/dmo7nzytn/image/upload/v1757886696/Logo_Horizontal_164x48_-_A_AGENCIA_logo_rvbbq5.svg"}
+          className="xxs:w-[3rem] xs:w-[5rem]"
           alt={""}
-          width={242}
-          height={256}          
+          width={200}
+          height={214}          
         />
       </div>
 

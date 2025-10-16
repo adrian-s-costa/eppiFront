@@ -89,6 +89,7 @@ export function ChartBarComponent({activeValues, mode, initialDate, finalDate}: 
               tickMargin={10}
               axisLine={false}
               tickFormatter={(value) => value.slice(0, 3)}
+              allowDecimals={false}
             />
             <ChartTooltip
               cursor={false}
@@ -116,6 +117,7 @@ export function ChartBarComponent({activeValues, mode, initialDate, finalDate}: 
                 offset={12}
                 className="fill-foreground"
                 fontSize={12}
+                formatter={(value: number) => value.toFixed(0)}
               />
             </Bar>
           </BarChart>

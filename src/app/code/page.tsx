@@ -8,6 +8,7 @@ import { MdArrowBackIos } from "react-icons/md";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { config } from '../../../config';
 import Loader from '../loader/page';
+import Image from 'next/image';
 
 export default function PinCode(){
 
@@ -76,9 +77,19 @@ export default function PinCode(){
   
   return (
     <>{loading ? <Loader /> : null }<div className="w-full h-screen bg-white p-5 lg:flex lg:justify-center lg:items-center">
-      <MdArrowBackIos className='text-2xl cursor-pointer text-black absolute left-5 top-5' onClick={() => { router.back(); } } />
+      <MdArrowBackIos className='z-10 text-2xl cursor-pointer text-black absolute lg:absolute md:absolute xs:hidden xxs:hidden left-5 top-5' onClick={() => { router.back(); } } />
+      <div className='w-full justify-between items-center lg:hidden md:hidden xs:flex xxs:flex'>
+        <MdArrowBackIos className='text-2xl cursor-pointer text-black left-5 top-5' onClick={() => { router.back(); } } />
+        <Image 
+          src={"https://res.cloudinary.com/dmo7nzytn/image/upload/v1757886696/Logo_Horizontal_164x48_-_A_AGENCIA_logo_rvbbq5.svg"}
+          className="xxs:w-[3rem] xs:w-[5rem]"
+          alt={""}
+          width={200}
+          height={214}          
+        />
+      </div>
       <div className='lg:w-96'>
-        <h1 className="xs:text-3xl xxs:text-lg font-bold mb-2 mt-[2.5rem] text-black dark:text-black">Código Validação</h1>
+        <h1 className="xs:text-3xl xxs:text-lg font-bold mb-2 mt-[2.5rem] text-[#8609A3] ">Código Validação</h1>
         <span className='xs:text-sm xxs:text-xs text-[#838383]'>Enviamos um código de ativação para o seu email {email}</span>
 
         <form>

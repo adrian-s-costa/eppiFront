@@ -2,7 +2,7 @@
 
 "use client"
 
-import { IoExit, IoTrashOutline, IoPencil, IoAnalytics } from "react-icons/io5";
+import { IoExit, IoTrashOutline, IoPencil, IoAnalytics, IoNotificationsOutline } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
@@ -11,10 +11,13 @@ import { handleSub } from "../../../utils/api/service";
 import { urlB64ToUint8Array } from "@/lib/utils";
 import { PushNotifications } from '@capacitor/push-notifications';
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Profile (){
 
   const [log, setLog] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+  const cpf = typeof window !== "undefined" ? window.localStorage.getItem("cpf") : false;
 
   useEffect(()=>{
 
@@ -134,7 +137,7 @@ export default function Profile (){
           'Content-Type': 'application/json',
           "ngrok-skip-browser-warning": "69420"
         },
-        body: JSON.stringify({ credential: userMail })
+        body: JSON.stringify({ credential: userMail, initials: cpf})
       });
   
       if (!response.ok) {
@@ -158,55 +161,161 @@ export default function Profile (){
 
   return (
     <div className="w-full h-screen bg-white p-5 overflow-y-hidden lg:flex lg:justify-center lg:items-center lg:flex-col">
-      <div className="lg:w-[60vw]">
-      <div className="flex items-center">
-        {pfpUrl == "" || pfpUrl == "." || !pfpUrl || pfpUrl === "null" || pfpUrl === null ? 
-        <FaUserCircle className="text-gray-400 mr-4 text-6xl"/>
-        : <div
-            className={`rounded-full w-[5rem] h-[5rem] bg-cover mr-4`}
-            style={{ backgroundImage: `url(${pfpUrl})` }}
-          ></div>}
-        <div className="flex flex-col">
-          <p className="text-black dark:text-black font-bold">{userName}</p>
-          <p className="text-black dark:text-black text-xs font">{userMail}</p>
-          <p className="text-black dark:text-black text-xs font">{cep}</p>
-        </div>
+      <div className="w-full max-w-md mx-auto">
+        {/* Card topo com avatar e infos */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col items-center"
+        >
+          {pfpUrl == "" || pfpUrl == "." || !pfpUrl || pfpUrl === "null" || pfpUrl === null ? 
+            <FaUserCircle className="text-gray-300 text-6xl"/>
+            : <div
+                className={`rounded-full w-[5rem] h-[5rem] bg-center bg-cover`}
+                style={{ backgroundImage: `url(${pfpUrl})` }}
+              ></div>
+          }
+          <p className="text-black dark:text-black font-bold mt-3">{userName}</p>
+          <p className="text-slate-500 text-sm">{userMail}</p>
+        </motion.div>
+
+        {/* Lista de ações */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05, duration: 0.35, ease: "easeOut" }}
+          className="mt-4 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"
+        >
+          {/* Sair */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            className="w-full px-4 py-4 flex items-center justify-between"
+            onClick={()=>{localStorage.clear(); router.push('/login')}}
+          >
+            <div className="flex items-center">
+              <IoExit className="text-xl text-slate-500 mr-3"/>
+              <span className="text-black">Sair</span>
+            </div>
+            <IoIosArrowForward className="text-xl text-slate-400"/>
+          </motion.button>
+          <hr className="mx-4"/>
+
+          {/* Editar informações */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            className="w-full px-4 py-4 flex items-center justify-between"
+            onClick={()=>{router.push('/user-info')}}
+          >
+            <div className="flex items-center">
+              <IoPencil className="text-xl text-slate-500 mr-3"/>
+              <span className="text-black">Editar informações</span>
+            </div>
+            <IoIosArrowForward className="text-xl text-slate-400"/>
+          </motion.button>
+          <hr className="mx-4"/>
+
+          {/* Éppi Ads */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            className="w-full px-4 py-4 flex items-center justify-between"
+            onClick={()=>{router.push(`/dashboard?id=${id}`)}}
+          >
+            <div className="flex items-center">
+              <IoAnalytics className="text-xl text-slate-500 mr-3"/>
+              <span className="text-black">Éppi Ads</span>
+            </div>
+            <IoIosArrowForward className="text-xl text-slate-400"/>
+          </motion.button>
+          <hr className="mx-4"/>
+
+          {/* Notificações */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            className="w-full px-4 py-4 flex items-center justify-between"
+            onClick={()=>{ os === 'Android' || os === 'iOS' ? nativeNotifications() : requestNotificationPermission() }}
+          >
+            <div className="flex items-center">
+              <IoNotificationsOutline className="text-xl text-slate-500 mr-3"/>
+              <span className="text-black">Notificações</span>
+            </div>
+            <IoIosArrowForward className="text-xl text-slate-400"/>
+          </motion.button>
+        </motion.div>
+
+        {/* Excluir conta */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.35, ease: "easeOut" }}
+          className="mt-4 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"
+        >
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            className="w-full px-4 pt-4 flex items-center justify-between"
+            onClick={()=>{setConfirmOpen(true)}}
+          >
+            <div className="flex items-center">
+              <IoTrashOutline className="text-xl text-red-600 mr-3"/>
+              <span className="text-red-600">Excluir conta</span>
+            </div>
+            <IoIosArrowForward className="text-xl text-slate-400"/>
+          </motion.button>
+          <div className="px-12 pb-4 text-xs text-slate-500">Esta ação é irreversível</div>
+        </motion.div>
+
+        {/* debug opcional */}
+        {/* {log} */}
       </div>
-      <div className=" border-[1px] w-full h-56 mt-5 rounded-lg px-2 flex flex-col justify-around">
-        <div className="flex items-center h-10 w-full justify-between cursor-pointer" onClick={()=>{localStorage.clear(); router.push('/login')}}>
-          <div className="flex items-center ">
-            <IoExit className="text-2xl text-slate-400 mr-2"/>
-            <span className="text-black dark:text-black">Sair</span>
-          </div>
-          <IoIosArrowForward className="text-2xl"/>
-        </div>
-        <hr className="mx-5"/>
-        <div className="flex items-center h-10 w-full justify-between cursor-pointer" onClick={()=>{router.push('/user-info')}}>
-          <div className="flex items-center ">
-            <IoPencil className="text-2xl text-slate-400 mr-2"/>
-            <span className="text-black dark:text-black">Editar informações</span>
-          </div>
-          <IoIosArrowForward className="text-2xl"/>
-        </div>
-        <hr className="mx-5"/>
-        <div className="flex items-center h-10 w-full justify-between cursor-pointer" onClick={()=>{router.push(`/dashboard?id=${id}`)}}>
-          <div className="flex items-center ">
-            <IoAnalytics className="text-2xl text-slate-400 mr-2"/>
-            <span className="text-black dark:text-black">Fera Ads</span>
-          </div>
-          <IoIosArrowForward className="text-2xl"/>
-        </div>
-        <hr className="mx-5"/>
-        <div className="flex items-center h-10 w-full justify-between cursor-pointer" onClick={()=>{deleteUser()}}>
-          <div className="flex items-center">
-            <IoTrashOutline className="text-2xl text-red-600 mr-2"/>
-            <span className="text-red-600">Excluir minha conta</span>
-          </div>
-          <IoIosArrowForward className="text-2xl"/>
-        </div>
-      </div>     
-      {log}
-      </div>
+      {/* Modal de confirmação de exclusão */}
+      <AnimatePresence>
+        {confirmOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={()=> setConfirmOpen(false)}
+          >
+            <motion.div
+              initial={{ y: 24, opacity: 0, scale: 0.98 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 12, opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="relative w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl"
+              onClick={(e)=> e.stopPropagation()}
+            >
+              <div className="flex items-start gap-3">
+                <div className="mt-1 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 9V13" stroke="#DC2626" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M12 17.01L12.01 16.9989" stroke="#DC2626" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#DC2626" strokeWidth="2"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-black">Excluir conta?</h3>
+                  <p className="text-slate-600 mt-1">Essa ação é permanente e não poderá ser desfeita.</p>
+                </div>
+              </div>
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                <button
+                  className="w-full py-3 rounded-xl border border-slate-200 text-slate-700"
+                  onClick={()=> setConfirmOpen(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="w-full py-3 rounded-xl bg-red-600 text-white font-semibold"
+                  onClick={()=> { setConfirmOpen(false); deleteUser(); }}
+                >
+                  Excluir
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

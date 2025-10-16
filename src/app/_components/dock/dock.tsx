@@ -17,7 +17,7 @@ export type IconProps = React.HTMLAttributes<SVGElement>;
 export function DockDemo({ tabIndex }: any) {
   const [isManuallyExpanded, setIsManuallyExpanded] = useState(false);
   
-  const isClubTab = tabIndex === 4; // CLUBE tab
+  const isClubTab = true; // CLUBE tab
   
   const handleExpand = () => {
     setIsManuallyExpanded(true);
@@ -79,7 +79,7 @@ export function DockDemo({ tabIndex }: any) {
               <DockIcon>
                 <Tab className="flex flex-col">
                       {
-                          tabIndex === 3 ? 
+                          tabIndex === 2 ? 
                               <IoPerson className="text-2xl text-black" /> 
                               :
                               <IoPersonOutline className="text-2xl text-black" />

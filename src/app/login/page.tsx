@@ -221,13 +221,14 @@ export default function Login(){
           </div>
           <button type="submit" className="text-white mt-5 mb-5 h-10 bg-[#8609A3] hover:bg-[#5b056e] focus:ring-4 focus:outline-none focus:ring-[#ffffff] font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center">Entrar</button>
           
+          {/*
           <div className='flex items-center mt-4 mb-8'>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
             <h2 className='text-[14px] flex min-w-[100px] mx-3 justify-center'>Já tem conta?</h2>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
 
-          {/* <GoogleLogin
+           <GoogleLogin
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',
@@ -251,12 +252,13 @@ export default function Login(){
             </div>
           </div>
           <button type="submit" className="text-white mt-5 mb-5 h-10 bg-[#8609A3] hover:bg-[#5b056e] font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center">Registrar</button>
+          {/*
           <div className='flex items-center mt-4 mb-8'>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
             <h2 className='text-[14px] mx-3 min-w-[140px] flex justify-center'>Ou registre-se com</h2>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
-          {/* <GoogleLogin
+           <GoogleLogin
             type='standard'
             text='signup_with'
             onSuccess={ async (credentialResponse) => {

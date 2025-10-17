@@ -227,7 +227,7 @@ export default function Login(){
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
 
-          <GoogleLogin
+          {/* <GoogleLogin
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',
@@ -239,7 +239,7 @@ export default function Login(){
             onError={() => {
               console.log('Login Failed');
             }}
-          />
+          /> */}
         </form>
       ) : (
         <>
@@ -256,7 +256,7 @@ export default function Login(){
             <h2 className='text-[14px] mx-3 min-w-[140px] flex justify-center'>Ou registre-se com</h2>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
-          <GoogleLogin
+          {/* <GoogleLogin
             type='standard'
             text='signup_with'
             onSuccess={ async (credentialResponse) => {
@@ -270,7 +270,7 @@ export default function Login(){
             onError={() => {
               console.log('Login Failed');
             }}
-          />
+          /> */}
         </form>
           </>
       )}

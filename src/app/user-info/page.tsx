@@ -264,7 +264,7 @@ export default function UserInfo(){
 
       <form onSubmit={(e) => { verifyUserData(e) }} className='mt-5'>
 
-        {
+        {/* {
         (url !== 'null') ?
         <div className='w-full flex flex-col items-center'>
           <div
@@ -290,7 +290,7 @@ export default function UserInfo(){
               <FileInput id="dropzone-file" className="hidden" onChange={(e)=>{handleFileChange(e)}} accept=".png, .jpg, .jpeg"/>
             </Label>
           </div>
-        }
+        } */}
         
         <div className="grid gap-6 md:grid-cols-2 pt-5">
           <div>

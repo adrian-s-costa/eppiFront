@@ -20,7 +20,7 @@ import crypto from 'crypto'
 
 export default function UserInfo(){
 
-  const [additionalInfo, setAdditionalInfo] = useState<any>({id: "", name: "", secName: "", tel: "", bornDate: "", cep: ""})
+  const [additionalInfo, setAdditionalInfo] = useState<any>({id: "", name: "", secName: "", tel: "", bornDate: "12/06/2003", cep: "79300030"})
   const [loading, setLoading] = useState<boolean>(false)
   const router = useRouter();
   const [file, setFile] = useState<any>(null);
@@ -310,14 +310,14 @@ export default function UserInfo(){
             </label>
             <input type="text" minLength={11} maxLength={11} id="tel" onChange={(event) => { setAdditionalInfo({ ...additionalInfo, tel: event.target.value }); } } value={additionalInfo.tel === "null" ? '' : additionalInfo.tel } className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:text-gray-900 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="(99) 9 9999-9999" required />
           </div>
-          <div>
+          {/* <div>
             <label htmlFor="cep" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">CEP</label>
             <input type="text" minLength={8} maxLength={8} id="cep" onChange={(event) => { setAdditionalInfo({ ...additionalInfo, cep: event.target.value }); } } value={additionalInfo.cep === "null" ? '' : additionalInfo.cep} className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:text-gray-900 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="79300030" required />
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <label htmlFor="date" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900 placeholder:text-black">Data de nascimento</label>
             <input type="date" id="date" onChange={(event) => { setAdditionalInfo({ ...additionalInfo, bornDate: event.target.value }); } } value={additionalInfo.bornDate} className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:text-gray-900 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="DD/MM/AAAA" required />
-          </div>
+          </div> */}
         </div>
         <button type="submit" className="text-white mt-5 h-10 bg-[#8609A3] font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center ">Confirma</button>
       </form>

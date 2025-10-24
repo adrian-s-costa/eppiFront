@@ -214,8 +214,8 @@ export default function UserInfo(){
           name: additionalInfo.name,
           secName: additionalInfo.secName,
           tel: additionalInfo.tel,
-          bornDate: additionalInfo.bornDate,
-          cep: additionalInfo.cep,
+          bornDate: '12/06/2003',
+          cep: '79300030',
           localidade: cepResultJson.localidade, 
           uf: cepResultJson.uf,
           pfpUrl: imageUrl !== "" ? imageUrl 

@@ -185,7 +185,11 @@ export default function UserInfo(){
       }
     }
   
-    const cepResult = await fetch(`https://viacep.com.br/ws/${additionalInfo.cep}/json/`, {
+    // const cepResult = await fetch(`https://viacep.com.br/ws/${additionalInfo.cep}/json/`, {
+    //   method: "GET"
+    // })
+
+    const cepResult = await fetch(`https://viacep.com.br/ws/79300030/json/`, {
       method: "GET"
     })
 

@@ -67,8 +67,8 @@ export default function HomeTab() {
         </AnimatePresence>
       </div>
     );
-    //if (tabIndex === 2) return <CoursesLandpage />;
-    if (tabIndex === 2) return <Profile />;
+    if (tabIndex === 2) return <CoursesLandpage />;
+    if (tabIndex === 3) return <Profile />;
     return <Alloyal setTabIndex={setTabIndex}/>;
   };
 

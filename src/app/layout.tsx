@@ -8,9 +8,9 @@
 
   const inter = Inter({ subsets: ["latin"] });
   const mont = Montserrat({ subsets: ["latin"] });
-  const APP_NAME = "Grupo Fera";
-  const APP_DEFAULT_TITLE = "Grupo Fera";
-  const APP_TITLE_TEMPLATE = "%s - Grupo Fera";
+  const APP_NAME = "Éppi";
+  const APP_DEFAULT_TITLE = "Éppi";
+  const APP_TITLE_TEMPLATE = "%s - Éppi";
   const APP_DESCRIPTION = "Descrição";
 
   export const metadata: Metadata = {
@@ -66,7 +66,7 @@
     return (
       <html lang="pt-br" className="touch-pan-y">
         <ThemeContextProvider theme={theme}>
-        <GoogleOAuthProvider clientId="298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId="298281998851-cldhcoqpnobt964bsuc1k5iq7vv17kio.apps.googleusercontent.com">
           <body className={inter.className}>{children}
             <script src="https://sdk.mercadopago.com/js/v2" async/>
             <script src="https://player.pandavideo.com.br/api.v2.js" async />

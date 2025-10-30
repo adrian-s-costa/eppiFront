@@ -194,14 +194,15 @@ export default function Login(){
   
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      // const response = await fetch(`${config.API_URL}/auth/google`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ credential: tokenResponse.access_token, register: true }),
-      // });
-      //postUserGoogle(response);
+      const response = await fetch(`${config.API_URL}/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: tokenResponse.access_token, register: true }),
+      });
+      postUserGoogle(response);
     },
   });
+  
   
   return (
     <>{ loading || typeof window == "undefined" ? <Loader/> : null }<div className="w-full lg:flex lg:flex-col lg:justify-center lg:items-center h-screen bg-white p-5 ">
@@ -240,6 +241,17 @@ export default function Login(){
             <h2 className='text-[14px] flex min-w-[100px] mx-3 justify-center'>Já tem conta?</h2>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
+
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com&redirect_uri=${encodeURIComponent('/tab')}&response_type=token&scope=email%20profile`;
+            }}
+          >
+            Entrar com Google SLA
+          </a>
+
 
             <a href="#" onClick={(e) => { e.preventDefault(); login(); }}>
               Entrar com Google

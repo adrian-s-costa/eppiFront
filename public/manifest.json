@@ -52,6 +52,13 @@
   ],
   "lang": "pt",
   "handle_links": "preferred",
+  "prefer_related_applications": true,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://eppi-front.vercel.app"
+    }
+  ],
   "file_handlers": [
     {
       "action": "/",

@@ -3,10 +3,10 @@
   "description": "Teste",
   "dir": "ltr",
   "display": "standalone",
-  "name": "Èppi",
+  "name": "Éppi",
   "orientation": "natural",
   "scope": "/",
-  "short_name": "Èppi",
+  "short_name": "Éppi",
   "start_url": "/",
   "theme_color": "#23306d",
   "icons": [

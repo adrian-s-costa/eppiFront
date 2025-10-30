@@ -3,10 +3,10 @@
   "description": "Teste",
   "dir": "ltr",
   "display": "standalone",
-  "name": "Grupo Fera",
+  "name": "Èppi",
   "orientation": "natural",
   "scope": "/",
-  "short_name": "Grupo Fera",
+  "short_name": "Èppi",
   "start_url": "/",
   "theme_color": "#23306d",
   "icons": [

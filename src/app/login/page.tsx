@@ -194,12 +194,12 @@ export default function Login(){
   
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      const response = await fetch(`${config.API_URL}/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credential: tokenResponse.access_token, register: true }),
-      });
-      postUserGoogle(response);
+      // const response = await fetch(`${config.API_URL}/auth/google`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ credential: tokenResponse.access_token, register: true }),
+      // });
+      //postUserGoogle(response);
     },
   });
   

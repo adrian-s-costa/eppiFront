@@ -229,6 +229,7 @@ export default function Login(){
           </div>
 
            <GoogleLogin
+            useOneTap
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',
@@ -261,6 +262,7 @@ export default function Login(){
            <GoogleLogin
             type='standard'
             text='signup_with'
+            useOneTap={true}
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/forgot-google`, {
                 method: 'POST',

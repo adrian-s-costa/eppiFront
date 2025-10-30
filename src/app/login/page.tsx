@@ -228,6 +228,14 @@ export default function Login(){
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
 
+          <button onClick={()=>
+            window.open(
+              "https://accounts.google.com/o/oauth2/v2/auth?client_id=298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com&redirect_uri=https://eppi-front.vercel.app/tab&response_type=code&scope=email%20profile" ,
+              '_blank')
+          }>
+            teste
+          </button>
+
            <GoogleLogin
             useOneTap
             onSuccess={ async (credentialResponse) => {

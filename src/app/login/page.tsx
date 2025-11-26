@@ -236,41 +236,19 @@ export default function Login(){
           <button type="submit" className="text-white mt-5 mb-5 h-10 bg-[#8609A3] hover:bg-[#5b056e] focus:ring-4 focus:outline-none focus:ring-[#ffffff] font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center">Entrar</button>
           
           
-          <div className='flex items-center mt-4 mb-8'>
+          <div className='flex items-center mt-4 mb-4'>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
-            <h2 className='text-[14px] flex min-w-[100px] mx-3 justify-center'>Já tem conta?</h2>
+            <h2 className='text-[14px] flex min-w-[120px] mx-3 justify-center'>Ou entre com</h2>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
 
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com&redirect_uri=${encodeURIComponent('/tab')}&response_type=token&scope=email%20profile`;
-            }}
+          <button
+            type="button"
+            onClick={() => login()}
+            className="w-full h-10 mb-6 flex items-center justify-center border border-[#D8DADC] rounded-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
           >
-            Entrar com Google SLA
-          </a>
-
-
-            <a href="#" onClick={(e) => { e.preventDefault(); login(); }}>
-              Entrar com Google
-            </a>
-
-           <GoogleLogin
-            useOneTap
-            onSuccess={ async (credentialResponse) => {
-              const response = await fetch(`${config.API_URL}/auth/google`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ credential: credentialResponse.credential, register: true }),
-              });
-              postUserGoogle(response)
-            }}
-            onError={() => {
-              console.log('Login Failed');
-            }}
-          />
+            Entrar com Google
+          </button>
         </form>
       ) : (
         <>

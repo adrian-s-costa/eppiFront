@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Button, Checkbox, Label, Modal, TextInput, Toast } from "flowbite-react";
 import { ToastContainer, toast } from 'react-toastify';
 import { HiX } from "react-icons/hi";
-import { Badge } from "flowbite-react";
+import { Badge, Drawer } from "flowbite-react";
 import { FaUserCircle } from "react-icons/fa";
 
 export default function Streaming({setTabIndex}: any){
@@ -23,6 +23,8 @@ export default function Streaming({setTabIndex}: any){
   const [password, setPassword] = useState<string>('');
   const [hidden, setHidden] = useState<string>('hidden');
   const [hasAcess, setHasAcess] = useState<boolean>(false);
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState<boolean>(false);
+  const [filterSearch, setFilterSearch] = useState<string>('');
 
 
   const hasAcessToCourses = typeof window !== "undefined" ? window.localStorage.getItem("hasAcess") : false; 
@@ -131,23 +133,101 @@ export default function Streaming({setTabIndex}: any){
         }
       </div>
     </div>
-    <div className={`px-2 bg-white ${searchBarState > 0 ? null : 'py-4'}`}>
-      <input type="text" className={`bg-[#CECECE] rounded-full h-[2.15rem] w-full text-black mb-2 ${searchBarState > 0 ? 'hidden' : 'block'} `} value={ searchBar! } placeholder="Pesquise um video pelo título..." onChange={(e)=>{setSearchBar(e.target.value)}}/>
-    </div>
-    <div className="h-[40px] bg-[#ECECEC] flex items-center px-2">
-      <div className="flex items-center overflow-x-scroll w-auto lg:overflow-auto">
-        <IoCompassOutline className="text-6xl text-black dark:text-black"></IoCompassOutline>
-        <span className="ml-2 font-semibold xs:text-base xxs:text-sm text-black dark:text-black">Explorar</span>
-
-        <div className="border-r-2 border-[#CECECE] mx-2"/>
-
-        <div className="overflow-x-scroll flex gap-4 w-auto items-center lg:overflow-auto">
-          {categories && categories.map((category: any, index: number)=>{
-            return <button key={index} className="border-2 xs:text-base xxs:text-sm border-[#CECECE] rounded-full w-auto whitespace-nowrap px-5 text-black dark:text-black" onClick={()=>{setActiveTag(category.value)}}>{category.name}</button>          
-          })}
-        </div>
+    <div
+      className={`px-3 bg-white overflow-hidden transition-all duration-200 ease-out ${
+        searchBarState > 0 ? 'max-h-0 opacity-0' : 'max-h-20 opacity-100 py-3'
+      }`}
+    >
+      <div className="w-full flex items-center gap-2 bg-[#F3F3F3] rounded-full px-3 py-1 shadow-sm border border-[#CECECE]">
+        <GoSearch className="text-base text-[#8609A3]" />
+        <input
+          type="text"
+          className="bg-transparent outline-none border-none focus:outline-none focus:ring-0 h-[2rem] w-full text-sm text-black placeholder:text-gray-500"
+          value={searchBar!}
+          placeholder="Pesquise um vídeo pelo título..."
+          onChange={(e) => {
+            setSearchBar(e.target.value);
+          }}
+        />
       </div>
     </div>
+    <div className="h-[40px] bg-[#ECECEC] flex items-center px-2">
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center overflow-x-scroll w-auto lg:overflow-visible">
+          <IoCompassOutline className="text-6xl text-black dark:text-black"></IoCompassOutline>
+          <span className="ml-2 font-semibold xs:text-base xxs:text-sm text-black dark:text-black">Explorar</span>
+        </div>
+
+        <Button
+          color="light"
+          size="xs"
+          className="ml-2 border-2 border-[#CECECE] rounded-full text-black dark:text-black text-xs xs:text-sm px-4 py-1 hover:bg-[#8609A3] hover:text-white transition-colors duration-150 ease-out"
+          onClick={() => setIsFilterDrawerOpen(true)}
+        >
+          Filtros
+        </Button>
+      </div>
+    </div>
+
+    <Drawer
+      open={isFilterDrawerOpen}
+      onClose={() => setIsFilterDrawerOpen(false)}
+      position="bottom"
+      className="w-full max-w-md mx-auto !rounded-t-2xl"
+    >
+      <Drawer.Header title="Filtrar vídeos" />
+      <Drawer.Items>
+        <div className="flex flex-col gap-4">
+          <TextInput
+            type="text"
+            placeholder="Buscar categorias..."
+            value={filterSearch}
+            onChange={(e) => setFilterSearch(e.target.value)}
+          />
+          <div className="flex flex-col gap-2 max-h-[60vh] overflow-y-auto">
+            <Button
+              color="light"
+              className={`${activeTag === "Todos" ? "bg-[#8609A3] text-white border-transparent" : "bg-white text-black border border-gray-300"} w-full justify-start`}
+              onClick={() => {
+                setActiveTag("Todos");
+                setIsFilterDrawerOpen(false);
+              }}
+            >
+              Todos
+            </Button>
+            {categories &&
+              categories
+                .filter((category: any) =>
+                  filterSearch === ""
+                    ? true
+                    : category.name
+                        .toLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, "")
+                        .includes(
+                          filterSearch
+                            .toLowerCase()
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, "")
+                        )
+                )
+                .map((category: any, index: number) => (
+                  <Button
+                    key={index}
+                    color="light"
+                    className={`${activeTag === category.value ? "bg-[#8609A3] text-white border-transparent" : "bg-white text-black border border-gray-300"} w-full justify-start`}
+                    onClick={() => {
+                      setActiveTag(category.value);
+                      setIsFilterDrawerOpen(false);
+                    }}
+                  >
+                    {category.name}
+                  </Button>
+                ))}
+          </div>
+        </div>
+      </Drawer.Items>
+    </Drawer>
 
     <div className="w-full flex flex-col flex-wrap lg:flex-row lg:justify-between lg:pt-5 lg:px-10">
       {

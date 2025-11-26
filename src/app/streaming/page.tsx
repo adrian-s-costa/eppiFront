@@ -153,8 +153,8 @@ export default function Streaming({setTabIndex}: any){
     </div>
     <div className="h-[40px] bg-[#ECECEC] flex items-center px-2">
       <div className="flex items-center justify-between w-full">
-        <div className="flex items-center overflow-x-scroll w-auto lg:overflow-visible">
-          <IoCompassOutline className="text-6xl text-black dark:text-black"></IoCompassOutline>
+        <div className="flex items-center w-auto">
+          <IoCompassOutline className="text-2xl text-black dark:text-black"></IoCompassOutline>
           <span className="ml-2 font-semibold xs:text-base xxs:text-sm text-black dark:text-black">Explorar</span>
         </div>
 

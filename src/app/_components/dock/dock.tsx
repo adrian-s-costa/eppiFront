@@ -7,7 +7,7 @@ import { Tab, TabList } from "@chakra-ui/react";
 import { RiGraduationCapFill, RiGraduationCapLine, RiHome5Fill, RiHome5Line } from "react-icons/ri";
 import { PiAirplayFill } from "react-icons/pi";
 import { LuAirplay } from "react-icons/lu";
-import { IoPerson, IoPersonOutline } from "react-icons/io5";
+import { IoGift, IoGiftOutline, IoPerson, IoPersonOutline } from "react-icons/io5";
 import { IoChevronUp } from "react-icons/io5";
 import Draggable from "react-draggable";
 import { motion, AnimatePresence } from "framer-motion";
@@ -91,9 +91,9 @@ export function DockDemo({ tabIndex }: any) {
                 <Tab className="flex flex-col">
                       {
                           tabIndex === 4 ? 
-                              <IoPerson className="text-2xl text-black" /> 
+                              <IoGift className="text-2xl text-black" /> 
                               :
-                              <IoPersonOutline className="text-2xl text-black" />
+                              <IoGiftOutline className="text-2xl text-black" />
                       }
                   <p className="text-black text-[0.5rem]"> CLUBE </p>
                 </Tab>

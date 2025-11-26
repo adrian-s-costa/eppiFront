@@ -35,6 +35,51 @@ export default function HomeTab() {
     setTabIndex(Number(storedPage));
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const { hash, origin, pathname, search } = window.location;
+    if (!hash || !hash.includes("access_token")) return;
+
+    const params = new URLSearchParams(hash.substring(1));
+    const accessToken = params.get("access_token");
+    if (!accessToken) return;
+
+    const handleGoogleCallback = async () => {
+      try {
+        const response = await fetch(`${config.API_URL}/auth/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ credential: accessToken, register: true }),
+        });
+
+        if (!response.ok) {
+          console.error("Failed to complete Google login callback");
+          return;
+        }
+
+        const userData = await response.json();
+
+        localStorage.setItem("user", userData.account.name);
+        localStorage.setItem("token", userData.token);
+        localStorage.setItem("id", userData.account.id);
+        localStorage.setItem("email", userData.account.email);
+        localStorage.setItem("number", userData.account.cellphone);
+        localStorage.setItem("cep", userData.account.cep);
+        localStorage.setItem("pfpUrl", userData.account.pfpUrl);
+        localStorage.setItem("cpf", userData.account.initials);
+
+        // Limpa o hash para evitar repetir o fluxo ao recarregar
+        const cleanUrl = `${origin}${pathname}${search}`;
+        window.history.replaceState(null, "", cleanUrl);
+      } catch (error) {
+        console.error("Error handling Google callback:", error);
+      }
+    };
+
+    handleGoogleCallback();
+  }, []);
+
   const handleTabsChange = (index: number) => {
     localStorage.setItem("page", index.toString());
     setPrevIndex(tabIndex);

@@ -242,13 +242,19 @@ export default function Login(){
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => login()}
-            className="w-full h-10 mb-6 flex items-center justify-center border border-[#D8DADC] rounded-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-          >
-            Entrar com Google
-          </button>
+          <GoogleLogin
+            onSuccess={ async (credentialResponse) => {
+              const response = await fetch(`${config.API_URL}/auth/google`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credential: credentialResponse.credential, register: true }),
+              });
+              postUserGoogle(response)
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />
         </form>
       ) : (
         <>

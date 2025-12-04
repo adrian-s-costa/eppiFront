@@ -22,6 +22,17 @@ async function getUser(credential: any) {
   return res.json()
 }
 
+async function getDocument(document: any) {
+  const res = await fetch(`${config.API_URL}/auth/get-document/${document}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "ngrok-skip-browser-warning": "69420"
+    },
+  });
+  return res.json()
+}
+
 async function getCategories() {
   const res = await fetch(config.API_URL + `/texts/categories`, {
     method: 'GET',
@@ -224,5 +235,6 @@ export {
   getCourses,
   getCategoryContentCustom,
   handleSub,
-  getUser
+  getUser,
+  getDocument
 }

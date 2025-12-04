@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import PasswordInput from '../_components/passwordInput/passInput';
 import { config } from '../../../config';
 import Loader from '../loader/page';
+import { getDocument } from '../../../utils/api/service';
 
 export default function PinCode(){
   const [registerInfo, setRegisterInfo] = useState<any>({credential: "", code: "", password: "123456789", confirmPassword: "123456789", cpf: ''})
@@ -46,6 +47,7 @@ export default function PinCode(){
     return true;
   }
 
+  let user: any;
 
   useEffect(() => {
     setRegisterInfo({...registerInfo, credential: email})
@@ -75,8 +77,9 @@ export default function PinCode(){
 
   const verifyPassword = async (e: any) => {
     setLoading(true);
-
     e.preventDefault();
+
+    const document = await getDocument(registerInfo.cpf)
 
     if (passwordInfo.first !== passwordInfo.second){
       setLoading(false);
@@ -86,6 +89,11 @@ export default function PinCode(){
     if (!validarCPF(registerInfo.cpf)) {
       setLoading(false);
       return notify('CPF inválido!')
+    }
+
+    if (document && registerInfo.cpf == document){
+      setLoading(false);
+      return notify('CPF já registrado')
     }
 
     try {

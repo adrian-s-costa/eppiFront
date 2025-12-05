@@ -26,6 +26,7 @@ export default function UserInfo(){
   const [file, setFile] = useState<any>(null);
   const [error, setError] = useState('');
   const [url, setUrl] = useState<any>(null);
+  const [history, setHistory] = useState<any>(null);
   const [pfp, setPfp] = useState<any>('.');
 
   useEffect(() => {
@@ -42,6 +43,11 @@ export default function UserInfo(){
     setUrl(localStorage.getItem('pfpUrl'))
 
   }, []);
+
+  useEffect(() => {
+    console.log(window.history.length);
+    setHistory(window.history.length);
+  }, [])
 
   const handleFileChange = async (event: any) => {
     const selectedFile = event.target.files[0];
@@ -256,7 +262,7 @@ export default function UserInfo(){
 
       <div className='lg:w-[50vw] w-full lg:border-solid lg:border-[1px] lg:rounded-xl lg:p-10 lg:border-black'>
 
-      <MdArrowBackIos className='text-2xl cursor-pointer' onClick={() => { router.back(); } } />
+      <MdArrowBackIos className='text-2xl cursor-pointer' onClick={() => { !history || history == null ? router.push("/login") : router.back() } } />
 
       <h1 className="text-3xl font-bold mb-2 mt-[2.5rem] text-text-[#8609A3] dark:text-gray-900">Estamos quase lá!</h1>
 

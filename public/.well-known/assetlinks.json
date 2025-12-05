@@ -3,6 +3,9 @@
       "target": {
         "namespace": "android_app",
         "package_name": "com.somosaagencia.eppi",
-        "sha256_cert_fingerprints": ["ED:62:42:BB:28:58:7E:F6:BB:67:E7:2C:D4:E8:E4:AF:24:03:B5:C4:07:2F:95:CE:1D:01:AA:E5:F5:79:39:0E"]
+        "sha256_cert_fingerprints": [
+          "ED:62:42:BB:28:58:7E:F6:BB:67:E7:2C:D4:E8:E4:AF:24:03:B5:C4:07:2F:95:CE:1D:01:AA:E5:F5:79:39:0E",
+          "99:19:00:AF:5B:21:A4:D3:5D:EE:AB:7C:F1:84:9A:53:0C:7C:58:0C:91:4C:FC:62:0C:26:38:6A:E5:D9:BC:22"
+        ]
       }
     }]

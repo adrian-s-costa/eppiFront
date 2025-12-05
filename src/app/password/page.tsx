@@ -76,8 +76,8 @@ export default function PinCode(){
   });
 
   const verifyPassword = async (e: any) => {
-    setLoading(true);
     e.preventDefault();
+    setLoading(true);
 
     const document = await getDocument(registerInfo.cpf)
 
@@ -91,10 +91,12 @@ export default function PinCode(){
       return notify('CPF inválido!')
     }
 
-    if (document && registerInfo.cpf == document){
+    if (document.initials && registerInfo.cpf == document.initials){
       setLoading(false);
       return notify('CPF já registrado')
     }
+
+    console.log(registerInfo)
 
     try {
       const response = await fetch(`${config.API_URL}/auth/reset-password`, {
@@ -106,6 +108,8 @@ export default function PinCode(){
         body: JSON.stringify({ credential: email, password: passwordInfo.first, confirmPassword: passwordInfo.second, initials: registerInfo.cpf})
       });
       
+      console.log(await response.json())
+
       if (!response.ok) {
         setLoading(false);
         const resp = await response.json()
@@ -114,6 +118,8 @@ export default function PinCode(){
         }
         throw new Error('Failed to log in');
       }
+
+      console.log('a')
 
       notify2();
 

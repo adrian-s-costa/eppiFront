@@ -110,7 +110,7 @@ export default function PrivacyPage() {
               <li>Restringir o tratamento de dados em determinadas finalidades.</li>
             </ul>
             <p className="mt-6">
-              Para exercer seus direitos, entre em contato pelo e-mail: <a href="mailto:privacidade@tvmaxrio.com.br" className="text-[#bc0000] hover:underline font-semibold">privacidade@tvmaxrio.com.br</a>
+              Para exercer seus direitos, entre em contato pelo e-mail: <a href="mailto:privacidade@tvmaxrio.com.br" className="text-[#bc0000] hover:underline font-semibold">privacidade@eppi.com.br</a>
             </p>
           </section>
         </div>

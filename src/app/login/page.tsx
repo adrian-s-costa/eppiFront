@@ -202,7 +202,23 @@ export default function Login(){
       postUserGoogle(response);
     },
   });
+
+  // Função chamada após o login bem-sucedido.
+async function handleCredentialResponse(response: { credential: any; }) {
+  // O token JWT contém as informações de login.
   
+  console.log('aaa')
+  
+  // Exemplo de envio ao backend:
+  const response2 = await fetch(`${config.API_URL}/auth/forgot-google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential: response.credential, register: true }),
+    });
+    sendEmailCodeGoogle(response2)
+  }
+  
+
   
   return (
     <>{ loading || typeof window == "undefined" ? <Loader/> : null }<div className="w-full lg:flex lg:flex-col lg:justify-center lg:items-center h-screen bg-white p-5 ">
@@ -255,6 +271,26 @@ export default function Login(){
               console.log('Login Failed');
             }}
           /> */}
+
+        <div 
+          id="g_id_onload"
+          data-client_id="298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com"
+          data-context="signin"
+          data-ux_mode="popup"
+          data-callback="handleCredentialResponse"
+          data-itp_support="true"
+        ></div>
+
+        <div 
+          className="g_id_signin"
+          data-type="standard"
+          data-size="large"
+          data-theme="outline"
+          data-text="sign_in_with"
+          data-shape="rectangular"
+          data-logo_alignment="left"
+        ></div>           
+
         </form>
       ) : (
         <>

@@ -205,7 +205,6 @@ export default function Profile (){
           <motion.button
             whileTap={{ scale: 0.98 }}
             className="w-full px-4 py-4 flex items-center justify-between"
-            onClick={()=>{localStorage.clear(); router.push('/login')}}
           >
             <div className="flex items-center" onClick={()=>{
               if ("geolocation" in navigator) {

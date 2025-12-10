@@ -12,12 +12,15 @@ import { urlB64ToUint8Array } from "@/lib/utils";
 import { PushNotifications } from '@capacitor/push-notifications';
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-toastify";
 
 export default function Profile (){
 
   const [log, setLog] = useState<string | null>(null);
+  const [coor, setCoord] = useState<{lat: string, long: string} | null>(null);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const cpf = typeof window !== "undefined" ? window.localStorage.getItem("cpf") : false;
+  let latitude, longitude
 
   useEffect(()=>{
 
@@ -156,6 +159,10 @@ export default function Profile (){
   const pfpUrl = typeof window !== "undefined" ? window.localStorage.getItem("pfpUrl") : false;
   const id = typeof window !== "undefined" ? window.localStorage.getItem("id") : false;
 
+  useEffect(()=>{
+
+  }, [coor])
+
 
   const router = useRouter();
 
@@ -210,9 +217,14 @@ export default function Profile (){
               if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
                   (position) => {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
+                    setCoord({
+                      lat: position.coords.latitude,
+                      long: position.coords.longitude
+                    })
                     // Use latitude e longitude
+
+                    console.log(coor?.lat, coor?.long)
+                    toast()
                   },
                   (error) => {
                     // Lidar com erros (permissão negada, timeout, etc.)
@@ -220,7 +232,7 @@ export default function Profile (){
                   },
                   {
                     enableHighAccuracy: true,
-                    timeout: 5000,
+                    timeout: 15000,
                     maximumAge: 0
                   }
                 );
@@ -232,7 +244,16 @@ export default function Profile (){
               <span className="text-black">Localização</span>
             </div>
             <IoIosArrowForward className="text-xl text-slate-400"/>
+            <iframe
+              width="600"
+              height="450"
+              loading="lazy"
+              allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps/embed/v1/view?center=${coor?.lat},${coor?.long}&zoom=15&key=AIzaSyB0dQQVgCQwjRzOZb4nCpBtPA1brvFLPHI`}
+            ></iframe>
           </motion.button>
+
           <hr className="mx-4"/>
 
           {/* Editar informações */}

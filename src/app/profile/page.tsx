@@ -250,7 +250,7 @@ export default function Profile (){
               loading="lazy"
               allowfullscreen
               referrerpolicy="no-referrer-when-downgrade"
-              src={`https://www.google.com/maps/embed/v1/view?center=${coor?.lat},${coor?.long}&zoom=15&key=AIzaSyB0dQQVgCQwjRzOZb4nCpBtPA1brvFLPHI`}
+              src={`https://www.google.com/maps/embed/v1/place?q=${coor?.lat},${coor?.long}&key=AIzaSyB0dQQVgCQwjRzOZb4nCpBtPA1brvFLPHI`}
             ></iframe>
           </motion.button>
 

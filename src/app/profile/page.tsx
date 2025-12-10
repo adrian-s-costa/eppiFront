@@ -201,6 +201,41 @@ export default function Profile (){
           </motion.button>
           <hr className="mx-4"/>
 
+          {/* Ativar Loc */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            className="w-full px-4 py-4 flex items-center justify-between"
+            onClick={()=>{localStorage.clear(); router.push('/login')}}
+          >
+            <div className="flex items-center" onClick={()=>{
+              if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    // Use latitude e longitude
+                  },
+                  (error) => {
+                    // Lidar com erros (permissão negada, timeout, etc.)
+                    console.error("Erro ao obter a localização:", error);
+                  },
+                  {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                  }
+                );
+              } else {
+                // Geolocation não é suportado
+              }
+            }}>
+              <IoExit className="text-xl text-slate-500 mr-3"/>
+              <span className="text-black">Localização</span>
+            </div>
+            <IoIosArrowForward className="text-xl text-slate-400"/>
+          </motion.button>
+          <hr className="mx-4"/>
+
           {/* Editar informações */}
           <motion.button
             whileTap={{ scale: 0.98 }}

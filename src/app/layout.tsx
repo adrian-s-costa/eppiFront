@@ -66,7 +66,10 @@
     return (
       <html lang="pt-br" className="touch-pan-y">
         <ThemeContextProvider theme={theme}>
-        <GoogleOAuthProvider clientId="298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com">
+        <GoogleOAuthProvider 
+          clientId="298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com"
+          onScriptLoadError={() => console.error("Erro carregando GSI")}
+        >
           <body className={inter.className}>{children}
             <script src="https://sdk.mercadopago.com/js/v2" async/>
             <script src="https://player.pandavideo.com.br/api.v2.js" async />

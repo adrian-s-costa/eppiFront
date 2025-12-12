@@ -257,7 +257,8 @@ async function handleCredentialResponse(response: { credential: any; }) {
           </div>
 
           <GoogleLogin
-          type='icon'
+            type='icon'
+            ux_mode="redirect"
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',

@@ -94,8 +94,6 @@ export default function Login(){
 
     const userData = await response.json();
 
-    console.log(userData);
-
     localStorage.setItem('user', userData.account.name)
     localStorage.setItem('token', userData.token)
     localStorage.setItem('id', userData.account.id)
@@ -272,6 +270,10 @@ async function handleCredentialResponse(response: { credential: any; }) {
               console.log('Login Failed');
             }}
           />
+
+          <a href="https://https://grupoferaapi.shop/auth/google/alt">
+            Entrar com Google
+          </a>
 
         </form>
       ) : (

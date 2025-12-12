@@ -259,6 +259,7 @@ async function handleCredentialResponse(response: { credential: any; }) {
           </div>
 
           <GoogleLogin
+          type='icon'
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',
@@ -271,7 +272,7 @@ async function handleCredentialResponse(response: { credential: any; }) {
               console.log('Login Failed');
             }}
           />
-          
+
         </form>
       ) : (
         <>

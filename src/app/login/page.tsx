@@ -11,6 +11,7 @@ import Loader from '../loader/page';
 import { GoogleLogin } from '@react-oauth/google';
 import Image from 'next/image';
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
+import GoogleOneTap from '../GoogleLogin/page';
 
 export default function Login(){
 
@@ -256,19 +257,15 @@ async function handleCredentialResponse(response: { credential: any; }) {
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
 
-          <GoogleLogin
-            type='icon'
-            ux_mode="redirect"
-            onSuccess={ async (credentialResponse) => {
+          <GoogleOneTap
+            onLogin={async (credential: any) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ credential: credentialResponse.credential, register: true }),
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ credential })
               });
-              postUserGoogle(response)
-            }}
-            onError={() => {
-              console.log('Login Failed');
+
+              postUserGoogle(response);
             }}
           />
 

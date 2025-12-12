@@ -269,7 +269,7 @@ async function handleCredentialResponse(response: { credential: any; }) {
             }}
           />
 
-          <a href="https://https://grupoferaapi.shop/auth/google/alt">
+          <a href="https://grupoferaapi.shop/auth/google/alt">
             Entrar com Google
           </a>
 

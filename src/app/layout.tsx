@@ -68,7 +68,6 @@
         <ThemeContextProvider theme={theme}>
         <GoogleOAuthProvider 
           clientId="298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com"
-          onScriptLoadError={() => console.error("Erro carregando GSI")}
         >
           <body className={inter.className}>{children}
             <script src="https://sdk.mercadopago.com/js/v2" async/>

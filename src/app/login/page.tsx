@@ -252,7 +252,7 @@ async function handleCredentialResponse(response: { credential: any; }) {
           <button type="submit" className="text-white mt-5 mb-5 h-10 bg-[#8609A3] hover:bg-[#5b056e] focus:ring-4 focus:outline-none focus:ring-[#ffffff] font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center">Entrar</button>
           
           
-          {/* <div className='flex items-center mt-4 mb-4'>
+          <div className='flex items-center mt-4 mb-4'>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
             <h2 className='text-[14px] flex min-w-[120px] mx-3 justify-center'>Ou entre com</h2>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
@@ -270,27 +270,8 @@ async function handleCredentialResponse(response: { credential: any; }) {
             onError={() => {
               console.log('Login Failed');
             }}
-          /> */}
-
-        <div 
-          id="g_id_onload"
-          data-client_id="298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com"
-          data-context="signin"
-          data-ux_mode="popup"
-          data-callback="handleCredentialResponse"
-          data-itp_support="true"
-        ></div>
-
-        <div 
-          className="g_id_signin"
-          data-type="standard"
-          data-size="large"
-          data-theme="outline"
-          data-text="sign_in_with"
-          data-shape="rectangular"
-          data-logo_alignment="left"
-        ></div>           
-
+          />
+          
         </form>
       ) : (
         <>

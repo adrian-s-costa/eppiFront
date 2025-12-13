@@ -5,6 +5,8 @@
   import { ThemeContextProvider } from '@telefonica/mistica';
   import { theme } from "../style/theme"
   import { GoogleOAuthProvider } from '@react-oauth/google';
+  import DeepLinkListener from '../app/_components/DeepLinkListener';
+
 
   const inter = Inter({ subsets: ["latin"] });
   const mont = Montserrat({ subsets: ["latin"] });
@@ -70,6 +72,7 @@
           clientId="298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com"
         >
           <body className={inter.className}>{children}
+            <DeepLinkListener />
             <script src="https://sdk.mercadopago.com/js/v2" async/>
             <script src="https://player.pandavideo.com.br/api.v2.js" async />
             <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" async />

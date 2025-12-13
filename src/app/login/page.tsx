@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import PricingToggle from "../_components/tab/tab"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import PasswordInput from '../_components/passwordInput/passInput';
 import { config } from '../../../config';
 import Loader from '../loader/page';
@@ -22,6 +22,29 @@ export default function Login(){
   const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
+
+  const searchParams = useSearchParams()
+  const dataEncoded = searchParams.get("data");
+
+  if (dataEncoded){
+    const userData = JSON.parse(
+      decodeURIComponent(dataEncoded)
+    );
+    
+    localStorage.setItem('user', userData.account.name)
+    localStorage.setItem('token', userData.token)
+    localStorage.setItem('id', userData.account.id)
+    localStorage.setItem('email', userData.account.email)
+    localStorage.setItem('number', userData.account.cellphone)
+    localStorage.setItem('cep', userData.account.cep)
+    localStorage.setItem('pfpUrl', userData.account.pfpUrl)
+    localStorage.setItem('toke_alloyal', userData)
+    localStorage.setItem('pfpUrl', userData.account.pfpUrl)
+    localStorage.setItem('cpf', userData.account.initials)
+    localStorage.setItem('smartToken', userData.account.smart_token)
+
+    window.close();
+  }
 
   const fullName = typeof window !== "undefined" ? window.localStorage.getItem('user') : false;
 
@@ -205,9 +228,6 @@ export default function Login(){
   // Função chamada após o login bem-sucedido.
 async function handleCredentialResponse(response: { credential: any; }) {
   // O token JWT contém as informações de login.
-  
-  console.log('aaa')
-  
   // Exemplo de envio ao backend:
   const response2 = await fetch(`${config.API_URL}/auth/forgot-google`, {
       method: 'POST',

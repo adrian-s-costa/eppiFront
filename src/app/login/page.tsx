@@ -34,7 +34,7 @@ export default function Login(){
     console.log(data);
     
     localStorage.setItem('user', data.name)
-    localStorage.setItem('token', data.token)
+    //localStorage.setItem('token', data.token)
     localStorage.setItem('id', data.id)
     localStorage.setItem('email', data.email)
     localStorage.setItem('number', data.cellphone)

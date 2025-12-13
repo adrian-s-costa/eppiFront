@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "C64TFULVQR.app.vercel.eppi-front",
+        "paths": ["/auth/callback*"]
+      }
+    ]
+  }
+}

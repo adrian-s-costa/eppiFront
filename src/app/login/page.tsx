@@ -33,17 +33,17 @@ export default function Login(){
 
     console.log(data);
     
-    localStorage.setItem('user', data.account.name)
+    localStorage.setItem('user', data.name)
     localStorage.setItem('token', data.token)
-    localStorage.setItem('id', data.account.id)
-    localStorage.setItem('email', data.account.email)
-    localStorage.setItem('number', data.account.cellphone)
-    localStorage.setItem('cep', data.account.cep)
-    localStorage.setItem('pfpUrl', data.account.pfpUrl)
+    localStorage.setItem('id', data.id)
+    localStorage.setItem('email', data.email)
+    localStorage.setItem('number', data.cellphone)
+    localStorage.setItem('cep', data.cep)
+    localStorage.setItem('pfpUrl', data.pfpUrl)
     localStorage.setItem('toke_alloyal', data)
-    localStorage.setItem('pfpUrl', data.account.pfpUrl)
-    localStorage.setItem('cpf', data.account.initials)
-    localStorage.setItem('smartToken', data.account.smart_token)
+    localStorage.setItem('pfpUrl', data.pfpUrl)
+    localStorage.setItem('cpf', data.initials)
+    localStorage.setItem('smartToken', data.smart_token)
 
     window.close();
   }

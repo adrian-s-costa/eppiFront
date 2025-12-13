@@ -73,7 +73,7 @@
             <script src="https://sdk.mercadopago.com/js/v2" async/>
             <script src="https://player.pandavideo.com.br/api.v2.js" async />
             <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" async />
-            <script src="http://googleusercontent.com/g/dev/identity/gsi/client" async defer></script>
+            <script src="https://accounts.google.com/gsi/client" async defer></script>
             <script src="https://accounts.google.com/gsi/client" async defer></script>
             <meta name="apple-mobile-web-app-capable" content="yes"/>
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>

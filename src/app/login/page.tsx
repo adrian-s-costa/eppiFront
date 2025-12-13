@@ -23,31 +23,6 @@ export default function Login(){
 
   const router = useRouter();
 
-  const searchParams = useSearchParams()
-  const dataEncoded = searchParams.get("data");
-
-  if (dataEncoded){
-    const data = JSON.parse(
-      decodeURIComponent(dataEncoded)
-    );
-
-    console.log(data);
-    
-    localStorage.setItem('user', data.name)
-    //localStorage.setItem('token', data.token)
-    localStorage.setItem('id', data.id)
-    localStorage.setItem('email', data.email)
-    localStorage.setItem('number', data.cellphone)
-    localStorage.setItem('cep', data.cep)
-    localStorage.setItem('pfpUrl', data.pfpUrl)
-    localStorage.setItem('toke_alloyal', data)
-    localStorage.setItem('pfpUrl', data.pfpUrl)
-    localStorage.setItem('cpf', data.initials)
-    localStorage.setItem('smartToken', data.smart_token)
-
-    window.close();
-  }
-
   const fullName = typeof window !== "undefined" ? window.localStorage.getItem('user') : false;
 
   if (fullName){
@@ -279,7 +254,7 @@ async function handleCredentialResponse(response: { credential: any; }) {
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
 
-          <GoogleOneTap
+          {/* <GoogleOneTap
             onLogin={async (credential: any) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: "POST",
@@ -288,6 +263,20 @@ async function handleCredentialResponse(response: { credential: any; }) {
               });
 
               postUserGoogle(response);
+            }}
+          /> */}
+
+          <GoogleLogin
+            onSuccess={ async (credentialResponse) => {
+              const response = await fetch(`${config.API_URL}/auth/google`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credential: credentialResponse.credential, register: true }),
+              });
+              postUserGoogle(response)
+            }}
+            onError={() => {
+              console.log('Login Failed');
             }}
           />
 

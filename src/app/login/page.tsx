@@ -27,21 +27,23 @@ export default function Login(){
   const dataEncoded = searchParams.get("data");
 
   if (dataEncoded){
-    const userData = JSON.parse(
+    const data = JSON.parse(
       decodeURIComponent(dataEncoded)
     );
+
+    console.log(data);
     
-    localStorage.setItem('user', userData.account.name)
-    localStorage.setItem('token', userData.token)
-    localStorage.setItem('id', userData.account.id)
-    localStorage.setItem('email', userData.account.email)
-    localStorage.setItem('number', userData.account.cellphone)
-    localStorage.setItem('cep', userData.account.cep)
-    localStorage.setItem('pfpUrl', userData.account.pfpUrl)
-    localStorage.setItem('toke_alloyal', userData)
-    localStorage.setItem('pfpUrl', userData.account.pfpUrl)
-    localStorage.setItem('cpf', userData.account.initials)
-    localStorage.setItem('smartToken', userData.account.smart_token)
+    localStorage.setItem('user', data.account.name)
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('id', data.account.id)
+    localStorage.setItem('email', data.account.email)
+    localStorage.setItem('number', data.account.cellphone)
+    localStorage.setItem('cep', data.account.cep)
+    localStorage.setItem('pfpUrl', data.account.pfpUrl)
+    localStorage.setItem('toke_alloyal', data)
+    localStorage.setItem('pfpUrl', data.account.pfpUrl)
+    localStorage.setItem('cpf', data.account.initials)
+    localStorage.setItem('smartToken', data.account.smart_token)
 
     window.close();
   }

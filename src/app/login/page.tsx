@@ -309,7 +309,7 @@ function handleLogin() {
             }}
           /> */}
 
-          <GoogleLogin
+          {/* <GoogleLogin
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',
@@ -321,7 +321,7 @@ function handleLogin() {
             onError={() => {
               console.log('Login Failed');
             }}
-          />
+          /> */}
 
           <p onClick={()=>{handleLogin()}}>
             Entrar com Google

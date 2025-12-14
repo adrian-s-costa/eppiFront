@@ -225,7 +225,7 @@ function handleLogin() {
     // ID do Cliente iOS (aquele que criamos no Google Cloud)
     const clientId = "298281998851-8h5l7o8iin0ffndfl6th3afvtlekgics.apps.googleusercontent.com";
     // O Esquema Reverso exato
-    const redirectUri = "com.googleusercontent.apps.298281998851-8h5l7o8iin0ffndfl6th3afvtlekgics:/oauth2callback";
+    const redirectUri = "https://eppi.store/tab";
     const scope = "email profile openid";
     
     // Monta a URL

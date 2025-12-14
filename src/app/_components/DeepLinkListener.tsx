@@ -3,46 +3,75 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+// Isso é necessário para o TypeScript não reclamar do window.onAppResumeWithUrl
+declare global {
+  interface Window {
+    onAppResumeWithUrl?: (url: string) => Promise<void>;
+  }
+}
+
 export default function DeepLinkListener() {
   const router = useRouter();
 
   useEffect(() => {
-    function onDeepLink(event: any) {
-      const url = event.detail as string;
+    // Definimos a função que o Swift vai chamar
+    window.onAppResumeWithUrl = async (urlString: string) => {
+      console.log("🚀 [DeepLinkListener] Swift chamou com URL:", urlString);
 
-      let parsed: URL;
-      try {
-        parsed = new URL(url);
-      } catch {
-        console.error('URL inválida no deeplink:', url);
-        return;
-      }
-
-      const dataEncoded = parsed.searchParams.get('data');
-
-      if (dataEncoded) {
+      // Verificação básica se é o retorno do Google com o 'code'
+      if (urlString.includes("code=")) {
         try {
-          const data = JSON.parse(decodeURIComponent(dataEncoded));
+          const url = new URL(urlString);
+          const code = url.searchParams.get("code");
 
-          localStorage.setItem('user', data.name);
-          localStorage.setItem('id', data.id);
-          localStorage.setItem('email', data.email);
-          localStorage.setItem('number', data.cellphone);
-          localStorage.setItem('cep', data.cep);
-          localStorage.setItem('pfpUrl', data.pfpUrl);
-          localStorage.setItem('cpf', data.initials);
-          localStorage.setItem('smartToken', data.smart_token);
+          if (!code) return;
+
+          console.log("✅ Código extraído, enviando para backend...");
+
+          // 1. Troca o 'code' pelos dados do usuário na sua nova rota
+          const response = await fetch("https://grupoferaapi.shop/auth/google/native", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code: code })
+          });
+
+          if (!response.ok) throw new Error("Falha na API");
+
+          const data = await response.json();
+          
+          // 2. Salva no localStorage (Exatamente como você fazia antes)
+          // Nota: Certifique-se que o backend retorna essas chaves no JSON
+          if (data) {
+             // Ajuste aqui se o seu backend retornar dentro de 'account' ou direto no objeto
+             const userObj = data.account || data; 
+
+             localStorage.setItem('user', userObj.name);
+             localStorage.setItem('id', userObj.id);
+             localStorage.setItem('email', userObj.email);
+             localStorage.setItem('number', userObj.cellphone);
+             localStorage.setItem('cep', userObj.cep);
+             localStorage.setItem('pfpUrl', userObj.pfpUrl);
+             localStorage.setItem('cpf', userObj.initials);
+             localStorage.setItem('smartToken', userObj.smart_token);
+             
+             console.log("🎉 Login salvo, redirecionando...");
+             
+             // 3. Redireciona para o app
+             router.replace('/tab');
+          }
+
         } catch (e) {
-          console.error('Erro no callback Google', e);
+          console.error("❌ Erro no fluxo nativo:", e);
         }
       }
+    };
 
-      // 🔁 Navegação interna, sem reload
-      router.replace('/tab');
-    }
+    console.log("✅ Listener Nativo Ativado");
 
-    window.addEventListener('deeplink', onDeepLink);
-    return () => window.removeEventListener('deeplink', onDeepLink);
+    // Cleanup
+    return () => {
+      // Opcional: window.onAppResumeWithUrl = undefined;
+    };
   }, [router]);
 
   return null;

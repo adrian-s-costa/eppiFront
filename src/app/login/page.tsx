@@ -214,6 +214,49 @@ async function handleCredentialResponse(response: { credential: any; }) {
     sendEmailCodeGoogle(response2)
   }
   
+  // Front-end (React/Vue/JS Puro)
+
+function handleLogin() {
+  // 1. Identifica se é iOS (adapte conforme sua lógica de detecção)
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  if (isIOS) {
+    // --- FLUXO NATIVO (iOS) ---
+    // ID do Cliente iOS (aquele que criamos no Google Cloud)
+    const clientId = "298281998851-8h5l7o8iin0ffndfl6th3afvtlekgics.apps.googleusercontent.com";
+    // O Esquema Reverso exato
+    const redirectUri = "com.googleusercontent.apps.298281998851-8h5l7o8iin0ffndfl6th3afvtlekgics:/oauth2callback";
+    const scope = "email profile openid";
+    
+    // Monta a URL
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+    
+    // Abre a URL. O iOS vai detectar o esquema no retorno e fechar o browser SOZINHO.
+    window.location.href = url;
+  } else {
+    // --- FLUXO WEB/ANDROID (Legado) ---
+    // Mantém o fluxo antigo que funciona pra web
+    window.location.href = "https://grupoferaapi.shop/auth/google/alt";
+  }
+}
+
+// Exemplo genérico de captura do código
+// Essa função deve ser chamada quando o app reabre com a URL
+  async function onAppResumeWithUrl(url: any) {
+      if (url.includes("code=")) {
+          const code = new URL(url).searchParams.get("code");
+          
+          // AGORA chamamos o backend para trocar esse código pelo usuário
+          const response = await fetch("https://grupoferaapi.shop/auth/google/native", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ code: code })
+          });
+          
+          const data = await response.json();
+          // Salve o token do usuário e redirecione para a Home
+      }
+  }
 
   
   return (
@@ -280,9 +323,9 @@ async function handleCredentialResponse(response: { credential: any; }) {
             }}
           />
 
-          <a href="https://grupoferaapi.shop/auth/google/alt">
+          <p onClick={()=>{handleLogin()}}>
             Entrar com Google
-          </a>
+          </p>
 
         </form>
       ) : (

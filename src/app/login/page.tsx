@@ -20,10 +20,16 @@ export default function Login(){
   const [registerInfo, setRegisterInfo] = useState<any>({credential: "", register: true});
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const refresh = searchParams.get('refresh');
 
   const router = useRouter();
 
   const fullName = typeof window !== "undefined" ? window.localStorage.getItem('user') : false;
+
+  if (refresh){
+    router.push('/login');
+  }
 
   if (fullName){
     router.push('/tab');
@@ -309,7 +315,7 @@ function handleLogin() {
             }}
           /> */}
 
-          {/* <GoogleLogin
+          <GoogleLogin
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',
@@ -321,7 +327,7 @@ function handleLogin() {
             onError={() => {
               console.log('Login Failed');
             }}
-          /> */}
+          />
 
           <p onClick={()=>{handleLogin()}}>
             Entrar com Google
@@ -339,7 +345,7 @@ function handleLogin() {
           </div>
           <button type="submit" className="text-white mt-5 mb-5 h-10 bg-[#8609A3] hover:bg-[#5b056e] font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center">Registrar</button>
           
-          {/* <div className='flex items-center mt-4 mb-8'>
+          <div className='flex items-center mt-4 mb-8'>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
             <h2 className='text-[14px] mx-3 min-w-[140px] flex justify-center'>Ou registre-se com</h2>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
@@ -359,7 +365,7 @@ function handleLogin() {
             onError={() => {
               console.log('Login Failed');
             }}
-          /> */}
+          />
         </form>
           </>
       )}

@@ -1,3 +1,3 @@
 export const config = {
-  API_URL: "https://grupoferaapi.shop"
+  API_URL: "http://localhost:8080"
 }

@@ -6,10 +6,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "flowbite-react";
 import Loader from "../loader/page";
-import { getHomeCategories, getCampaigns } from "../../../utils/api/service";
+import { getHomeCategories, getCampaigns, getHomeVideo } from "../../../utils/api/service";
 
 export default function Home({setTabIndex, muted}: any){
   const [ homeCategories, setHomeCategories ] = useState<any>()
+  const [ homeVideo, setHomeVideo ] = useState<any>()
   const [ campaigns, setCampaigns ] = useState<any>()
   const [ viewportWidth, setViewportWidth ] = useState<number>(0);
   const router = useRouter();
@@ -21,6 +22,14 @@ export default function Home({setTabIndex, muted}: any){
     try {
       getHomeCategories().then((res)=>{
         setHomeCategories(res);
+      })
+    } catch (error) {
+      console.error(error)
+    }
+
+    try {
+      getHomeVideo().then((res)=>{
+        setHomeVideo(res);
       })
     } catch (error) {
       console.error(error)
@@ -75,7 +84,7 @@ export default function Home({setTabIndex, muted}: any){
 
       <div className="my-5 h-auto relative">
         <video className="rounded-lg" width={viewportWidth} autoPlay={true} muted={true} loop={true} controls={true} playsInline>
-          <source src={`https://res.cloudinary.com/dmo7nzytn/video/upload/v1715727314/fera_hv10wj.mp4`} type="video/mp4"/>  
+          <source src={ homeVideo[0].url } type="video/mp4"/>  
         </video>
         <div className="absolute bg-gray-400/50 p-2 rounded-md bottom-4 left-4 z-10 cursor-pointer" onClick={()=>{localStorage.setItem('page', "1"); setTabIndex(1)}}>
           <span className="opacity-100 text-white">Mais videos</span>

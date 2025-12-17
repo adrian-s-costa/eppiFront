@@ -168,6 +168,17 @@ async function getVideoById(videoId: string) {
   return res.json()
 }
 
+async function getHomeVideo() {
+  const res = await fetch(config.API_URL + `/videos/videoHome`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "ngrok-skip-browser-warning": "69420"
+    },
+  })
+  return res.json();
+}
+
 const handleView = async (id: string) => {
   try {
     const response = await fetch(`${config.API_URL}/videos/${id}/campaign/view`,{
@@ -236,5 +247,6 @@ export {
   getCategoryContentCustom,
   handleSub,
   getUser,
-  getDocument
+  getDocument,
+  getHomeVideo
 }

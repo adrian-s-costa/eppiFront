@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "flowbite-react";
 import Loader from "../loader/page";
 import { getHomeCategories, getCampaigns, getHomeVideo } from "../../../utils/api/service";
@@ -14,6 +14,8 @@ export default function Home({setTabIndex, muted}: any){
   const [ campaigns, setCampaigns ] = useState<any>()
   const [ viewportWidth, setViewportWidth ] = useState<number>(0);
   const router = useRouter();
+  const searchParams = useSearchParams()
+  const refresh = searchParams.get('refresh')
 
   const fullName = typeof window !== "undefined" ? window.localStorage.getItem('user') : false;
   const uf = typeof window !== "undefined" ? window.localStorage.getItem('uf') : false;
@@ -59,7 +61,9 @@ export default function Home({setTabIndex, muted}: any){
 
 
   if (fullName == "Sem Nome") router.push(`/user-info`)
-  if (!fullName) router.push(`/login`)
+  if (refresh){
+    router.push(`/login`)
+  } 
   
   const firstName = fullName ? fullName.split(' ')[0] : '';
 

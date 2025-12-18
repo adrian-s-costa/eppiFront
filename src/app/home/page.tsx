@@ -60,7 +60,9 @@ export default function Home({setTabIndex, muted}: any){
     };
   }, []);
   
-  useEffect(()=>{},[homeVideo])
+  useEffect(()=>{
+    console.log(homeVideo)
+  },[homeVideo])
 
 
   if (fullName == "Sem Nome") router.push(`/user-info`)

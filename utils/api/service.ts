@@ -169,7 +169,7 @@ async function getVideoById(videoId: string) {
 }
 
 async function getHomeVideo() {
-  const res = await fetch(config.API_URL + `/videos/videoHome`, {
+  const res = await fetch(config.API_URL + `/videoHome`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

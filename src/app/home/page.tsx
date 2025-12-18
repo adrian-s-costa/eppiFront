@@ -88,7 +88,7 @@ export default function Home({setTabIndex, muted}: any){
 
       <div className="my-5 h-auto relative">
         <video className="rounded-lg" width={viewportWidth} autoPlay={true} muted={true} loop={true} controls={true} playsInline>
-          <source src={ homeVideo && homeVideo && homeVideo[0].url } type="video/mp4"/>  
+          <source src={ homeVideo && homeVideo[0].url } type="video/mp4"/>  
         </video>
         <div className="absolute bg-gray-400/50 p-2 rounded-md bottom-4 left-4 z-10 cursor-pointer" onClick={()=>{localStorage.setItem('page', "1"); setTabIndex(1)}}>
           <span className="opacity-100 text-white">Mais videos</span>

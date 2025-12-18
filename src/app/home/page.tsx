@@ -58,7 +58,9 @@ export default function Home({setTabIndex, muted}: any){
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []); 
+  }, []);
+  
+  useEffect(()=>{},[homeVideo])
 
 
   if (fullName == "Sem Nome") router.push(`/user-info`)

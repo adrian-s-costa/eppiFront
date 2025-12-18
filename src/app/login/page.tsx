@@ -28,6 +28,7 @@ export default function Login(){
   const fullName = typeof window !== "undefined" ? window.localStorage.getItem('user') : false;
 
   if (refresh){
+    router.refresh();
     router.push('/login');
   }
 
@@ -189,8 +190,6 @@ export default function Login(){
 
     const userData = await response.json();
 
-    console.log(userData)
-
     setUserData(userData);
     setLoading(false);
     router.push(`/code?email=${userData.email}`)
@@ -315,7 +314,7 @@ function handleLogin() {
             }}
           /> */}
 
-          <GoogleLogin
+          {/* <GoogleLogin
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',
@@ -327,7 +326,7 @@ function handleLogin() {
             onError={() => {
               console.log('Login Failed');
             }}
-          />
+          /> */}
 
           <p onClick={()=>{handleLogin()}}>
             Entrar com Google

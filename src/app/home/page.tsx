@@ -31,6 +31,7 @@ export default function Home({setTabIndex, muted}: any){
 
     try {
       getHomeVideo().then((res)=>{
+        console.log(res);
         setHomeVideo(res);
       })
     } catch (error) {

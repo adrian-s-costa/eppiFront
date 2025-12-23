@@ -162,13 +162,13 @@ export default function Onboarding() {
             </h2>
           </div>
         }
-        <p className="text-left text-gray-700 text-sm px-8 mb-8">
+        <p className="text-left text-gray-700 text-sm px-8 mb-4">
           {current.description}
         </p>
       </div>
 
       {/* Navigation Dots */}
-      <div className="flex justify-center space-x-2 mb-6 z-10">
+      <div className="flex justify-center space-x-2 mb-4 z-10">
         {screens.map((_, index) => (
           <div
             key={index}
@@ -183,7 +183,7 @@ export default function Onboarding() {
       <div className="px-6 pb-8 z-10">
         <button
           onClick={handleNext}
-          className={`w-full py-4 rounded-full text-white font-bold text-lg ${current.buttonColor} mb-3 transition-colors duration-300 shadow-md`}
+          className={`w-full py-2 rounded-full text-white font-bold text-lg ${current.buttonColor} mb-2 transition-colors duration-300 shadow-md`}
         >
           {current.buttonText} &gt;
         </button>
@@ -192,7 +192,7 @@ export default function Onboarding() {
 
           <button
           onClick={handleSkip}
-          className={`w-full py-4 rounded-full text-white font-bold text-lg bg-[#DF794D] mb-3 transition-colors duration-300 shadow-md`}
+          className={`w-full py-2 rounded-full text-white font-bold text-lg bg-[#DF794D] mb-2 transition-colors duration-300 shadow-md`}
         >
           Pular &gt;
         </button>

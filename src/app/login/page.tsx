@@ -254,7 +254,6 @@ function handleLogin() {
   const login = useGoogleLogin({
     flow: 'auth-code', 
     ux_mode: 'redirect',
-    redirect_uri: 'https://eppi.store', // Deve ser idêntica ao console do Google
   });
 
   

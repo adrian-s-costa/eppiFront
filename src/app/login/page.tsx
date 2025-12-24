@@ -315,7 +315,7 @@ function handleLogin() {
 
           {isIos ? 
             <div className='w-full flex justify-center'>
-              <GoogleButton onClick={() => {window.location.pathname = "/login"; handleLogin()} }/>
+              <GoogleButton onClick={() => { handleLogin() } }/>
             </div>
           :
             <GoogleLogin

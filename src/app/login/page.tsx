@@ -217,9 +217,9 @@ function handleLogin() {
   if (isIOS) {
     // --- FLUXO NATIVO (iOS) ---
     // ID do Cliente iOS (aquele que criamos no Google Cloud)
-    const clientId = "298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g.apps.googleusercontent.com";
+    const clientId = "298281998851-8h5l7o8iin0ffndfl6th3afvtlekgics.apps.googleusercontent.com";
     // O Esquema Reverso exato
-    const redirectUri = "com.googleusercontent.apps.298281998851-srot2ljcl61gn4bnsja7g1850dr05v9g:/oauth2callback";
+    const redirectUri = "com.googleusercontent.apps.298281998851-8h5l7o8iin0ffndfl6th3afvtlekgics:/oauth2callback";
     const scope = "email profile openid";
     
     // Monta a URL

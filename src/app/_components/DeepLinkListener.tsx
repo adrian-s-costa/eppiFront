@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function DeepLinkListener() {
   const router = useRouter();
@@ -15,6 +16,9 @@ export default function DeepLinkListener() {
   useEffect(() => {
     // Definimos a função no window
     (window as any).onAppResumeWithUrl = async (urlString: string) => {
+
+      toast("🚀 [DeepLinkListener] Swift chamou:")
+      
       console.log("🚀 [DeepLinkListener] Swift chamou:", urlString);
 
       if (urlString.includes("code=")) {

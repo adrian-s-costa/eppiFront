@@ -1,51 +1,78 @@
 'use client';
 
 import { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+
+// Isso é necessário para o TypeScript não reclamar do window.onAppResumeWithUrl
+declare global {
+  interface Window {
+    onAppResumeWithUrl?: (url: string) => Promise<void>;
+  }
+}
 
 export default function DeepLinkListener() {
+  const router = useRouter();
+
   useEffect(() => {
-    const handleNativeCall = async (urlString: string) => {
-      // 1. Log imediato para confirmar que o Swift "chegou" aqui
-      toast("🚀 [DeepLinkListener] Swift chamou com URL:");
+    // Definimos a função que o Swift vai chamar
+    window.onAppResumeWithUrl = async (urlString: string) => {
+      console.log("🚀 [DeepLinkListener] Swift chamou com URL:", urlString);
 
-      if (!urlString.includes("code=")) return;
+      // Verificação básica se é o retorno do Google com o 'code'
+      if (urlString.includes("code=")) {
+        try {
+          const url = new URL(urlString);
+          const code = url.searchParams.get("code");
 
-      try {
-        const url = new URL(urlString.replace("#", "?"));
-        const code = url.searchParams.get("code");
+          if (!code) return;
 
-        const response = await fetch("https://grupoferaapi.shop/auth/google/native", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code })
-        });
+          console.log("✅ Código extraído, enviando para backend...");
 
-        if (response.ok) {
+          // 1. Troca o 'code' pelos dados do usuário na sua nova rota
+          const response = await fetch("https://grupoferaapi.shop/auth/google/native", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code: code })
+          });
+
+          if (!response.ok) throw new Error("Falha na API");
+
           const data = await response.json();
-          const userObj = data.account || data;
           
-          // Salve seus dados...
-          localStorage.setItem('smartToken', userObj.smart_token);
+          // 2. Salva no localStorage (Exatamente como você fazia antes)
+          // Nota: Certifique-se que o backend retorna essas chaves no JSON
+          if (data) {
+             // Ajuste aqui se o seu backend retornar dentro de 'account' ou direto no objeto
+             const userObj = data.account || data; 
 
-          // 🔑 O SEGREDO: Recarregue a página para limpar a WebView para o próximo login
-          window.location.href = '/tab';
+             localStorage.setItem('user', userObj.name);
+             localStorage.setItem('id', userObj.id);
+             localStorage.setItem('email', userObj.email);
+             localStorage.setItem('number', userObj.cellphone);
+             localStorage.setItem('cep', userObj.cep);
+             localStorage.setItem('pfpUrl', userObj.pfpUrl);
+             localStorage.setItem('cpf', userObj.initials);
+             localStorage.setItem('smartToken', userObj.smart_token);
+             
+             console.log("🎉 Login salvo, redirecionando...");
+             
+             // 3. Redireciona para o app
+             window.location.href = '/tab';
+          }
+
+        } catch (e) {
+          console.error("❌ Erro no fluxo nativo:", e);
         }
-      } catch (e) {
-        console.error("❌ Erro no processamento nativo:", e);
       }
     };
 
-    // Atribuição direta e forçada ao window
-    (window as any).onAppResumeWithUrl = handleNativeCall;
+    console.log("✅ Listener Nativo Ativado");
 
-    // Log para você ver no Safari Debugger se a função está pronta
-    console.log("✅ [DeepLinkListener] Função registrada no window");
-
+    // Cleanup
     return () => {
-       // Não limpe, deixe a função lá para o Swift achar
+      // Opcional: window.onAppResumeWithUrl = undefined;
     };
-  }, []);
+  }, [router]);
 
   return null;
 }

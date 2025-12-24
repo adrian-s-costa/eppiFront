@@ -21,6 +21,7 @@ export default function Login(){
   const [registerInfo, setRegisterInfo] = useState<any>({credential: "", register: true});
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [ isIos, setIsIos ] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const refresh = searchParams.get('refresh');
 
@@ -47,6 +48,10 @@ export default function Login(){
     progress: undefined,
     theme: "light",
   });
+
+  useEffect(()=>{
+    setIsIos(/iPhone|iPad|iPod/i.test(navigator.userAgent))
+  },[navigator])
 
 
   const postUser = async (e: any) => {
@@ -214,6 +219,8 @@ function handleLogin() {
   // 1. Identifica se é iOS (adapte conforme sua lógica de detecção)
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+  
+
   if (isIOS) {
     // --- FLUXO NATIVO (iOS) ---
     // ID do Cliente iOS (aquele que criamos no Google Cloud)
@@ -308,27 +315,25 @@ function handleLogin() {
             }}
           /> */}
 
-          <GoogleLogin
-            ux_mode="redirect"
-            use_fedcm_for_prompt={true}
-            login_uri={window.location.origin}
-            onSuccess={ async (credentialResponse) => {
-              const response = await fetch(`${config.API_URL}/auth/google`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ credential: credentialResponse.credential, register: true }),
-              });
-              postUserGoogle(response)
-            }}
-            onError={() => {
-              console.log('Login Failed');
-            }}
-          />
-
-          <div className='w-full flex justify-center'>
-            <GoogleButton onClick={() => {window.location.pathname = "/login"; handleLogin()} }/>
-          </div>
-
+          {isIos ? 
+            <div className='w-full flex justify-center'>
+              <GoogleButton onClick={() => {window.location.pathname = "/login"; handleLogin()} }/>
+            </div>
+          :
+            <GoogleLogin
+              onSuccess={ async (credentialResponse) => {
+                const response = await fetch(`${config.API_URL}/auth/google`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ credential: credentialResponse.credential, register: true }),
+                });
+                postUserGoogle(response)
+              }}
+              onError={() => {
+                console.log('Login Failed');
+              }}
+            />
+          }
         </form>
       ) : (
         <>

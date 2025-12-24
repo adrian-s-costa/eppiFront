@@ -45,7 +45,7 @@ export default function DeepLinkListener() {
              // Ajuste aqui se o seu backend retornar dentro de 'account' ou direto no objeto
              const userObj = data.account || data; 
 
-             localStorage.setItem('user', userObj.name);
+             localStorage.setItem('user', "HUMPTY");
              localStorage.setItem('id', userObj.id);
              localStorage.setItem('email', userObj.email);
              localStorage.setItem('number', userObj.cellphone);

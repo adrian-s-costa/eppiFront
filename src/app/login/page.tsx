@@ -315,7 +315,8 @@ function handleLogin() {
           /> */}
 
           <GoogleLogin
-            ux_mode="redirect"
+            //ux_mode="redirect"
+            login_uri="https://eppi.store/login"
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',

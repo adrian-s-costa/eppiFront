@@ -12,6 +12,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import Image from 'next/image';
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 import GoogleOneTap from '../GoogleLogin/page';
+import GoogleButton from '../GoogleLogin/button';
 
 export default function Login(){
 
@@ -324,9 +325,9 @@ function handleLogin() {
             }}
           />
 
-          <p onClick={()=>{login()}}>
-            Entrar com Google
-          </p>
+          <div className='w-full flex justify-center'>
+            <GoogleButton onClick={() => {window.location.pathname = "/login"; handleLogin()} }/>
+          </div>
 
         </form>
       ) : (

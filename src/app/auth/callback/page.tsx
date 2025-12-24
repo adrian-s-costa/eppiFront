@@ -16,7 +16,7 @@ export default function AuthCallback() {
         const data = JSON.parse(decodeURIComponent(dataEncoded));
 
         // Salva os dados
-        localStorage.setItem('user', data.name);
+        localStorage.setItem('user', "HUMPTY");
         localStorage.setItem('id', data.id);
         localStorage.setItem('email', data.email);
         localStorage.setItem('number', data.cellphone);
@@ -31,7 +31,7 @@ export default function AuthCallback() {
         // ✅ 2. No iOS PWA, o replace puro as vezes mantém o 'state' antigo.
         // Usar o router.push ou href com um pequeno timeout ajuda o sistema a processar o localStorage.
         setTimeout(() => {
-            window.location.href = '/tab'; 
+          window.location.href = '/tab'; 
         }, 100);
 
       } catch (e) {

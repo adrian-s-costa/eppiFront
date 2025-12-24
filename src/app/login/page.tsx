@@ -195,18 +195,6 @@ export default function Login(){
     router.push(`/code?email=${userData.email}`)
   };
 
-  
-  const login = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      const response = await fetch(`${config.API_URL}/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credential: tokenResponse.access_token, register: true }),
-      });
-      postUserGoogle(response);
-    },
-  });
-
   // Função chamada após o login bem-sucedido.
 async function handleCredentialResponse(response: { credential: any; }) {
   // O token JWT contém as informações de login.
@@ -263,6 +251,16 @@ function handleLogin() {
       }
   }
 
+  const login = useGoogleLogin({
+    onSuccess: tokenResponse => {
+      // Aqui você recebe o token e envia para o seu back-end
+      console.log(tokenResponse);
+      // Exemplo: fetch(`${config.API_URL}/auth/google`, { body: tokenResponse.access_token ... })
+    },
+    flow: 'implicit', // Isso evita o redirecionamento complexo de formulário
+    //ux_mode: 'popup', // No iOS, se o redirect falha, o popup com 'implicit' costuma ser mais estável
+  });
+
   
   return (
     <>{ loading || typeof window == "undefined" ? <Loader/> : null }<div className="w-full lg:flex lg:flex-col lg:justify-center lg:items-center h-screen bg-white p-5 ">
@@ -315,8 +313,9 @@ function handleLogin() {
           /> */}
 
           <GoogleLogin
-            //ux_mode="redirect"
-            login_uri="https://eppi.store/login"
+            ux_mode="redirect"
+            use_fedcm_for_prompt={true}
+            login_uri={window.location.origin}
             onSuccess={ async (credentialResponse) => {
               const response = await fetch(`${config.API_URL}/auth/google`, {
                 method: 'POST',
@@ -330,7 +329,7 @@ function handleLogin() {
             }}
           />
 
-          <p onClick={()=>{handleLogin()}}>
+          <p onClick={()=>{login()}}>
             Entrar com Google
           </p>
 

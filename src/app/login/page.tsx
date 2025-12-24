@@ -256,12 +256,6 @@ function handleLogin() {
           // Salve o token do usuário e redirecione para a Home
       }
   }
-
-  const login = useGoogleLogin({
-    flow: 'auth-code', 
-    ux_mode: 'redirect',
-  });
-
   
   return (
     <>{ loading || typeof window == "undefined" ? <Loader/> : null }<div className="w-full lg:flex lg:flex-col lg:justify-center lg:items-center h-screen bg-white p-5 ">

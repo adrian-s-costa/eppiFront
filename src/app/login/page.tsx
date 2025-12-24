@@ -252,13 +252,9 @@ function handleLogin() {
   }
 
   const login = useGoogleLogin({
-    onSuccess: tokenResponse => {
-      // Aqui você recebe o token e envia para o seu back-end
-      console.log(tokenResponse);
-      // Exemplo: fetch(`${config.API_URL}/auth/google`, { body: tokenResponse.access_token ... })
-    },
-    flow: 'implicit', // Isso evita o redirecionamento complexo de formulário
-    //ux_mode: 'popup', // No iOS, se o redirect falha, o popup com 'implicit' costuma ser mais estável
+    flow: 'auth-code', 
+    ux_mode: 'redirect',
+    redirect_uri: 'https://eppi.store', // Deve ser idêntica ao console do Google
   });
 
   

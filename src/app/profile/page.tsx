@@ -198,7 +198,7 @@ export default function Profile (){
           <motion.button
             whileTap={{ scale: 0.98 }}
             className="w-full px-4 py-4 flex items-center justify-between"
-            onClick={()=>{localStorage.clear(); router.push('/login?refresh=true')}}
+            onClick={()=>{localStorage.clear(); window.location.href = '/login';}}
           >
             <div className="flex items-center">
               <IoExit className="text-xl text-slate-500 mr-3"/>

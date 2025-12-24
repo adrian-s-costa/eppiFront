@@ -8,6 +8,7 @@ interface GoogleButtonProps {
 const GoogleButton: React.FC<GoogleButtonProps> = ({ onClick, disabled }) => {
   return (
     <button
+      type='button'
       onClick={onClick}
       disabled={disabled}
       className="group relative flex h-10 w-10 min-w-min max-w-[400px] items-center justify-center overflow-hidden rounded border border-[#747775] bg-white p-0 text-center font-['Roboto',arial,sans-serif] text-sm tracking-[0.25px] text-[#1f1f1f] transition-all duration-200 hover:shadow-[0_1px_2px_0_rgba(60,64,67,0.30),0_1px_3px_1px_rgba(60,64,67,0.15)] focus:outline-none disabled:cursor-default disabled:border-[#1f1f1f1f] disabled:bg-[#ffffff61]"

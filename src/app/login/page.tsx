@@ -219,8 +219,6 @@ function handleLogin() {
   // 1. Identifica se é iOS (adapte conforme sua lógica de detecção)
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  
-
   if (isIOS) {
     // --- FLUXO NATIVO (iOS) ---
     // ID do Cliente iOS (aquele que criamos no Google Cloud)
@@ -230,7 +228,7 @@ function handleLogin() {
     const scope = "email profile openid";
     
     // Monta a URL
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&prompt=select_account`;
     
     // Abre a URL. O iOS vai detectar o esquema no retorno e fechar o browser SOZINHO.
     window.location.href = url;

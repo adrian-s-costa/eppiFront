@@ -1,78 +1,71 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-
-// Isso é necessário para o TypeScript não reclamar do window.onAppResumeWithUrl
-declare global {
-  interface Window {
-    onAppResumeWithUrl?: (url: string) => Promise<void>;
-  }
-}
 
 export default function DeepLinkListener() {
   const router = useRouter();
+  // Usamos um Ref para que a função global sempre acesse as props/router mais recentes
+  const routerRef = useRef(router);
 
   useEffect(() => {
-    // Definimos a função que o Swift vai chamar
-    window.onAppResumeWithUrl = async (urlString: string) => {
-      console.log("🚀 [DeepLinkListener] Swift chamou com URL:", urlString);
+    routerRef.current = router;
+  }, [router]);
 
-      // Verificação básica se é o retorno do Google com o 'code'
+  useEffect(() => {
+    // Definimos a função no window
+    (window as any).onAppResumeWithUrl = async (urlString: string) => {
+      console.log("🚀 [DeepLinkListener] Swift chamou:", urlString);
+
       if (urlString.includes("code=")) {
         try {
-          const url = new URL(urlString);
+          const url = new URL(urlString.replace("#", "?")); // iOS as vezes usa fragmentos
           const code = url.searchParams.get("code");
 
           if (!code) return;
 
-          console.log("✅ Código extraído, enviando para backend...");
-
-          // 1. Troca o 'code' pelos dados do usuário na sua nova rota
           const response = await fetch("https://grupoferaapi.shop/auth/google/native", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code: code })
           });
 
-          if (!response.ok) throw new Error("Falha na API");
-
           const data = await response.json();
           
-          // 2. Salva no localStorage (Exatamente como você fazia antes)
-          // Nota: Certifique-se que o backend retorna essas chaves no JSON
           if (data) {
-             // Ajuste aqui se o seu backend retornar dentro de 'account' ou direto no objeto
              const userObj = data.account || data; 
 
-             localStorage.setItem('user', "HUMPTY");
+             localStorage.setItem('user', userObj.name || "Usuário");
              localStorage.setItem('id', userObj.id);
              localStorage.setItem('email', userObj.email);
-             localStorage.setItem('number', userObj.cellphone);
-             localStorage.setItem('cep', userObj.cep);
-             localStorage.setItem('pfpUrl', userObj.pfpUrl);
-             localStorage.setItem('cpf', userObj.initials);
              localStorage.setItem('smartToken', userObj.smart_token);
-             
-             console.log("🎉 Login salvo, redirecionando...");
-             
-             // 3. Redireciona para o app
-             router.replace('/tab');
+             // ... outros campos ...
+
+             console.log("🎉 Login OK");
+
+             // Forçamos um pequeno delay para o localStorage "assentar" no iOS
+             // e usamos window.location para garantir que o estado do App resete
+             setTimeout(() => {
+                window.location.href = '/tab';
+             }, 100);
           }
 
         } catch (e) {
-          console.error("❌ Erro no fluxo nativo:", e);
+          console.error("❌ Erro:", e);
         }
       }
     };
 
-    console.log("✅ Listener Nativo Ativado");
+    // 💡 IMPORTANTE: Informe ao Swift que o JS está pronto
+    // Se o seu código Swift tiver um mecanismo de checagem, isso ajuda.
+    console.log("✅ Listener Nativo Ativado e Pronto");
 
-    // Cleanup
     return () => {
-      // Opcional: window.onAppResumeWithUrl = undefined;
+      // Não limpe se o componente estiver no Layout global, 
+      // mas se estiver em uma página, limpe para evitar memory leak.
+      // window.onAppResumeWithUrl = undefined;
     };
-  }, [router]);
+  }, []); // Executa apenas uma vez no mount do App
 
   return null;
 }

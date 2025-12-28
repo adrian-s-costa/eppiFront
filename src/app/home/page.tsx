@@ -4,9 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Badge } from "flowbite-react";
+import { Badge, Carousel } from "flowbite-react";
 import Loader from "../loader/page";
 import { getHomeCategories, getCampaigns, getHomeVideo } from "../../../utils/api/service";
+import { motion } from "framer-motion";
 
 export default function Home({setTabIndex, muted}: any){
   const [ homeCategories, setHomeCategories ] = useState<any>()
@@ -95,18 +96,33 @@ export default function Home({setTabIndex, muted}: any){
         {
           homeVideo ? 
           
-          <video className="rounded-lg" width={viewportWidth} autoPlay={true} muted={true} loop={true} controls={true} playsInline>
-            <source src={ homeVideo && homeVideo[0] && homeVideo[0].url } type="video/mp4"/>  
-          </video>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="my-5"
+          >
+            <div className="relative h-[15rem] rounded-2xl overflow-hidden shadow-lg">
+              <Carousel draggable={true}>
+                {homeVideo.map((item: any, index: any)=>{
+                  return <img src={item.url} alt="" key={index} className="w-full h-full object-cover" />
+                })}
+              </Carousel>
+              {/* Overlay com gradiente */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            </div>
+          </motion.div>
+
 
           :
 
           null
           
         }
-        <div className="absolute bg-gray-400/50 p-2 rounded-md bottom-4 left-4 z-10 cursor-pointer" onClick={()=>{localStorage.setItem('page', "1"); setTabIndex(1)}}>
+        {/* <div className="absolute bg-gray-400/50 p-2 rounded-md bottom-4 left-4 z-10 cursor-pointer" onClick={()=>{localStorage.setItem('page', "1"); setTabIndex(1)}}>
           <span className="opacity-100 text-white">Mais videos</span>
-        </div>
+        </div> */}
       </div>
       <div className="flex justify-between mb-3">
         <h1 className="xs:text-xl xxs:text-base font-bold">Categorias</h1>

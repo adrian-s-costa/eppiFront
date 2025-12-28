@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 // Isso é necessário para o TypeScript não reclamar do window.onAppResumeWithUrl
 declare global {
@@ -28,17 +29,21 @@ export default function DeepLinkListener() {
           if (!code) return;
 
           if (state) {
-            const response = await fetch("https://grupoferaapi.shop/auth/google/register-native", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ code: code })
-            });
-
-            if (!response.ok) throw new Error("Falha na API");
-            const data = await response.json();
-
-            if (data) {
-              router.push(`/code?email=${data.email}`)
+            try{
+              const response = await fetch("https://grupoferaapi.shop/auth/google/register-native", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code: code })
+              });
+              
+              if (!response.ok) throw new Error("Falha na API");
+              const data = await response.json();
+              
+              if (data) {
+                router.push(`/code?email=${data.email}`)
+              }
+            }catch{
+              toast("Erro ao fazer seu registro")
             }
           }
           

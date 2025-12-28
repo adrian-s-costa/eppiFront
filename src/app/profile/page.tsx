@@ -244,14 +244,6 @@ export default function Profile (){
               <span className="text-black">Localização</span>
             </div>
             <IoIosArrowForward className="text-xl text-slate-400"/>
-            <iframe
-              width="600"
-              height="450"
-              loading="lazy"
-              allowfullscreen
-              referrerpolicy="no-referrer-when-downgrade"
-              src={`https://www.google.com/maps/embed/v1/place?q=${coor?.lat},${coor?.long}&key=AIzaSyB0dQQVgCQwjRzOZb4nCpBtPA1brvFLPHI`}
-            ></iframe>
           </motion.button>
 
           <hr className="mx-4"/>

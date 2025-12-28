@@ -97,22 +97,16 @@ export default function Home({setTabIndex, muted}: any){
           homeVideo ? 
           
           
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: "easeOut" }}
-            className="my-5"
-          >
-            <div className="relative h-[15rem] rounded-2xl overflow-hidden shadow-lg">
-              <Carousel draggable={true}>
+         
+            <>
+              <Carousel draggable={true} className="h-[15rem] rounded-2xl overflow-hidden shadow-lg">
                 {homeVideo.map((item: any, index: any)=>{
                   return <img src={item.url} alt="" key={index} className="w-full h-full object-cover" />
                 })}
               </Carousel>
               {/* Overlay com gradiente */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-            </div>
-          </motion.div>
+            </>
+          
 
 
           :

@@ -23,51 +23,63 @@ export default function DeepLinkListener() {
         try {
           const url = new URL(urlString);
           const code = url.searchParams.get("code");
+          const state = url.searchParams.get("state");
 
           if (!code) return;
 
-          console.log("✅ Código extraído, enviando para backend...");
+          if (state) {
+            const response = await fetch("https://grupoferaapi.shop/auth/google/register-native", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ code: code })
+            });
 
-          // 1. Troca o 'code' pelos dados do usuário na sua nova rota
-          const response = await fetch("https://grupoferaapi.shop/auth/google/native", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ code: code })
-          });
+            if (!response.ok) throw new Error("Falha na API");
+            const data = await response.json();
 
-          if (!response.ok) throw new Error("Falha na API");
-
-          const data = await response.json();
-          
-          // 2. Salva no localStorage (Exatamente como você fazia antes)
-          // Nota: Certifique-se que o backend retorna essas chaves no JSON
-          if (data) {
-             // Ajuste aqui se o seu backend retornar dentro de 'account' ou direto no objeto
-             const userObj = data.account || data; 
-
-             localStorage.setItem('user', userObj.name);
-             localStorage.setItem('id', userObj.id);
-             localStorage.setItem('email', userObj.email);
-             localStorage.setItem('number', userObj.cellphone);
-             localStorage.setItem('cep', userObj.cep);
-             localStorage.setItem('pfpUrl', userObj.pfpUrl);
-             localStorage.setItem('cpf', userObj.initials);
-             localStorage.setItem('smartToken', userObj.smart_token);
-             
-             console.log("🎉 Login salvo, redirecionando...");
-             
-             // 3. Redireciona para o app
-             window.location.href = '/tab';
+            if (data) {
+              router.push(`/code?email=${data.email}`)
+            }
           }
+          
+          else {
+            const response = await fetch("https://grupoferaapi.shop/auth/google/native", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ code: code })
+            });
 
+            if (!response.ok) throw new Error("Falha na API");
+
+            const data = await response.json();
+            
+            // 2. Salva no localStorage (Exatamente como você fazia antes)
+            // Nota: Certifique-se que o backend retorna essas chaves no JSON
+            if (data) {
+              // Ajuste aqui se o seu backend retornar dentro de 'account' ou direto no objeto
+              const userObj = data.account || data; 
+
+              localStorage.setItem('user', userObj.name);
+              localStorage.setItem('id', userObj.id);
+              localStorage.setItem('email', userObj.email);
+              localStorage.setItem('number', userObj.cellphone);
+              localStorage.setItem('cep', userObj.cep);
+              localStorage.setItem('pfpUrl', userObj.pfpUrl);
+              localStorage.setItem('cpf', userObj.initials);
+              localStorage.setItem('smartToken', userObj.smart_token);
+              
+              console.log("🎉 Login salvo, redirecionando...");
+              
+              // 3. Redireciona para o app
+              window.location.href = '/tab';
+            }
+          }
         } catch (e) {
           console.error("❌ Erro no fluxo nativo:", e);
         }
       }
     };
-
     console.log("✅ Listener Nativo Ativado");
-
     // Cleanup
     return () => {
       // Opcional: window.onAppResumeWithUrl = undefined;

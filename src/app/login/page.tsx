@@ -239,24 +239,33 @@ function handleLogin() {
   }
 }
 
-// Exemplo genérico de captura do código
-// Essa função deve ser chamada quando o app reabre com a URL
-  async function onAppResumeWithUrl(url: any) {
-      if (url.includes("code=")) {
-          const code = new URL(url).searchParams.get("code");
-          
-          // AGORA chamamos o backend para trocar esse código pelo usuário
-          const response = await fetch("https://grupoferaapi.shop/auth/google/native", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ code: code })
-          });
-          
-          const data = await response.json();
-          // Salve o token do usuário e redirecione para a Home
-      }
+function handleRegister() {
+  // 1. Identifica se é iOS (adapte conforme sua lógica de detecção)
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  const operacao = "sign_up";
+  const state = encodeURIComponent(operacao);
+
+  if (isIOS) {
+    // --- FLUXO NATIVO (iOS) ---
+    // ID do Cliente iOS (aquele que criamos no Google Cloud)
+    const clientId = "298281998851-8h5l7o8iin0ffndfl6th3afvtlekgics.apps.googleusercontent.com";
+    // O Esquema Reverso exato
+    const redirectUri = "com.googleusercontent.apps.298281998851-8h5l7o8iin0ffndfl6th3afvtlekgics:/oauth2callback";
+    const scope = "email profile openid";
+    
+    // Monta a URL
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&prompt=select_account&state=${state}`;
+    
+    // Abre a URL. O iOS vai detectar o esquema no retorno e fechar o browser SOZINHO.
+    window.location.href = url;
+  } else {
+    // --- FLUXO WEB/ANDROID (Legado) ---
+    // Mantém o fluxo antigo que funciona pra web
+    window.location.href = "https://grupoferaapi.shop/auth/google/alt";
   }
-  
+}
+
   return (
     <>{ loading || typeof window == "undefined" ? <Loader/> : null }<div className="w-full lg:flex lg:flex-col lg:justify-center lg:items-center h-screen bg-white p-5 ">
       <div>
@@ -343,7 +352,13 @@ function handleLogin() {
             <h2 className='text-[14px] mx-3 min-w-[140px] flex justify-center'>Ou registre-se com</h2>
             <div className='border-t-[1px] border-[#D8DADC] w-full'></div>
           </div>
-           <GoogleLogin
+
+          { isIos ? 
+            <div className='w-full flex justify-center'>
+              <GoogleButton onClick={() => { handleRegister() } }/>
+            </div>
+          :
+            <GoogleLogin
             type='standard'
             text='signup_with'
             useOneTap={true}
@@ -359,8 +374,9 @@ function handleLogin() {
               console.log('Login Failed');
             }}
           />
+        }
         </form>
-          </>
+        </>
       )}
 
       <ToastContainer

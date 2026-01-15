@@ -75,7 +75,7 @@ export default function Home({setTabIndex, muted}: any){
 
   return(
     <>
-    <div className="w-full min-h-screen h-auto bg-white p-5 text-black dark:text-black xxs:mb-0 xs:mb-[4.5rem] lg:flex lg:justify-center lg:items-center">
+    <div className="w-full min-h-screen h-auto bg-white p-5 text-black dark:text-black xxs:mb-0 xs:mb-[4.5rem] lg:flex lg:flex-col lg:justify-center lg:items-center">
     <div className="lg:w-[60vw]"> 
       <div className="flex justify-between">
         <div className="flex flex-col justify-center">
@@ -95,20 +95,15 @@ export default function Home({setTabIndex, muted}: any){
       <div className="my-5 h-auto relative">
         {
           homeVideo ? 
-          
-          
-         
             <>
               <Carousel draggable={true} className="h-[15rem] rounded-2xl overflow-hidden shadow-lg">
                 {homeVideo.map((item: any, index: any)=>{
-                  return <img src={item.url} alt="" key={index} className="w-full h-full object-cover" />
+                  return <img src={item.url} alt="" key={index} className="w-full h-full" />
                 })}
               </Carousel>
               {/* Overlay com gradiente */}
             </>
           
-
-
           :
 
           null
@@ -142,7 +137,7 @@ export default function Home({setTabIndex, muted}: any){
       </div>
       
       <div className="xs:mt-4 xxs:mt-2">
-        <h1 className="xxs:text-sm xs:text-lg font-bold mb-4">Compre seu VE</h1>
+        <h1 className="xxs:text-sm xs:text-lg font-bold mb-4">Descobertas pertinho de você!</h1>
         <div className="flex overflow-x-scroll gap-3">
           {campaigns && campaigns
           // .filter((carro: any) => carro.uf.includes(uf))
@@ -166,9 +161,21 @@ export default function Home({setTabIndex, muted}: any){
           })}
         </div>
       </div>
-    
+      <div className="xs:mt-4 xxs:mt-2">
+        <h1 className="xxs:text-sm xs:text-lg font-bold mb-4">Collabs da hora!</h1>
+        <Image
+          quality={100}
+          priority={true}
+          className="rounded-md mt-5"
+          src={"https://res.cloudinary.com/dmo7nzytn/image/upload/v1681666383/diversos/terraces-7878191_yxraeh.jpg"}
+          alt={""}
+          width={1920}
+          height={1}
+        ></Image>
+      </div>
     </div>
-    </div>
-    </>
-  )
+
+  </div>
+</>
+)
 }

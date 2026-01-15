@@ -354,7 +354,7 @@ export default function SpecificOffer(){
             {/* Conteúdo da visualização */}
             {currentView === 'list' ? (
               <div className="space-y-4">
-                {dealershipsMock.slice(0, 3).map((dealership, index) => (
+                {dealershipsMock.slice(0, 3).map((dealership) => (
                   <div key={dealership.id} className="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 hover:shadow-md transition-shadow">
                     <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
                       <Image
@@ -394,8 +394,73 @@ export default function SpecificOffer(){
                 ))}
               </div>
             ) : (
-              <div className="h-[500px] bg-gray-100 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Visualização do mapa será exibida aqui</p>
+              <div className="relative h-[500px] rounded-lg overflow-hidden">
+                {!isMapLoaded ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                    <p className="text-gray-500 text-sm">Carregando mapa...</p>
+                  </div>
+                ) : (
+                  <GoogleMap
+                    mapContainerStyle={{ width: "100%", height: "100%" }}
+                    center={
+                      selectedDealershipIndex !== null
+                        ? dealershipsMock[selectedDealershipIndex].coordinates
+                        : dealershipsMock[0].coordinates
+                    }
+                    zoom={12}
+                    options={{
+                      disableDefaultUI: true,
+                    }}
+                  >
+                    {dealershipsMock.map((dealership, index) => (
+                      <MarkerF
+                        key={dealership.id}
+                        position={dealership.coordinates}
+                        onClick={() => setSelectedDealershipIndex(index)}
+                      />
+                    ))}
+                  </GoogleMap>
+                )}
+
+                <AnimatePresence>
+                  {selectedDealershipIndex !== null && (
+                    <motion.div
+                      className="absolute left-0 right-0 bottom-4 px-4"
+                      initial={{ y: 80, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 80, opacity: 0 }}
+                    >
+                      <div
+                        className="bg-white rounded-2xl shadow-lg p-4 flex space-x-4 cursor-pointer"
+                        onClick={() => {
+                          const d = dealershipsMock[selectedDealershipIndex];
+                          router.push(`/offer?id=${d.offerId}`);
+                        }}
+                      >
+                        <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
+                          <Image
+                            src={dealershipsMock[selectedDealershipIndex].image}
+                            alt={dealershipsMock[selectedDealershipIndex].name}
+                            width={80}
+                            height={80}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold">
+                            {dealershipsMock[selectedDealershipIndex].name}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {dealershipsMock[selectedDealershipIndex].address}
+                          </p>
+                          <span className="text-xs text-gray-500">
+                            {dealershipsMock[selectedDealershipIndex].distance}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
           </div>

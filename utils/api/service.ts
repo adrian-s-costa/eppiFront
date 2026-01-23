@@ -77,8 +77,52 @@ async function getCampaigns() {
   return res.json()
 }
 
+async function getDealerships() {
+  const res = await fetch(config.API_URL + `/offers`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "ngrok-skip-browser-warning": "69420"
+    },
+  })
+  return res.json()
+}
+
+async function getDealershipById(id: any) {
+  const res = await fetch(config.API_URL + `/offers/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "ngrok-skip-browser-warning": "69420"
+    },
+  })
+  return res.json()
+}
+
+async function getCollab() {
+  const res = await fetch(config.API_URL + `/offers/collabs`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "ngrok-skip-browser-warning": "69420"
+    },
+  })
+  return res.json()
+}
+
 async function getOneCampaign(id: any) {
   const res = await fetch(config.API_URL + `/texts/home/campaigns/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "ngrok-skip-browser-warning": "69420"
+    },
+  })
+  return res.json()
+}
+
+async function getCampaignByDealershipId(id: any) {
+  const res = await fetch(config.API_URL + `/texts/home/campaigns/dealership/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -248,5 +292,9 @@ export {
   handleSub,
   getUser,
   getDocument,
-  getHomeVideo
+  getHomeVideo,
+  getDealerships,
+  getDealershipById,
+  getCollab,
+  getCampaignByDealershipId
 }

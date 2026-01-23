@@ -6,13 +6,14 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Badge, Carousel } from "flowbite-react";
 import Loader from "../loader/page";
-import { getHomeCategories, getCampaigns, getHomeVideo } from "../../../utils/api/service";
+import { getHomeCategories, getCampaigns, getHomeVideo, getDealerships, getCollab } from "../../../utils/api/service";
 import { motion } from "framer-motion";
 
 export default function Home({setTabIndex, muted}: any){
   const [ homeCategories, setHomeCategories ] = useState<any>()
   const [ homeVideo, setHomeVideo ] = useState<any>()
   const [ campaigns, setCampaigns ] = useState<any>()
+  const [ collab, setCollab ] = useState<any>()
   const [ viewportWidth, setViewportWidth ] = useState<number>(0);
   const router = useRouter();
   const searchParams = useSearchParams()
@@ -40,13 +41,20 @@ export default function Home({setTabIndex, muted}: any){
     }
 
     try {
-      getCampaigns().then((res) => {
+      getDealerships().then((res)=>{
         setCampaigns(res);
-      });
+      })
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-    
+
+    try {
+      getCollab().then((res)=>{
+        setCollab(res);
+      })
+    } catch (error) {
+      console.error(error)
+    }
 
     const handleResize = () => {
       setViewportWidth(window.innerWidth);
@@ -150,12 +158,10 @@ export default function Home({setTabIndex, muted}: any){
               key={index}
               className="relative"
             >
-              <Badge color="warning" size="sm" className={ carro.title.includes('Dolphin') ? `block absolute right-2 top-2` : `hidden`}>Dolphin Day!</Badge>
               <Image quality={100} priority={true} className="xxs:w-[202px] xxs:h-[117px] xs:w-[232px] xs:h-[147px] rounded-lg mb-2 xs:min-w-[232px] xs:min-h-[147px] xxs:min-w-[202px] xxs:min-h-[117px] bg-cover" src={carro.imgSrc!} alt={""} width={230} height={125}/>
               <div className="flex flex-col gap-1 xxs:w-[202px] xs:w-[232px]">
-                <span className="xs:text-base xxs:text-sm font-semibold">{carro.title}</span>
-                <span className="xs:text-sm xxs:text-xs">{carro.desc}</span>
-                <span className="text-[#838383] xs:text-base xxs:text-sm dark:text-black">{carro.price}</span>
+                <span className="xs:text-base xxs:text-sm font-semibold">{carro.name}</span>
+                <span className="text-[#838383] xs:text-base xxs:text-sm dark:text-black">{carro.address}</span>
               </div>
             </Link>
           })}
@@ -163,15 +169,17 @@ export default function Home({setTabIndex, muted}: any){
       </div>
       <div className="xs:mt-4 xxs:mt-2">
         <h1 className="xxs:text-sm xs:text-lg font-bold mb-4">Collabs da hora!</h1>
-        <Image
-          quality={100}
-          priority={true}
-          className="rounded-md mt-5"
-          src={"https://res.cloudinary.com/dmo7nzytn/image/upload/v1681666383/diversos/terraces-7878191_yxraeh.jpg"}
-          alt={""}
-          width={1920}
-          height={1}
-        ></Image>
+        <a href={collab?.link || "#"}>
+          <Image
+            quality={100}
+            priority={true}
+            className="rounded-md mt-5"
+            src={collab?.imgSrc || "https://res.cloudinary.com/dmo7nzytn/image/upload/v1681666383/diversos/terraces-7878191_yxraeh.jpg"}
+            alt={""}
+            width={1920}
+            height={1}  
+          ></Image>
+        </a>
       </div>
     </div>
 

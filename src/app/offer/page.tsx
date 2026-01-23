@@ -5,10 +5,10 @@ import { FaWhatsapp } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
  
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Key, SetStateAction, AwaitedReactNode, JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from "react";
 import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import ReadMore from "../_components/readMore/readMore";
-import { getCampaigns, getOneCampaign } from "../../../utils/api/service";
+import { getCampaignByDealershipId, getCampaigns, getDealershipById, getDealerships, getOneCampaign } from "../../../utils/api/service";
 import ModalImage from "react-modal-image";
 import { AnimatePresence, motion } from "framer-motion";
 import { BoxedAccordion, BoxedAccordionItem, IconAcademicLight, IconInformationRegular } from '@telefonica/mistica';
@@ -28,6 +28,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import Link from "next/link";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 
 export default function SpecificOffer(){
@@ -38,49 +39,34 @@ export default function SpecificOffer(){
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const [contact, setContact] = useState<Boolean>(false);
-  const [carOffer, setCarOffer] = useState<any>();
+  //const [carOffer, setCarOffer] = useState<any>();
   const [preview, setPreview] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState<boolean>(false);
   const [ campaigns, setCampaigns ] = useState<any>()
   const [isDealershipModalOpen, setIsDealershipModalOpen] = useState(false);
   const [modalView, setModalView] = useState<'list' | 'map'>('list');
   const [selectedDealershipIndex, setSelectedDealershipIndex] = useState<number | null>(null);
+  const [dealerships, setDealerships] = useState<any>(null);
+  const [dealership, setDealership] = useState<any>(null);
+  
 
-  const dealershipsMock = [
-    {
-      id: 1,
-      name: "BYD Itavema Recreio",
-      address: "Av. das Américas, 1241 - Barra da Tijuca",
-      distance: "1.2 km",
-      offerId: "6670a77c5b48f6bc84d712bd",
-      image: "/placeholder-dealership.jpg",
-      rating: 4.7,
-      reviews: 128,
-      coordinates: { lat: -22.999, lng: -43.365 },
-    },
-    {
-      id: 2,
-      name: "BYD Itavema Barra",
-      address: "Av. das Américas, 5000 - Barra da Tijuca",
-      distance: "3.4 km",
-      offerId: "6670a77c5b48f6bc84d712bd",
-      image: "/placeholder-dealership.jpg",
-      rating: 4.5,
-      reviews: 210,
-      coordinates: { lat: -23.0, lng: -43.4 },
-    },
-    {
-      id: 3,
-      name: "BYD Itavema São Conrado",
-      address: "Estr. do Joá, 100 - São Conrado",
-      distance: "6.1 km",
-      offerId: "6670a77c5b48f6bc84d712bd",
-      image: "/placeholder-dealership.jpg",
-      rating: 4.3,
-      reviews: 98,
-      coordinates: { lat: -22.983, lng: -43.24 },
-    },
-  ];
+  useEffect(() => {
+    try {
+      getDealerships().then((res)=>{
+        setDealerships(res);
+      })
+    } catch (error) {
+      console.error(error)
+    }
+
+    try {
+      getDealershipById(id).then((res)=>{
+        setDealership(res);
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }, [])
 
   const openDealershipModal = (view: 'list' | 'map') => {
     setModalView(view);
@@ -128,14 +114,6 @@ export default function SpecificOffer(){
 
   useEffect(() => {
     try {
-      getOneCampaign(id).then((res)=>{
-        setCarOffer(res);
-      })
-    } catch (error) {
-      console.error(error)
-    }
-
-    try {
       getCampaigns().then((res) => {
         setCampaigns(res);
       });
@@ -143,6 +121,16 @@ export default function SpecificOffer(){
       console.error(error);
     }
   }, [])
+
+  useEffect(()=>{
+    try {
+      getCampaignByDealershipId(id).then((res) => {
+        setCampaigns(res);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, [dealership])
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -179,8 +167,8 @@ export default function SpecificOffer(){
           fantasia: localStorage.getItem('user'),
           email_cliente: localStorage.getItem('email'), 
           celular_cliente: localStorage.getItem('number'), 
-          descricao: `${localStorage.getItem("user")} quer iniciar uma negociação do produto: ${carOffer.title}`,
-          valor: carOffer.price,
+          descricao: `${localStorage.getItem("user")} quer iniciar uma negociação do produto: ${dealership.name}`,
+          valor: dealership.name,
         })
       });
       if (!response.ok) {
@@ -197,13 +185,18 @@ export default function SpecificOffer(){
     }
   }
 
+  function spaceToPlus(text: string): string {
+    return text.replace(/ /g, "+");
+  }
+
+
   return (
       <div className="w-full min-h-screen h-full bg-white p-5 pb-20 lg:flex lg:justify-center lg:items-center lg:flex-col">
         <div className="lg:w-[60vw]">
           <div className="w-full flex justify-between items-center  relative">
             <div className="flex h-full items-center">
               <MdArrowBackIos className='text-2xl top-[17px] left-0 cursor-pointer text-black' onClick={() => {router.push("/tab")} } />
-              <h1 className="xxs:text-sm xs:text-lg font-bold">{carOffer && carOffer.title}</h1>
+              <h1 className="xxs:text-sm xs:text-lg font-bold">{dealership && dealership.name}</h1>
             </div>
             
             <Image 
@@ -220,14 +213,14 @@ export default function SpecificOffer(){
               quality={100}
               priority={true}
               className="object-cover w-full h-full"
-              src={carOffer?.imgSrc || ''}
-              alt={carOffer?.title || 'Carro em oferta'}
+              src={dealership?.image || ''}
+              alt={dealership?.name || 'Carro em oferta'}
               fill
             />
           </div>
 
           {/* Dealership Info Card */}
-          {carOffer && (
+          {dealership && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -235,7 +228,7 @@ export default function SpecificOffer(){
               className="mt-6 bg-white rounded-xl shadow-md overflow-hidden"
             >
               <div className="p-5">
-                <h2 className="text-xl font-bold text-gray-900">BYD Itavema Recreio</h2>
+                <h2 className="text-xl font-bold text-gray-900">{dealership.name}</h2>
                 
                 {/* Rating */}
                 <div className="flex items-center mt-2">
@@ -246,7 +239,7 @@ export default function SpecificOffer(){
                       </svg>
                     ))}
                   </div>
-                  <span className="ml-2 text-gray-600">4.7 (128 avaliações)</span>
+                  <span className="ml-2 text-gray-600">{`${dealership.rating} (${dealership.reviews} avaliações)`}</span>
                 </div>
 
                 {/* Buttons */}
@@ -262,7 +255,7 @@ export default function SpecificOffer(){
                     className="flex items-center justify-center p-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                     onClick={() => {
                       // Open map with dealership location
-                      window.open('https://www.google.com/maps/search/?api=1&query=BYD+Itavema+Recreio', '_blank');
+                      window.open(`https://www.google.com/maps/search/?api=1&query=${spaceToPlus(dealership.name)}`, '_blank');
                     }}
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -354,7 +347,7 @@ export default function SpecificOffer(){
             {/* Conteúdo da visualização */}
             {currentView === 'list' ? (
               <div className="space-y-4">
-                {dealershipsMock.slice(0, 3).map((dealership) => (
+                {dealerships && dealerships.slice(0, 3).map((dealership: any) => (
                   <div key={dealership.id} className="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 hover:shadow-md transition-shadow">
                     <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
                       <Image
@@ -404,15 +397,15 @@ export default function SpecificOffer(){
                     mapContainerStyle={{ width: "100%", height: "100%" }}
                     center={
                       selectedDealershipIndex !== null
-                        ? dealershipsMock[selectedDealershipIndex].coordinates
-                        : dealershipsMock[0].coordinates
+                        ? dealerships[selectedDealershipIndex].coordinates
+                        : dealerships[0].coordinates
                     }
                     zoom={12}
                     options={{
                       disableDefaultUI: true,
                     }}
                   >
-                    {dealershipsMock.map((dealership, index) => (
+                    {dealerships.map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
                       <MarkerF
                         key={dealership.id}
                         position={dealership.coordinates}
@@ -433,14 +426,14 @@ export default function SpecificOffer(){
                       <div
                         className="bg-white rounded-2xl shadow-lg p-4 flex space-x-4 cursor-pointer"
                         onClick={() => {
-                          const d = dealershipsMock[selectedDealershipIndex];
+                          const d = dealerships[selectedDealershipIndex];
                           router.push(`/offer?id=${d.offerId}`);
                         }}
                       >
                         <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
                           <Image
-                            src={dealershipsMock[selectedDealershipIndex].image}
-                            alt={dealershipsMock[selectedDealershipIndex].name}
+                            src={dealerships[selectedDealershipIndex].image}
+                            alt={dealerships[selectedDealershipIndex].name}
                             width={80}
                             height={80}
                             className="w-full h-full object-cover"
@@ -448,13 +441,13 @@ export default function SpecificOffer(){
                         </div>
                         <div className="flex-1">
                           <h3 className="font-semibold">
-                            {dealershipsMock[selectedDealershipIndex].name}
+                            {dealerships[selectedDealershipIndex].name}
                           </h3>
                           <p className="text-sm text-gray-600">
-                            {dealershipsMock[selectedDealershipIndex].address}
+                            {dealerships[selectedDealershipIndex].address}
                           </p>
                           <span className="text-xs text-gray-500">
-                            {dealershipsMock[selectedDealershipIndex].distance}
+                            {dealerships[selectedDealershipIndex].distance}
                           </span>
                         </div>
                       </div>
@@ -567,7 +560,7 @@ export default function SpecificOffer(){
                       onClick={() => setIsDealershipModalOpen(false)}
                     />
                     <h2 className="ml-2 text-base font-bold">
-                      {carOffer?.title || 'BYD Itavema'}
+                      {dealership?.name || 'BYD Itavema'}
                     </h2>
                   </div>
                   <Image 
@@ -598,7 +591,7 @@ export default function SpecificOffer(){
                 <div className="mt-4 h-[calc(100vh-150px)]">
                   {modalView === 'list' ? (
                     <div className="h-full overflow-y-auto px-5 pb-6 space-y-4">
-                      {dealershipsMock.map((dealership, index) => (
+                      {dealerships.map((dealership: { id: Key | null | undefined; offerId: any; image: string | StaticImport; name: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<AwaitedReactNode> | null | undefined; address: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; distance: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }, index: any) => (
                         <div
                           key={dealership.id}
                           className="bg-white rounded-xl shadow-sm p-4 flex items-center space-x-4"
@@ -609,7 +602,7 @@ export default function SpecificOffer(){
                           <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
                             <Image
                               src={dealership.image}
-                              alt={dealership.name}
+                              alt={dealership.name as string}
                               width={80}
                               height={80}
                               className="w-full h-full object-cover"
@@ -634,15 +627,15 @@ export default function SpecificOffer(){
                           mapContainerStyle={{ width: "100%", height: "100%" }}
                           center={
                             selectedDealershipIndex !== null
-                              ? dealershipsMock[selectedDealershipIndex].coordinates
-                              : dealershipsMock[0].coordinates
+                              ? dealerships[selectedDealershipIndex].coordinates
+                              : dealerships[0].coordinates
                           }
                           zoom={12}
                           options={{
                             disableDefaultUI: true,
                           }}
                         >
-                          {dealershipsMock.map((dealership, index) => (
+                          {dealerships.map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
                             <MarkerF
                               key={dealership.id}
                               position={dealership.coordinates}
@@ -663,14 +656,14 @@ export default function SpecificOffer(){
                             <div
                               className="bg-white rounded-2xl shadow-lg p-4 flex space-x-4 cursor-pointer"
                               onClick={() => {
-                                const d = dealershipsMock[selectedDealershipIndex];
+                                const d = dealerships[selectedDealershipIndex];
                                 router.push(`/offer?id=${d.offerId}`);
                               }}
                             >
                               <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
                                 <Image
-                                  src={dealershipsMock[selectedDealershipIndex].image}
-                                  alt={dealershipsMock[selectedDealershipIndex].name}
+                                  src={dealerships[selectedDealershipIndex].image}
+                                  alt={dealerships[selectedDealershipIndex].name}
                                   width={80}
                                   height={80}
                                   className="w-full h-full object-cover"
@@ -678,13 +671,13 @@ export default function SpecificOffer(){
                               </div>
                               <div className="flex-1">
                                 <h3 className="font-semibold">
-                                  {dealershipsMock[selectedDealershipIndex].name}
+                                  {dealerships[selectedDealershipIndex].name}
                                 </h3>
                                 <p className="text-sm text-gray-600">
-                                  {dealershipsMock[selectedDealershipIndex].address}
+                                  {dealerships[selectedDealershipIndex].address}
                                 </p>
                                 <span className="text-xs text-gray-500">
-                                  {dealershipsMock[selectedDealershipIndex].distance}
+                                  {dealerships[selectedDealershipIndex].distance}
                                 </span>
                               </div>
                             </div>

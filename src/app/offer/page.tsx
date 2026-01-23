@@ -277,7 +277,7 @@ export default function SpecificOffer(){
             </motion.div>
           )}
           <div className="mt-12">
-            <h1 className="text-lg font-bold mb-4">O que há de novo</h1>
+            <h1 className={`text-lg font-bold mb-4 ${campaigns ? "block" : "hidden"}`}>O que há de novo</h1>
             <div className="flex overflow-x-scroll gap-3">
               {campaigns && campaigns
               // .filter((carro: any) => carro.uf.includes(uf))

@@ -112,15 +112,15 @@ export default function SpecificOffer(){
     };
   }, []);
 
-  useEffect(() => {
-    try {
-      getCampaigns().then((res) => {
-        setCampaigns(res);
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }, [])
+  // useEffect(() => {
+  //   try {
+  //     getCampaigns().then((res) => {
+  //       setCampaigns(res);
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [])
 
   useEffect(()=>{
     try {

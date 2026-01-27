@@ -165,7 +165,6 @@ export default function Profile (){
   const userMail = typeof window !== "undefined" ? window.localStorage.getItem("email") : false;
   const cep = typeof window !== "undefined" ? window.localStorage.getItem("cep") : false;
   const pfpUrl = typeof window !== "undefined" ? window.localStorage.getItem("pfpUrl") : false;
-  const id = typeof window !== "undefined" ? window.localStorage.getItem("id") : false;
 
   useEffect(()=>{
 
@@ -232,7 +231,7 @@ export default function Profile (){
                     // Use latitude e longitude
 
                     console.log(coor?.lat, coor?.long)
-                    
+  
                   },
                   
                   (error) => {

@@ -13,6 +13,8 @@ import { PushNotifications } from '@capacitor/push-notifications';
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
+import { Corben } from "next/font/google";
+import { sentNotificationByLocation } from "../../../utils/api/service";
 
 export default function Profile (){
 
@@ -20,11 +22,17 @@ export default function Profile (){
   const [coor, setCoord] = useState<{lat: string, long: string} | null>(null);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const cpf = typeof window !== "undefined" ? window.localStorage.getItem("cpf") : false;
+  const id = typeof window !== "undefined" ? window.localStorage.getItem("id") : false;
+
   let latitude, longitude
 
   useEffect(()=>{
-
-  }, [log])
+    sentNotificationByLocation(id).then(()=>{
+      console.log("Notificação enviada com base na localização.")
+    }).catch((error)=>{
+      console.error("Erro ao enviar notificação por localização:", error)
+    })
+  }, [coor])
 
   function getMobileOperatingSystem() {
     const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent || window.navigator.vendor || window.opera : '';
@@ -224,8 +232,9 @@ export default function Profile (){
                     // Use latitude e longitude
 
                     console.log(coor?.lat, coor?.long)
-                    toast()
+                    
                   },
+                  
                   (error) => {
                     // Lidar com erros (permissão negada, timeout, etc.)
                     console.error("Erro ao obter a localização:", error);
@@ -234,7 +243,7 @@ export default function Profile (){
                     enableHighAccuracy: true,
                     timeout: 15000,
                     maximumAge: 0
-                  }
+                  },
                 );
               } else {
                 // Geolocation não é suportado

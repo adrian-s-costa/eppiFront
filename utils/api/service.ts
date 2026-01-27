@@ -201,6 +201,27 @@ async function getCategoryContentCustom(id: any, initialDate: Date, finalDate: D
   }
 }
 
+async function sentNotificationByLocation(id: any) {
+  try {
+    const res = await fetch(`https://localhost:8080/offers/notification`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': '69420'
+      },
+      body: JSON.stringify({
+        id,
+      })
+    });
+
+    return await res.json();
+
+  } catch (error) {
+    console.error('Failed to fetch category content:', error);
+    throw error;
+  }
+}
+
 async function getVideoById(videoId: string) {
   const res = await fetch(config.API_URL + `/videos/${videoId}`, {
     method: 'GET',
@@ -296,5 +317,6 @@ export {
   getDealerships,
   getDealershipById,
   getCollab,
-  getCampaignByDealershipId
+  getCampaignByDealershipId,
+  sentNotificationByLocation
 }

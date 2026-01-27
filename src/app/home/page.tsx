@@ -9,6 +9,8 @@ import Loader from "../loader/page";
 import { getHomeCategories, getCampaigns, getHomeVideo, getDealerships, getCollab } from "../../../utils/api/service";
 import { motion } from "framer-motion";
 import { OneSignalInit } from "../_components/OneSignal";
+import dynamic from "next/dynamic";
+
 
 export default function Home({setTabIndex, muted}: any){
   const [ homeCategories, setHomeCategories ] = useState<any>()
@@ -24,9 +26,14 @@ export default function Home({setTabIndex, muted}: any){
   const uf = typeof window !== "undefined" ? window.localStorage.getItem('uf') : false;
   const id = typeof window !== "undefined" ? window.localStorage.getItem('id') : false;
 
-  useEffect(()=>{
-    OneSignalInit({ userId: id || "" });
-  }, [id]);
+  const OneSignalInit = dynamic(
+    () =>
+      import("../_components/OneSignal").then(
+        (mod) => mod.OneSignalInit
+      ),
+    { ssr: false }
+  );
+
 
   useEffect(() => {
     try {
@@ -89,6 +96,7 @@ export default function Home({setTabIndex, muted}: any){
 
   return(
     <>
+    <OneSignalInit userId={id && id || undefined} />
     <div className="w-full min-h-screen h-auto bg-white p-5 text-black dark:text-black xxs:mb-0 xs:mb-[4.5rem] lg:flex lg:flex-col lg:justify-center lg:items-center">
     <div className="lg:w-[60vw]"> 
       <div className="flex justify-between">

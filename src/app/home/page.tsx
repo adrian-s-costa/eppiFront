@@ -8,6 +8,7 @@ import { Badge, Carousel } from "flowbite-react";
 import Loader from "../loader/page";
 import { getHomeCategories, getCampaigns, getHomeVideo, getDealerships, getCollab } from "../../../utils/api/service";
 import { motion } from "framer-motion";
+import { OneSignalInit } from "../_components/OneSignal";
 
 export default function Home({setTabIndex, muted}: any){
   const [ homeCategories, setHomeCategories ] = useState<any>()
@@ -21,6 +22,11 @@ export default function Home({setTabIndex, muted}: any){
 
   const fullName = typeof window !== "undefined" ? window.localStorage.getItem('user') : false;
   const uf = typeof window !== "undefined" ? window.localStorage.getItem('uf') : false;
+  const id = typeof window !== "undefined" ? window.localStorage.getItem('id') : false;
+
+  useEffect(()=>{
+    OneSignalInit({ userId: id || "" });
+  }, [id]);
 
   useEffect(() => {
     try {

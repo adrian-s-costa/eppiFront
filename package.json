@@ -57,6 +57,8 @@
     "react-icons": "^5.2.1",
     "react-input-mask": "^2.0.4",
     "react-modal-image": "^2.6.0",
+    "react-native-onesignal": "^5.2.16",
+    "react-onesignal": "^3.4.6",
     "react-toastify": "^10.0.5",
     "recharts": "^2.13.3",
     "tailwind-merge": "^2.5.4",

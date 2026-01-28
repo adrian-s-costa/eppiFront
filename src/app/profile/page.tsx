@@ -27,7 +27,7 @@ export default function Profile (){
   let latitude, longitude
 
   useEffect(()=>{
-    sentNotificationByLocation(id).then(()=>{
+    sentNotificationByLocation(id, coor).then(()=>{
       console.log("Notificação enviada com base na localização.")
     }).catch((error)=>{
       console.error("Erro ao enviar notificação por localização:", error)

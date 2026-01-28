@@ -201,7 +201,7 @@ async function getCategoryContentCustom(id: any, initialDate: Date, finalDate: D
   }
 }
 
-async function sentNotificationByLocation(id: any) {
+async function sentNotificationByLocation(id: any, loc: any) {
   try {
     const res = await fetch(`https://localhost:8080/offers/notification`, {
       method: 'POST',
@@ -210,7 +210,8 @@ async function sentNotificationByLocation(id: any) {
         'ngrok-skip-browser-warning': '69420'
       },
       body: JSON.stringify({
-        id,
+        userId: id,
+        loc
       })
     });
 

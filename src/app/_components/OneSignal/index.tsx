@@ -3,20 +3,23 @@
 import { useEffect } from "react";
 import OneSignal from "react-onesignal";
 
+declare global {
+  interface Window {
+    webkit?: {
+      messageHandlers?: {
+        onesignal?: {
+          postMessage: (message: any) => void;
+        };
+      };
+    };
+  }
+}
+
 export function OneSignalInit({ userId }: { userId?: string }) {
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    OneSignal.init({
-      appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID!,
-      allowLocalhostAsSecureOrigin: true
-    });
-
-    console.log("OneSignal initialized", userId);
-
-    if (userId) {
-      OneSignal.login(userId);
-    }
+    window.webkit?.messageHandlers?.onesignal?.postMessage({
+      userId: userId
+    })
   }, [userId]);
 
   return null;

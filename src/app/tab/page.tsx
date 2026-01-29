@@ -14,6 +14,7 @@ import { theme } from "@/style/theme";
 import { DockDemo } from "../_components/dock/dock";
 import { config } from "../../../config";
 import { AnimatePresence, motion } from "framer-motion";
+import { sentNotificationByLocation } from "../../../utils/api/service";
 
 // Carregamento dinâmico dos componentes
 const Home = dynamic(() => import("../home/page"), { ssr: false });
@@ -29,6 +30,10 @@ export default function HomeTab() {
   const [logo, setLogo] = useState<boolean>(false);
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [prevIndex, setPrevIndex] = useState<number>(0);
+  const [coor, setCoord] = useState<{lat: number, long: number} | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  setUserId(typeof window !== "undefined" ? localStorage.getItem("id") : null);
 
   useEffect(() => {
     const storedPage = typeof window !== "undefined" ? localStorage.getItem("page") : "0";
@@ -95,6 +100,35 @@ export default function HomeTab() {
 
   const direction = tabIndex - prevIndex;
 
+  setInterval(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCoord({
+            lat: position.coords.latitude,
+            long: position.coords.longitude
+          })
+        },
+        
+        (error) => {
+          // Lidar com erros (permissão negada, timeout, etc.)
+          console.error("Erro ao obter a localização:", error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
+        },
+      );
+    } else {
+      // Geolocation não é suportado
+    }
+  }, 5000);
+
+  useEffect(() => {
+    sentNotificationByLocation(userId, coor);
+  }, [coor, userId]);
+          
   const renderPanel = () => {
     if (tabIndex === 0) return <Home setTabIndex={setTabIndex} muted={muted} />;
     if (tabIndex === 1) return (

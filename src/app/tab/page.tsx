@@ -33,8 +33,6 @@ export default function HomeTab() {
   const [coor, setCoord] = useState<{lat: number, long: number} | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
-  setUserId(typeof window !== "undefined" ? localStorage.getItem("id") : null);
-
   useEffect(() => {
     const storedPage = typeof window !== "undefined" ? localStorage.getItem("page") : "0";
     setTabIndex(Number(storedPage));
@@ -100,32 +98,34 @@ export default function HomeTab() {
 
   const direction = tabIndex - prevIndex;
 
-  setInterval(() => {
-    if ("geolocation" in navigator) {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserId(localStorage.getItem("id"));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!("geolocation" in navigator)) return;
+
+    const interval = setInterval(() => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setCoord({
             lat: position.coords.latitude,
             long: position.coords.longitude
-          })
+          });
         },
-        
         (error) => {
-          // Lidar com erros (permissão negada, timeout, etc.)
           console.error("Erro ao obter a localização:", error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0
-        },
+        }
       );
-    } else {
-      // Geolocation não é suportado
-    }
-  }, 5000);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
+    if (!userId || !coor) return;
     sentNotificationByLocation(userId, coor);
   }, [coor, userId]);
           

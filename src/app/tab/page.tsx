@@ -31,7 +31,9 @@ export default function HomeTab() {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [prevIndex, setPrevIndex] = useState<number>(0);
   const [coor, setCoord] = useState<{lat: number, long: number} | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  // const [userId, setUserId] = useState<string | null>(null);
+
+  const userId = typeof window !== "undefined" ? localStorage.getItem("id") : false;
 
   useEffect(() => {
     const storedPage = typeof window !== "undefined" ? localStorage.getItem("page") : "0";
@@ -98,11 +100,11 @@ export default function HomeTab() {
 
   const direction = tabIndex - prevIndex;
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setUserId(localStorage.getItem("id"));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     setUserId(localStorage.getItem("id"));
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (!("geolocation" in navigator)) return;

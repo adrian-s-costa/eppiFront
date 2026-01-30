@@ -100,7 +100,7 @@ async function getDealershipById(id: any) {
 }
 
 async function getCollab() {
-  const res = await fetch(config.API_URL + `/offers/collabs`, {
+  const res = await fetch(config.API_URL + `/contact`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

@@ -188,7 +188,7 @@ export default function Home({setTabIndex, muted}: any){
             quality={100}
             priority={true}
             className="rounded-md mt-5"
-            src={collab?.imgSrc || "https://res.cloudinary.com/dmo7nzytn/image/upload/v1681666383/diversos/terraces-7878191_yxraeh.jpg"}
+            src={collab?.image || "https://res.cloudinary.com/dmo7nzytn/image/upload/v1681666383/diversos/terraces-7878191_yxraeh.jpg"}
             alt={""}
             width={1920}
             height={1}  

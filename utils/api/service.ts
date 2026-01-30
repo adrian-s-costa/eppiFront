@@ -78,7 +78,7 @@ async function getCampaigns() {
 }
 
 async function getDealerships(coor?: any) {
-  const res = await fetch(config.API_URL + `/offers?lat=${coor.lat}&lng=${coor.lng}`, {
+  const res = await fetch(config.API_URL + `/offers?lat=${coor.lat}&lng=${coor.long}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

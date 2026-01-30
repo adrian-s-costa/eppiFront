@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { LuAirplay } from "react-icons/lu";
 import { IoPersonOutline, IoPerson } from "react-icons/io5";
 import { RiHome5Fill, RiHome5Line, RiGraduationCapFill, RiGraduationCapLine } from "react-icons/ri";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import { PiAirplayFill } from "react-icons/pi";
 import LogoLoading from "../_components/logoLoading/logoLoading";
@@ -32,20 +32,58 @@ export default function HomeTab() {
   const [prevIndex, setPrevIndex] = useState<number>(0);
   const [coor, setCoord] = useState<{lat: number, long: number} | null>(null);
   // const [userId, setUserId] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-  const lastCoordRef = useRef<{lat:number,long:number} | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setUserId(localStorage.getItem("id"));
-    }
-  }, []);
+  const userId = typeof window !== "undefined" ? localStorage.getItem("id") : false;
 
   useEffect(() => {
     const storedPage = typeof window !== "undefined" ? localStorage.getItem("page") : "0";
     setTabIndex(Number(storedPage));
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const { hash, origin, pathname, search } = window.location;
+    if (!hash || !hash.includes("access_token")) return;
+
+    const params = new URLSearchParams(hash.substring(1));
+    const accessToken = params.get("access_token");
+    if (!accessToken) return;
+
+    const handleGoogleCallback = async () => {
+      try {
+        const response = await fetch(`${config.API_URL}/auth/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ credential: accessToken, register: true }),
+        });
+
+        if (!response.ok) {
+          console.error("Failed to complete Google login callback");
+          return;
+        }
+
+        const userData = await response.json();
+
+        localStorage.setItem("user", userData.account.name);
+        localStorage.setItem("token", userData.token);
+        localStorage.setItem("id", userData.account.id);
+        localStorage.setItem("email", userData.account.email);
+        localStorage.setItem("number", userData.account.cellphone);
+        localStorage.setItem("cep", userData.account.cep);
+        localStorage.setItem("pfpUrl", userData.account.pfpUrl);
+        localStorage.setItem("cpf", userData.account.initials);
+
+        // Limpa o hash para evitar repetir o fluxo ao recarregar
+        const cleanUrl = `${origin}${pathname}${search}`;
+        window.history.replaceState(null, "", cleanUrl);
+      } catch (error) {
+        console.error("Error handling Google callback:", error);
+      }
+    };
+
+    handleGoogleCallback();
+  }, []);
 
   const handleTabsChange = (index: number) => {
     localStorage.setItem("page", index.toString());
@@ -71,39 +109,27 @@ export default function HomeTab() {
   useEffect(() => {
     if (!("geolocation" in navigator)) return;
 
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        setCoord({
-          lat: position.coords.latitude,
-          long: position.coords.longitude
-        });
-      },
-      (error) => console.error(error),
-      {
-        enableHighAccuracy: false,
-        maximumAge: 10000,
-        timeout: 10000
-      }
-    );
+    const interval = setInterval(() => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCoord({
+            lat: position.coords.latitude,
+            long: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error("Erro ao obter a localização:", error);
+        }
+      );
+    }, 5000);
 
-    return () => navigator.geolocation.clearWatch(watchId);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     if (!userId || !coor) return;
-
-    if (lastCoordRef.current) {
-      const moved =
-        Math.abs(lastCoordRef.current.lat - coor.lat) > 0.0003 ||
-        Math.abs(lastCoordRef.current.long - coor.long) > 0.0003;
-
-      if (!moved) return;
-    }
-
-    lastCoordRef.current = coor;
     sentNotificationByLocation(userId, coor);
   }, [coor, userId]);
-
           
   const renderPanel = () => {
     if (tabIndex === 0) return <Home setTabIndex={setTabIndex} muted={muted} />;

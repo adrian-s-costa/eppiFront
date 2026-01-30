@@ -12,7 +12,7 @@ import { OneSignalInit } from "../_components/OneSignal";
 import dynamic from "next/dynamic";
 
 
-export default function Home({setTabIndex, muted}: any){
+export default function Home({setTabIndex, muted, coor}: any){
   const [ homeCategories, setHomeCategories ] = useState<any>()
   const [ homeVideo, setHomeVideo ] = useState<any>()
   const [ campaigns, setCampaigns ] = useState<any>()
@@ -54,7 +54,7 @@ export default function Home({setTabIndex, muted}: any){
     }
 
     try {
-      getDealerships().then((res)=>{
+      getDealerships(coor).then((res)=>{
         setCampaigns(res);
       })
     } catch (error) {
@@ -80,7 +80,7 @@ export default function Home({setTabIndex, muted}: any){
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [coor]);
   
   useEffect(()=>{
     console.log(homeVideo)

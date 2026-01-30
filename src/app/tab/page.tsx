@@ -106,7 +106,7 @@ export default function HomeTab() {
 
           
   const renderPanel = () => {
-    if (tabIndex === 0) return <Home setTabIndex={setTabIndex} muted={muted} />;
+    if (tabIndex === 0) return <Home setTabIndex={setTabIndex} muted={muted} coor={coor} />;
     if (tabIndex === 1) return (
       <div className="min-h-screen">
         <AnimatePresence mode="wait" initial={false}>

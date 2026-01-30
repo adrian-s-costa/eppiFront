@@ -38,6 +38,8 @@ export default function SpecificOffer(){
   const [isScrolled, setIsScrolled] = useState(false);
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
+  const lat = searchParams.get('lat');
+  const lng = searchParams.get('lng');
   const [contact, setContact] = useState<Boolean>(false);
   //const [carOffer, setCarOffer] = useState<any>();
   const [preview, setPreview] = useState<string | null>(null);
@@ -52,7 +54,7 @@ export default function SpecificOffer(){
 
   useEffect(() => {
     try {
-      getDealerships().then((res)=>{
+      getDealerships({lat, lng}).then((res)=>{
         setDealerships(res);
       })
     } catch (error) {

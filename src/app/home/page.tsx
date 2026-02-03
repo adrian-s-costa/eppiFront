@@ -17,7 +17,7 @@ export default function Home({setTabIndex, muted, coor}: any){
   const [ homeVideo, setHomeVideo ] = useState<any>()
   const [ campaigns, setCampaigns ] = useState<any>()
   const [ collab, setCollab ] = useState<any>()
-  const [ loading, setLoading ] = useState<boolean>(false)
+  const [loading, setLoading] = useState(true);
   const [ viewportWidth, setViewportWidth ] = useState<number>(0);
   const router = useRouter();
   const searchParams = useSearchParams()
@@ -36,57 +36,53 @@ export default function Home({setTabIndex, muted, coor}: any){
   );
 
   useEffect(() => {
+    let isMounted = true;
 
-    setLoading(true);
+    const fetchData = async () => {
+      setLoading(true);
 
-    try {
-      getHomeCategories().then((res)=>{
-        setHomeCategories(res);
-      })
-    } catch (error) {
-      console.error(error)
-    }
+      try {
+        const [
+          categories,
+          video,
+          dealerships,
+          collabData
+        ] = await Promise.all([
+          getHomeCategories(),
+          getHomeVideo(),
+          getDealerships(coor),
+          getCollab()
+        ]);
 
-    try {
-      getHomeVideo().then((res)=>{
-        console.log(res);
-        setHomeVideo(res);
-      })
-    } catch (error) {
-      console.error(error)
-    }
+        if (!isMounted) return;
 
-    try {
-      getDealerships(coor).then((res)=>{
-        setCampaigns(res);
-      })
-    } catch (error) {
-      console.error(error)
-    }
+        setHomeCategories(categories);
+        setHomeVideo(video);
+        setCampaigns(dealerships);
+        setCollab(collabData);
 
-    try {
-      getCollab().then((res)=>{
-        setCollab(res);
-      })
-    } catch (error) {
-      console.error(error)
-    }
+      } catch (error) {
+        console.error("Erro ao carregar home:", error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchData();
 
     const handleResize = () => {
       setViewportWidth(window.innerWidth);
     };
 
     setViewportWidth(window.innerWidth);
-
-    window.addEventListener('resize', handleResize);
-
-    setLoading(false);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      isMounted = false;
+      window.removeEventListener("resize", handleResize);
     };
   }, [coor]);
-  
+
   useEffect(()=>{
     console.log(homeVideo)
   },[homeVideo])

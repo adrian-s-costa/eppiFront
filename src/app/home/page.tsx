@@ -17,6 +17,7 @@ export default function Home({setTabIndex, muted, coor}: any){
   const [ homeVideo, setHomeVideo ] = useState<any>()
   const [ campaigns, setCampaigns ] = useState<any>()
   const [ collab, setCollab ] = useState<any>()
+  const [ loading, setLoading ] = useState<boolean>(false)
   const [ viewportWidth, setViewportWidth ] = useState<number>(0);
   const router = useRouter();
   const searchParams = useSearchParams()
@@ -34,8 +35,10 @@ export default function Home({setTabIndex, muted, coor}: any){
     { ssr: false }
   );
 
-
   useEffect(() => {
+
+    setLoading(true);
+
     try {
       getHomeCategories().then((res)=>{
         setHomeCategories(res);
@@ -77,6 +80,8 @@ export default function Home({setTabIndex, muted, coor}: any){
 
     window.addEventListener('resize', handleResize);
 
+    setLoading(false);
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -95,6 +100,10 @@ export default function Home({setTabIndex, muted, coor}: any){
   const firstName = fullName ? fullName.split(' ')[0] : '';
 
   return(
+
+    loading ? 
+      <Loader /> 
+    :
     <>
     <OneSignalInit userId={id && id || undefined} />
     <div className="w-full min-h-screen h-auto bg-white p-5 text-black dark:text-black xxs:mb-0 xs:mb-[4.5rem] lg:flex lg:flex-col lg:justify-center lg:items-center">

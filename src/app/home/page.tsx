@@ -172,7 +172,7 @@ export default function Home({setTabIndex, muted, coor}: any){
             return <Link
               href={{
                 pathname: '/offer',
-                query: { id: carro.id, lat: coor?.lat, long: coor?.long, code: carro.storeCode },
+                query: { id: carro.id, lat: coor?.lat, long: coor?.long, storeCode: carro.storeCode },
               }}
               key={index}
               className="relative"

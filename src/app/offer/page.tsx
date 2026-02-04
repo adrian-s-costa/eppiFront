@@ -51,6 +51,12 @@ export default function SpecificOffer(){
   const [selectedDealershipIndex, setSelectedDealershipIndex] = useState<number | null>(null);
   const [dealerships, setDealerships] = useState<any>(null);
   const [dealership, setDealership] = useState<any>(null);
+  const [idForReq, setIdForReq] = useState<any>(null);
+
+
+  useEffect(()=>{
+    setIdForReq(searchParams.get('id'))
+  },[])
   
 
   useEffect(() => {
@@ -69,7 +75,7 @@ export default function SpecificOffer(){
     } catch (error) {
       console.error(error)
     }
-  }, [])
+  }, [idForReq])
 
   const openDealershipModal = (view: 'list' | 'map') => {
     setModalView(view);
@@ -386,7 +392,7 @@ export default function SpecificOffer(){
                         <Link
                           href={{
                             pathname: `/offer`,
-                            query: { id: dealership.id },
+                            query: { id: dealership.id, storeCode: dealership.storeCode},
                           }}
                         >
                           <button

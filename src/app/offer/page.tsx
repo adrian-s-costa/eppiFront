@@ -68,7 +68,7 @@ export default function SpecificOffer(){
     }
 
     try {
-      getDealershipById(idForReq).then((res)=>{
+      getDealershipById(idForReq || id).then((res)=>{
         setDealership(res);
       })
     } catch (error) {

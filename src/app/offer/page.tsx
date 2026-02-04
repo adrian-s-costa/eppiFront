@@ -339,7 +339,7 @@ export default function SpecificOffer(){
               {/* Filtros */}
               <div className="flex flex-col xs:flex-row xs:items-center justify-between mb-4 gap-2">
                 <div className="flex items-center flex-wrap gap-x-2 gap-y-1">
-                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">3 resultados</span>
+                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">{dealerships.length + " resultados"}</span>
                 </div>
                 <div className="flex items-center flex-wrap gap-2">
                   <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">

@@ -55,7 +55,6 @@ export default function SpecificOffer(){
 
   useEffect(() => {
     try {
-      
       getDealerships({storeCode: storeCode ?? "-1"}).then((res)=>{
         setDealerships(res);
       })

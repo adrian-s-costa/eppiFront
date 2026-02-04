@@ -78,8 +78,8 @@ async function getCampaigns() {
 }
 
 async function getDealerships(coor?: any) {
-  if((!coor.lat || !coor.long) && coor.storeCode) {
-    const res = await fetch(`${config.API_URL}/offers?storeCode=${coor.storeCode}`, {
+  if(coor.lat && coor.long){
+    const res = await fetch(`${config.API_URL}/offers?lat=${coor.lat}&lng=${coor.long}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ async function getDealerships(coor?: any) {
     return res.json()
   }
 
-  const res = await fetch(`${config.API_URL}/offers?lat=${coor.lat}&lng=${coor.long}`, {
+  const res = await fetch(`${config.API_URL}/offers?storeCode=${coor.storeCode}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

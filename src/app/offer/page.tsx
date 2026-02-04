@@ -386,7 +386,7 @@ export default function SpecificOffer(){
                         <button
                           className="mt-2 px-3 py-1 bg-[#8609A3] text-white text-xs rounded-full hover:bg-[#6e0885] transition-colors"
                           onClick={() => {
-                            router.push(`/offer?id=${dealership.offerId}`);
+                            router.push(`/offer?id=${dealership.id}`);
                           }}
                         >
                           Ver ofertas

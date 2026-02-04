@@ -10,6 +10,7 @@ import { getHomeCategories, getCampaigns, getHomeVideo, getDealerships, getColla
 import { motion } from "framer-motion";
 import { OneSignalInit } from "../_components/OneSignal";
 import dynamic from "next/dynamic";
+import { toast } from "react-toastify";
 
 
 export default function Home({setTabIndex, muted, coor}: any){
@@ -81,7 +82,27 @@ export default function Home({setTabIndex, muted, coor}: any){
       isMounted = false;
       window.removeEventListener("resize", handleResize);
     };
-  }, [coor]);
+  }, []);
+  
+
+  useEffect(()=>{
+    const fetchData = async () => {
+    try {
+        const [
+          dealerships,
+        ] = await Promise.all([
+          getDealerships(coor),
+        ]);
+
+        setCampaigns(dealerships.reverse());
+        toast("teste")
+
+      } catch (error) {
+        console.error("Erro ao carregar home:", error);
+      }
+    }
+    fetchData();
+  },[coor])
 
   useEffect(()=>{
     console.log(homeVideo)

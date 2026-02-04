@@ -383,14 +383,21 @@ export default function SpecificOffer(){
                       </div>
                       <div className="text-right">
                         <span className="text-sm text-gray-500 block">{dealership.distance}</span>
-                        <button
-                          className="mt-2 px-3 py-1 bg-[#8609A3] text-white text-xs rounded-full hover:bg-[#6e0885] transition-colors"
-                          onClick={() => {
-                            router.push(`/offer?id=${dealership.id}`);
+                        <Link
+                          href={{
+                            pathname: `/offer`,
+                            query: { id: dealership.id },
                           }}
                         >
-                          Ver ofertas
-                        </button>
+                          <button
+                            className="mt-2 px-3 py-1 bg-[#8609A3] text-white text-xs rounded-full hover:bg-[#6e0885] transition-colors"
+                            onClick={() => {
+                              router.push(`/offer?id=${dealership.id}`);
+                            }}
+                          >
+                            Ver ofertas
+                          </button>
+                        </Link>
                       </div>
                     </div>
                   ))}

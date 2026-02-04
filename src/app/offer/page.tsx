@@ -40,6 +40,7 @@ export default function SpecificOffer(){
   const id = searchParams.get('id');
   const lat = searchParams.get('lat');
   const long = searchParams.get('long');
+  const code = searchParams.get('storeCode');
   const [contact, setContact] = useState<Boolean>(false);
   //const [carOffer, setCarOffer] = useState<any>();
   const [preview, setPreview] = useState<string | null>(null);
@@ -54,7 +55,7 @@ export default function SpecificOffer(){
 
   useEffect(() => {
     try {
-      getDealerships({lat, long}).then((res)=>{
+      getDealerships({code}).then((res)=>{
         setDealerships(res);
       })
     } catch (error) {
@@ -303,162 +304,166 @@ export default function SpecificOffer(){
             </div>
           </div>
           {/* Seção de visualização (Lista/Mapa) */}
-          <div ref={dealershipsSectionRef} className="mt-6 sm:mt-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-              <h1 className="text-base sm:text-lg font-bold whitespace-nowrap">Concessionárias próximas</h1>
-              <div className="w-full sm:w-auto flex bg-gray-100 rounded-lg p-0.5">
-                <button
-                  onClick={() => setCurrentView('list')}
-                  className={`flex-1 sm:flex-none flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-sm sm:text-base ${currentView === 'list' ? 'bg-white shadow-sm' : 'text-gray-500'}`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                  <span className="text-sm sm:text-sm">Lista</span>
-                </button>
-                <button
-                  onClick={() => setCurrentView('map')}
-                  className={`flex-1 sm:flex-none flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-sm sm:text-base ${currentView === 'map' ? 'bg-white shadow-sm' : 'text-gray-500'}`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span className="text-sm sm:text-sm">Mapa</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Filtros */}
-            <div className="flex flex-col xs:flex-row xs:items-center justify-between mb-4 gap-2">
-              <div className="flex items-center flex-wrap gap-x-2 gap-y-1">
-                <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">3 resultados</span>
-              </div>
-              <div className="flex items-center flex-wrap gap-2">
-                <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">
-                  <span className="hidden sm:inline">Ordenar</span> por:
-                </span>
-                <select className="text-xs xs:text-sm bg-white border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#8609A3] focus:border-transparent">
-                  <option>Distância</option>
-                  <option>Preço</option>
-                  <option>Avaliação</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Conteúdo da visualização */}
-            {currentView === 'list' ? (
-              <div className="space-y-4">
-                {dealerships && dealerships.slice(0, 3).map((dealership: any) => (
-                  <div key={dealership.id} className="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 hover:shadow-md transition-shadow">
-                    <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
-                      <Image
-                        src={dealership.image}
-                        alt={dealership.name}
-                        width={80}
-                        height={80}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{dealership.name}</h3>
-                      <p className="text-sm text-gray-600">{dealership.address}</p>
-                      <div className="flex items-center mt-1">
-                        <div className="flex text-yellow-400">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <svg key={star} className="w-4 h-4" fill={star <= 4 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                            </svg>
-                          ))}
-                        </div>
-                        <span className="text-xs text-gray-500 ml-1">{dealership.rating.toFixed(1)} ({dealership.reviews})</span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm text-gray-500 block">{dealership.distance}</span>
-                      <button
-                        className="mt-2 px-3 py-1 bg-[#8609A3] text-white text-xs rounded-full hover:bg-[#6e0885] transition-colors"
-                        onClick={() => {
-                          router.push(`/offer?id=${dealership.offerId}`);
-                        }}
-                      >
-                        Ver ofertas
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="relative h-[500px] rounded-lg overflow-hidden">
-                {!isMapLoaded ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                    <p className="text-gray-500 text-sm">Carregando mapa...</p>
-                  </div>
-                ) : (
-                  <GoogleMap
-                    mapContainerStyle={{ width: "100%", height: "100%" }}
-                    center={
-                      selectedDealershipIndex !== null
-                        ? dealerships[selectedDealershipIndex].coordinates
-                        : dealerships[0].coordinates
-                    }
-                    zoom={12}
-                    options={{
-                      disableDefaultUI: true,
-                    }}
+          {
+            dealerships && dealerships.length > 0 ?
+              <div ref={dealershipsSectionRef} className="mt-6 sm:mt-8">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+                <h1 className="text-base sm:text-lg font-bold whitespace-nowrap">Outras unidades</h1>
+                <div className="w-full sm:w-auto flex bg-gray-100 rounded-lg p-0.5">
+                  <button
+                    onClick={() => setCurrentView('list')}
+                    className={`flex-1 sm:flex-none flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-sm sm:text-base ${currentView === 'list' ? 'bg-white shadow-sm' : 'text-gray-500'}`}
                   >
-                    {dealerships.map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
-                      <MarkerF
-                        key={dealership.id}
-                        position={dealership.coordinates}
-                        onClick={() => setSelectedDealershipIndex(index)}
-                      />
-                    ))}
-                  </GoogleMap>
-                )}
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <span className="text-sm sm:text-sm">Lista</span>
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('map')}
+                    className={`flex-1 sm:flex-none flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-sm sm:text-base ${currentView === 'map' ? 'bg-white shadow-sm' : 'text-gray-500'}`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span className="text-sm sm:text-sm">Mapa</span>
+                  </button>
+                </div>
+              </div>
 
-                <AnimatePresence>
-                  {selectedDealershipIndex !== null && (
-                    <motion.div
-                      className="absolute left-0 right-0 bottom-4 px-4"
-                      initial={{ y: 80, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: 80, opacity: 0 }}
-                    >
-                      <div
-                        className="bg-white rounded-2xl shadow-lg p-4 flex space-x-4 cursor-pointer"
-                        onClick={() => {
-                          const d = dealerships[selectedDealershipIndex];
-                          router.push(`/offer?id=${d.offerId}`);
-                        }}
-                      >
-                        <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
-                          <Image
-                            src={dealerships[selectedDealershipIndex].image}
-                            alt={dealerships[selectedDealershipIndex].name}
-                            width={80}
-                            height={80}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold">
-                            {dealerships[selectedDealershipIndex].name}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {dealerships[selectedDealershipIndex].address}
-                          </p>
-                          <span className="text-xs text-gray-500">
-                            {dealerships[selectedDealershipIndex].distance}
-                          </span>
+              {/* Filtros */}
+              <div className="flex flex-col xs:flex-row xs:items-center justify-between mb-4 gap-2">
+                <div className="flex items-center flex-wrap gap-x-2 gap-y-1">
+                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">3 resultados</span>
+                </div>
+                <div className="flex items-center flex-wrap gap-2">
+                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">
+                    <span className="hidden sm:inline">Ordenar</span> por:
+                  </span>
+                  <select className="text-xs xs:text-sm bg-white border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#8609A3] focus:border-transparent">
+                    <option>Distância</option>
+                    <option>Preço</option>
+                    <option>Avaliação</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Conteúdo da visualização */}
+              {currentView === 'list' ? (
+                <div className="space-y-4">
+                  {dealerships && dealerships.slice(0, 3).map((dealership: any) => (
+                    <div key={dealership.id} className="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 hover:shadow-md transition-shadow">
+                      <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
+                        <Image
+                          src={dealership.image}
+                          alt={dealership.name}
+                          width={80}
+                          height={80}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold">{dealership.name}</h3>
+                        <p className="text-sm text-gray-600">{dealership.address}</p>
+                        <div className="flex items-center mt-1">
+                          <div className="flex text-yellow-400">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <svg key={star} className="w-4 h-4" fill={star <= 4 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                              </svg>
+                            ))}
+                          </div>
+                          <span className="text-xs text-gray-500 ml-1">{dealership.rating.toFixed(1)} ({dealership.reviews})</span>
                         </div>
                       </div>
-                    </motion.div>
+                      <div className="text-right">
+                        <span className="text-sm text-gray-500 block">{dealership.distance}</span>
+                        <button
+                          className="mt-2 px-3 py-1 bg-[#8609A3] text-white text-xs rounded-full hover:bg-[#6e0885] transition-colors"
+                          onClick={() => {
+                            router.push(`/offer?id=${dealership.offerId}`);
+                          }}
+                        >
+                          Ver ofertas
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="relative h-[500px] rounded-lg overflow-hidden">
+                  {!isMapLoaded ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                      <p className="text-gray-500 text-sm">Carregando mapa...</p>
+                    </div>
+                  ) : (
+                    <GoogleMap
+                      mapContainerStyle={{ width: "100%", height: "100%" }}
+                      center={
+                        selectedDealershipIndex !== null
+                          ? dealerships[selectedDealershipIndex].coordinates
+                          : dealerships[0].coordinates
+                      }
+                      zoom={12}
+                      options={{
+                        disableDefaultUI: true,
+                      }}
+                    >
+                      {dealerships.map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
+                        <MarkerF
+                          key={dealership.id}
+                          position={dealership.coordinates}
+                          onClick={() => setSelectedDealershipIndex(index)}
+                        />
+                      ))}
+                    </GoogleMap>
                   )}
-                </AnimatePresence>
+
+                  <AnimatePresence>
+                    {selectedDealershipIndex !== null && (
+                      <motion.div
+                        className="absolute left-0 right-0 bottom-4 px-4"
+                        initial={{ y: 80, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 80, opacity: 0 }}
+                      >
+                        <div
+                          className="bg-white rounded-2xl shadow-lg p-4 flex space-x-4 cursor-pointer"
+                          onClick={() => {
+                            const d = dealerships[selectedDealershipIndex];
+                            router.push(`/offer?id=${d.offerId}`);
+                          }}
+                        >
+                          <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
+                            <Image
+                              src={dealerships[selectedDealershipIndex].image}
+                              alt={dealerships[selectedDealershipIndex].name}
+                              width={80}
+                              height={80}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold">
+                              {dealerships[selectedDealershipIndex].name}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {dealerships[selectedDealershipIndex].address}
+                            </p>
+                            <span className="text-xs text-gray-500">
+                              {dealerships[selectedDealershipIndex].distance}
+                            </span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
               </div>
-            )}
-          </div>
+            : null
+          }
           {/* Preview Modal */}
           <AnimatePresence>
             {preview && (

@@ -78,6 +78,17 @@ async function getCampaigns() {
 }
 
 async function getDealerships(coor?: any) {
+  if((!coor.lat || !coor.long) && coor.storeCode) {
+    const res = await fetch(`${config.API_URL}/offers?storeCode=${coor.storeCode}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "ngrok-skip-browser-warning": "69420"
+      },
+    })
+    return res.json()
+  }
+
   const res = await fetch(`${config.API_URL}/offers?lat=${coor.lat}&lng=${coor.long}`, {
     method: 'GET',
     headers: {

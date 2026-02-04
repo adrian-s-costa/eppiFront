@@ -54,11 +54,10 @@ export default function SpecificOffer(){
   const [idForReq, setIdForReq] = useState<any>(null);
 
 
-  useEffect(()=>{
-    setIdForReq(searchParams.get('id'))
-  },[])
+  const updateId = (id: any) => {
+    setIdForReq(id)
+  }
   
-
   useEffect(() => {
     try {
       getDealerships({storeCode: storeCode || "-1"}).then((res)=>{
@@ -69,7 +68,7 @@ export default function SpecificOffer(){
     }
 
     try {
-      getDealershipById(id).then((res)=>{
+      getDealershipById(idForReq).then((res)=>{
         setDealership(res);
       })
     } catch (error) {
@@ -398,7 +397,7 @@ export default function SpecificOffer(){
                           <button
                             className="mt-2 px-3 py-1 bg-[#8609A3] text-white text-xs rounded-full hover:bg-[#6e0885] transition-colors"
                             onClick={() => {
-                              router.push(`/offer?id=${dealership.id}`);
+                              updateId(dealership.id);
                             }}
                           >
                             Ver ofertas

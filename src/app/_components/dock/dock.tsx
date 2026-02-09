@@ -87,7 +87,7 @@ export function DockDemo({ tabIndex }: any) {
                   <p className="text-black text-[0.5rem]"> PERFIL </p>
                 </Tab>
               </DockIcon>
-              <DockIcon>
+              {/* <DockIcon>
                 <Tab className="flex flex-col">
                       {
                           tabIndex === 4 ? 
@@ -97,7 +97,7 @@ export function DockDemo({ tabIndex }: any) {
                       }
                   <p className="text-black text-[0.5rem]"> CLUBE </p>
                 </Tab>
-              </DockIcon>
+              </DockIcon> */}
             </Dock>
           </motion.div>
         )}

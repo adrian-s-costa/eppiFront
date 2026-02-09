@@ -15,11 +15,21 @@ declare global {
   }
 }
 
-export function OneSignalInit({ userId }: { userId?: string }) {
+export function OneSignalLogin({ userId }: { userId?: string }) {
   useEffect(() => {
-    window.webkit?.messageHandlers?.onesignal?.postMessage({
-      userId: userId
-    })
+    if (!userId) return;
+
+    // ✅ iOS nativo (WKWebView)
+    if (window.webkit?.messageHandlers?.onesignal) {
+      window.webkit.messageHandlers.onesignal.postMessage({
+        userId,
+      });
+      return;
+    }
+
+    // ✅ Web / Android / TWA
+    OneSignal.login(userId).catch(console.error);
+
   }, [userId]);
 
   return null;

@@ -8,8 +8,9 @@ import { Badge, Carousel } from "flowbite-react";
 import Loader from "../loader/page";
 import { getHomeCategories, getCampaigns, getHomeVideo, getDealerships, getCollab } from "../../../utils/api/service";
 import { motion } from "framer-motion";
-import { OneSignalInit } from "../_components/OneSignal";
+import { OneSignalLogin } from "../_components/OneSignal";
 import dynamic from "next/dynamic";
+import { OneSignalBootstrap } from "../_components/OneSignal/hook";
 
 
 export default function Home({setTabIndex, muted, coor}: any){
@@ -30,7 +31,7 @@ export default function Home({setTabIndex, muted, coor}: any){
   const OneSignalInit = dynamic(
     () =>
       import("../_components/OneSignal").then(
-        (mod) => mod.OneSignalInit
+        (mod) => mod.OneSignalLogin
       ),
     { ssr: false }
   );
@@ -95,13 +96,12 @@ export default function Home({setTabIndex, muted, coor}: any){
   
   const firstName = fullName ? fullName.split(' ')[0] : '';
 
-  return(
-
-    loading && !campaigns ? 
-      <Loader /> 
-    :
-    <>
-    <OneSignalInit userId={id && id || undefined} />
+  return loading && !campaigns ? (
+  <Loader />
+) : (
+  <>
+    <OneSignalBootstrap />
+    <OneSignalLogin userId={id || undefined} />
     <div className="w-full min-h-screen h-auto bg-white p-5 text-black dark:text-black xxs:mb-0 xs:mb-[4.5rem] lg:flex lg:flex-col lg:justify-center lg:items-center">
     <div className="lg:w-[60vw]"> 
       <div className="flex justify-between">
@@ -201,7 +201,6 @@ export default function Home({setTabIndex, muted, coor}: any){
         </a>
       </div>
     </div>
-
   </div>
 </>
 )

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MdArrowBackIos } from "react-icons/md";
@@ -12,8 +12,9 @@ import { normalizeCepNumber, normalizePhoneNumber } from '../../../utils/api/mas
 import InputMask from 'react-input-mask';
 import { Formik, Form, Field, useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FileInput, Label } from "flowbite-react";
+import { FileInput, Label, Button } from "flowbite-react";
 import { FaUserCircle } from 'react-icons/fa';
+import ImageCropper from '../_components/ImageCropper/ImageCropper';
 import axios from 'axios';
 //import fs from 'fs';
 import crypto from 'crypto'
@@ -23,11 +24,14 @@ export default function UserInfo(){
   const [additionalInfo, setAdditionalInfo] = useState<any>({id: "", name: "", secName: "", tel: "", bornDate: "", cep: ""})
   const [loading, setLoading] = useState<boolean>(false)
   const router = useRouter();
-  const [file, setFile] = useState<any>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState('');
-  const [url, setUrl] = useState<any>(null);
-  const [history, setHistory] = useState<any>(null);
-  const [pfp, setPfp] = useState<any>('.');
+  const [url, setUrl] = useState<string | null>(null);
+  const [history, setHistory] = useState<number | null>(null);
+  const [pfp, setPfp] = useState<string>('.');
+  const [showCropper, setShowCropper] = useState<boolean>(false);
+  const [originalImage, setOriginalImage] = useState<string>('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setAdditionalInfo({...additionalInfo, 
@@ -49,32 +53,52 @@ export default function UserInfo(){
     setHistory(window.history.length);
   }, [])
 
-  const handleFileChange = async (event: any) => {
-    const selectedFile = event.target.files[0];
-    setFile(event.target.files[0])
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    
+    if (!selectedFile) return;
+    
+    const fileType = selectedFile.type;
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    const maxSizeMB = 5;
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
-    if (selectedFile) {
-      const fileType = selectedFile.type;
-      const allowedTypes = ['image/png', 'image/jpeg' ];
+    if (!allowedTypes.includes(fileType)) {
+      setError('Por favor, envie um arquivo PNG ou JPEG.');
+      return;
+    }
 
-      if (allowedTypes.includes(fileType)) {
+    if (selectedFile.size > maxSizeBytes) {
+      setError(`O arquivo é muito grande. O tamanho máximo permitido é ${maxSizeMB}MB.`);
+      return;
+    }
 
-        // const response = await fetch(`${config.API_URL}/upload-file`, {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data',
-        //     "ngrok-skip-browser-warning": "69420"
-        //   },
-        //   body: formData
-        // });
+    setError('');
+    setFile(selectedFile);
+    
+    // Create object URL for the image
+    const fileURL = URL.createObjectURL(selectedFile);
+    setOriginalImage(fileURL);
+    setShowCropper(true);
+  };
 
-        const fileURL = URL.createObjectURL(selectedFile);
-        setUrl(fileURL);
-        setError('');
-      } else {
-        setError('Por favor, envie um arquivo PNG ou JPEG.');
-        setFile(null);
-      }
+  const handleCropComplete = (croppedImage: string) => {
+    setUrl(croppedImage);
+    setShowCropper(false);
+    // Convert base64 to blob for the file upload
+    fetch(croppedImage)
+      .then(res => res.blob())
+      .then(blob => {
+        const file = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
+        setFile(file);
+      });
+  };
+
+  const handleCropCancel = () => {
+    setShowCropper(false);
+    setFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -270,33 +294,79 @@ export default function UserInfo(){
 
       <form onSubmit={(e) => { verifyUserData(e) }} className='mt-5'>
 
-        {
-        (url !== 'null') ?
         <div className='w-full flex flex-col items-center'>
-          <div
-            className={`rounded-full w-[5rem] h-[5rem] bg-cover mr-4`}
-            style={{ backgroundImage: `url(${url})` }}
-          ></div>
-          <button type='button' onClick={()=>{setUrl('null'); setFile(null)}} className="text-white mt-5 h-10 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Excluir</button>
-        </div>
-        :
-          <div>
-            <label htmlFor="dropzone-file" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Foto de perfil</label>
-            <Label
-              htmlFor="dropzone-file"
-              className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-300 dark:bg-gray-50 dark:hover:border-gray-300 dark:hover:bg-gray-100"
-            >
-              <div className="flex flex-col items-center justify-center pb-6 pt-5">
-                <FaUserCircle className="text-gray-400 mr-4 text-5xl"/>
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-semibold">Clique pra enviar</span> ou arraste e solte
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG (MAX. 2MB)</p>
+          {url && url !== 'null' ? (
+            <>
+              <div
+                className="rounded-full w-20 h-20 bg-cover bg-center border-2 border-gray-200"
+                style={{ 
+                  backgroundImage: `url(${url})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              />
+              <div className="mt-4 flex gap-2">
+                <Button 
+                  color="gray" 
+                  size="sm" 
+                  onClick={() => {
+                    setUrl('null');
+                    setFile(null);
+                    if (fileInputRef.current) {
+                      fileInputRef.current.value = '';
+                    }
+                  }}
+                >
+                  Remover
+                </Button>
+                <Button 
+                  color="purple" 
+                  size="sm" 
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  Alterar
+                </Button>
               </div>
-              <FileInput id="dropzone-file" className="hidden" onChange={(e)=>{handleFileChange(e)}} accept=".png, .jpg, .jpeg"/>
-            </Label>
-          </div>
-        }
+            </>
+          ) : (
+            <div className="w-full">
+              <label htmlFor="dropzone-file" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">
+                Foto de perfil
+              </label>
+              <Label
+                htmlFor="dropzone-file"
+                className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-300 dark:bg-gray-50 dark:hover:border-gray-300 dark:hover:bg-gray-100"
+              >
+                <div className="flex flex-col items-center justify-center pb-6 pt-5">
+                  <FaUserCircle className="text-gray-400 text-5xl mb-2"/>
+                  <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold">Clique para enviar</span> ou arraste e solte
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    PNG, JPG (Máx. 5MB)
+                  </p>
+                </div>
+                <FileInput 
+                  id="dropzone-file" 
+                  ref={fileInputRef}
+                  className="hidden" 
+                  onChange={handleFileChange} 
+                  accept=".png,.jpg,.jpeg"
+                />
+              </Label>
+              {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+            </div>
+          )}
+        </div>
+        
+        {showCropper && originalImage && (
+          <ImageCropper
+            src={originalImage}
+            onCropComplete={handleCropComplete}
+            onCancel={handleCropCancel}
+            aspect={1} // 1:1 aspect ratio for profile pictures
+          />
+        )}
         
         <div className="grid gap-6 md:grid-cols-2 pt-5">
           <div>

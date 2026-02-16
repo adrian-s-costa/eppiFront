@@ -414,7 +414,7 @@ export default function Video({ params }: { params: { id: string } }) {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {video.comments.map((comment: any, index: number) => (
+                    {video.comments.reverse().map((comment: any, index: number) => (
                       <div key={index} className="bg-white rounded-xl p-4 shadow-sm">
                         <div className="flex items-center mb-2">
                           <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-3">

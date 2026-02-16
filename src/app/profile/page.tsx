@@ -216,7 +216,7 @@ export default function Profile (){
           <hr className="mx-4"/>
 
           {/* Ativar Loc */}
-          <motion.button
+          {/* <motion.button
             whileTap={{ scale: 0.98 }}
             className="w-full px-4 py-4 flex items-center justify-between"
           >
@@ -252,7 +252,7 @@ export default function Profile (){
               <span className="text-black">Localização</span>
             </div>
             <IoIosArrowForward className="text-xl text-slate-400"/>
-          </motion.button>
+          </motion.button> */}
 
           <hr className="mx-4"/>
 

@@ -45,6 +45,15 @@ export default function Video({ params }: { params: { id: string } }) {
   const [activeCommentId, setActiveCommentId] = useState<any>(null);
   const [answer, setAnswer] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState<boolean>(false);
+  const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
+  const [commentCount, setCommentCount] = useState<number>(0);
+
+  // Atualiza a contagem de comentários quando o vídeo for carregado
+  useEffect(() => {
+    if (video?.comments) {
+      setCommentCount(video.comments.length);
+    }
+  }, [video]);
 
 
   const handleReplyClick = (id: any) => {
@@ -343,77 +352,144 @@ export default function Video({ params }: { params: { id: string } }) {
             </div>
           </Link>
         </div>
-        <div className="flex items-center pt-5 mb-5">
+
+        {/* Uploader Information */}
+        <div className="flex items-center pt-4 pb-3 px-4 mt-4">
           <div
-            className={`rounded-full w-[2.5rem] h-[2.5rem] bg-cover mr-4`}
+            className="rounded-full w-10 h-10 bg-cover mr-3 flex-shrink-0"
             style={{ backgroundImage: `url(https://res.cloudinary.com/dmo7nzytn/image/upload/v1715983820/grupo-fera/images/felipe_fera_to4xne.jpg)` }}
           ></div>
-          <span className="font-semibold text-lg dark:text-black text-black">Felipe Fera</span>
+          <span className="font-semibold text-lg text-gray-900">Felipe Fera</span>
         </div>
-        <div className=" h-auto pb-14 pl-2">
-          {video && video.comments && video.comments.map((comment: any, indice: number)=>{
-            return <div className="mb-5" key={indice}>
-            <div className="flex items-center">
-
-            {comment.pfpUrl == "" || comment.pfpUrl == "." || !comment.pfpUrl ? 
-              <FaUserCircle className="text-gray-400 mr-2"/>
-            : <div
-                className={`rounded-full w-[1.3rem] h-[1.3rem] bg-cover mr-4`}
-                style={{ backgroundImage: `url(${comment.pfpUrl})` }}
-              ></div>}
-
-              <span className="text-xs mr-1 dark:text-black text-black">{comment.name}</span>
-              <span className="text-xsv text-[#6C6C6C]"> • </span>
-              <span className="text-xs ml-1 text-[#6C6C6C]">{comment.time}</span>
-            </div>
-            <span className="text-sm dark:text-black text-black">{comment.comment}</span>
-            <br/>
-            {
-              userId == '6664b1fda42a8fbb236c3d4a' ? 
-              <a className="text-xs mr-1 dark:text-black text-black hover:underline" onClick={() => handleReplyClick(comment.id)}>reponder</a>
-              : null
-            }
-            {activeCommentId === comment.id && (
-            <div className="flex relative items-center">
-              <input type="text" className="bg-[#CECECE] rounded-full pl-4 pr-10 h-8 w-full text-black" value={ answer! } placeholder="Adicione um comentário..." onChange={(e)=>{setAnswer(e.target.value)}}/>
-              <IoSend className="text-2xl z-2 absolute right-[1rem]  cursor-pointer dark:text-black text-black" onClick={()=>{postAnswer(comment.id); setAnswer('')}}/>
-            </div>
-          )}
-            {comment.answers.map((answer: any, index: number)=>{
-              if (answer.commentId == comment.id) {
-                return <div className="mb-5 ml-5" key={indice}>
-                <div className="flex items-center mt-2">
-                  <div
-                    className={`rounded-full w-[1rem] h-[1rem] bg-cover mr-2`}
-                    style={{ backgroundImage: `url(https://res.cloudinary.com/dmo7nzytn/image/upload/v1715983820/grupo-fera/images/felipe_fera_to4xne.jpg)` }}
-                    ></div>
-                  <span className="text-xs mr-1 dark:text-black text-black">{answer.name}</span>
-                  <span className="text-xsv text-[#6C6C6C]"> • </span>
-                  <span className="text-xs ml-1 text-[#6C6C6C]">{answer.time}</span>
-                </div>
-                <span className="text-sm dark:text-black text-black">{answer.answer}</span>
-                </div>
-              }
-            })}
-          </div>
-          })}
+        
+        {/* Botão Flutuante de Comentários */}
+        <div className="fixed bottom-6 right-6 z-40">
+          <button 
+            onClick={() => setCommentsOpen(true)}
+            className="bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg px-4 py-3 shadow-lg flex items-center space-x-2 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            <span>Comentários ({commentCount})</span>
+          </button>
         </div>
-      <div className="fixed lg:relative z-1 w-full items-center lg:justify-center bottom-0 bg-white">
-        <div className="lg:fixed flex xxs:my-3 xxs:h-10 xs:h-16 w-auto items-center mr-5 lg:justify-center lg:bottom-0 bg-white">
-        {pfpUrl == "" || pfpUrl == "." || !pfpUrl ? 
-          <FaUserCircle className="text-gray-400 text-4xl"/>
-        : <div
-            className={`rounded-full w-[60px] h-[40px] bg-cover box-border`}
-            style={{ backgroundImage: `url(${pfpUrl})` }}
-          ></div>
-        }
-          
-            <Input type="email" className="mx-2" placeholder="Adicione um comentário..." value={ comment! } onChange={(e)=>{setComment(e.target.value)}}/>
-            <Button type="submit" variant="outline" className="w-auto mr-5 lg:mr-0" disabled={ !comment } onClick={()=>{postComment(); setComment('')}}>
-              Comentar
-            </Button>
-          </div>
       </div>
+      
+      {/* Modal de Comentários */}
+      <AnimatePresence>
+        {commentsOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-black/60 flex flex-col"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={(e) => e.target === e.currentTarget && setCommentsOpen(false)}
+          >
+            <motion.div 
+              className="bg-white flex flex-col h-[90vh] max-h-[800px] w-full max-w-2xl mx-auto rounded-t-2xl overflow-hidden shadow-xl"
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              transition={{ type: 'spring', damping: 30 }}
+            >
+              <div className="bg-white flex-shrink-0 py-4 px-6 border-b border-gray-200 flex items-center justify-between">
+                <h3 className="text-xl font-semibold text-gray-900">Comentários ({commentCount})</h3>
+                <button 
+                  onClick={() => setCommentsOpen(false)}
+                  className="text-gray-500 hover:text-gray-700 p-1 -mr-2"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
+                {!video?.comments || video.comments.length === 0 ? (
+                  <div className="h-full flex items-center justify-center">
+                    <p className="text-gray-500 text-center">
+                      Seja o primeiro a comentar nesse vídeo!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {video.comments.map((comment: any, index: number) => (
+                      <div key={index} className="bg-white rounded-xl p-4 shadow-sm">
+                        <div className="flex items-center mb-2">
+                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-3">
+                            {comment.pfpUrl && comment.pfpUrl !== "." ? (
+                              <div 
+                                className="w-full h-full bg-cover bg-center"
+                                style={{ backgroundImage: `url(${comment.pfpUrl})` }}
+                              />
+                            ) : (
+                              <FaUserCircle className="w-full h-full text-gray-400" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center">
+                              <span className="text-sm font-medium text-gray-900">{comment.name}</span>
+                              <span className="mx-2 text-gray-400">•</span>
+                              <span className="text-xs text-gray-500">{comment.time}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-700 ml-11">
+                          {comment.comment}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Input de Comentário no Modal */}
+              <div className="bg-white border-t border-gray-200 p-4">
+                <div className="w-full flex items-center space-x-3">
+                  <div className="flex-shrink-0">
+                    {pfpUrl && pfpUrl !== "." ? (
+                      <div 
+                        className="w-10 h-10 rounded-full bg-cover bg-center"
+                        style={{ backgroundImage: `url(${pfpUrl})` }}
+                      />
+                    ) : (
+                      <FaUserCircle className="w-10 h-10 text-gray-400" />
+                    )}
+                  </div>
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      value={comment || ''}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Adicione um comentário..."
+                      className="w-full bg-gray-100 rounded-full pl-4 pr-20 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter' && comment) {
+                          postComment();
+                          setComment('');
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={() => { if (comment) { postComment(); setComment(''); }}}
+                      disabled={!comment}
+                      className={`absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1 rounded-full text-sm font-medium transition-colors ${
+                        comment 
+                          ? 'bg-[#8609A3] text-white hover:bg-[#6d0785]' 
+                          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      }`}
+                    >
+                      Enviar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       {/* Success Modal */}
       <AnimatePresence>
         {successOpen && (
@@ -462,7 +538,6 @@ export default function Video({ params }: { params: { id: string } }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
     </div>
   );
 }

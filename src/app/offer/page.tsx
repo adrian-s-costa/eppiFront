@@ -30,6 +30,7 @@ import {
 import Link from "next/link";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { log } from "console";
+import { set } from "date-fns";
 
 
 export default function SpecificOffer(){
@@ -51,6 +52,7 @@ export default function SpecificOffer(){
   const [modalView, setModalView] = useState<'list' | 'map'>('list');
   const [selectedDealershipIndex, setSelectedDealershipIndex] = useState<number | null>(null);
   const [dealerships, setDealerships] = useState<any>(null);
+  const [isUnique, setIsUnique] = useState<any>(false);
   const [dealership, setDealership] = useState<any>(null);
   const [idForReq, setIdForReq] = useState<any>(null);
 
@@ -267,6 +269,7 @@ export default function SpecificOffer(){
                       // window.open(`https://www.google.com/maps/search/?api=1&query=${spaceToPlus(dealership.name)}`, '_blank');
                       console.log("dealerships:", dealerships);
                       console.log("dealership", dealership);
+                      setIsUnique(true);
                       openDealershipModal('map');
                     }}
                   >
@@ -654,15 +657,24 @@ export default function SpecificOffer(){
                           mapContainerStyle={{ width: "100%", height: "100%" }}
                           center={
                             selectedDealershipIndex !== null
-                              ? dealerships[selectedDealershipIndex].coordinates
+                              ? !isUnique ? dealerships[selectedDealershipIndex].coordinates
                               : dealerships[0].coordinates
+                              : dealership.coordinates
                           }
                           zoom={12}
                           options={{
                             disableDefaultUI: true,
                           }}
                         >
-                          {dealerships.map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
+                          {isUnique ?
+                          [dealership].map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
+                            <MarkerF
+                              key={dealership.id}
+                              position={dealership.coordinates}
+                              onClick={() => setSelectedDealershipIndex(index)}
+                            />
+                          ))
+                           : dealerships.map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
                             <MarkerF
                               key={dealership.id}
                               position={dealership.coordinates}
@@ -747,9 +759,11 @@ export default function SpecificOffer(){
                       if (currentView === 'list') {
                         setSelectedDealershipIndex(null);
                         openDealershipModal('list');
+                        setIsUnique(false);
                       } else {
                         setSelectedDealershipIndex(null);
                         openDealershipModal('map');
+                        setIsUnique(false);
                       }
                     }}
                     className="relative w-full bg-[#8609A3] hover:bg-[#6e0885] text-white font-medium py-3 px-6 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-105"

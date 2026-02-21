@@ -263,7 +263,8 @@ export default function SpecificOffer(){
                     className="flex items-center justify-center p-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                     onClick={() => {
                       // Open map with dealership location
-                      window.open(`https://www.google.com/maps/search/?api=1&query=${spaceToPlus(dealership.name)}`, '_blank');
+                      // window.open(`https://www.google.com/maps/search/?api=1&query=${spaceToPlus(dealership.name)}`, '_blank');
+                      setModalView('map');
                     }}
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

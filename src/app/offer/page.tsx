@@ -278,7 +278,7 @@ export default function SpecificOffer(){
               <div className="border-t border-gray-100 p-5">
                 <h3 className="font-semibold text-gray-900 mb-3">Descrição</h3>
                 <ReadMore 
-                  text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                  text={dealership?.description || ''}
                   maxLength={150}
                 />
               </div>

@@ -423,11 +423,7 @@ export default function SpecificOffer(){
                   ) : (
                     <GoogleMap
                       mapContainerStyle={{ width: "100%", height: "100%" }}
-                      center={
-                        selectedDealershipIndex !== null
-                          ? dealerships[selectedDealershipIndex].coordinates
-                          : dealerships[0].coordinates
-                      }
+                      center={selectedDealershipIndex !== null && !isUnique ? dealerships[selectedDealershipIndex].coordinates : dealership.coordinates}
                       zoom={12}
                       options={{
                         disableDefaultUI: true,
@@ -655,12 +651,7 @@ export default function SpecificOffer(){
                       ) : (
                         <GoogleMap
                           mapContainerStyle={{ width: "100%", height: "100%" }}
-                          center={
-                            selectedDealershipIndex !== null
-                              ? !isUnique ? dealerships[selectedDealershipIndex].coordinates
-                              : dealerships[0].coordinates
-                              : dealership.coordinates
-                          }
+                          center={selectedDealershipIndex !== null && !isUnique ? dealerships[selectedDealershipIndex].coordinates : dealership.coordinates}
                           zoom={12}
                           options={{
                             disableDefaultUI: true,
@@ -670,7 +661,7 @@ export default function SpecificOffer(){
                           
                           isUnique ?
                           
-                          [...dealership].map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
+                          [dealership].map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
                             <MarkerF
                               key={dealership.id}
                               position={dealership.coordinates}
@@ -688,7 +679,7 @@ export default function SpecificOffer(){
                       )}
 
                       <AnimatePresence>
-                        {selectedDealershipIndex !== null && (
+                        {selectedDealershipIndex !== null && !isUnique && (
                           <motion.div
                             className="absolute left-0 right-0 bottom-4 px-5"
                             initial={{ y: 80, opacity: 0 }}

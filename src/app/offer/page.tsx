@@ -264,7 +264,8 @@ export default function SpecificOffer(){
                     onClick={() => {
                       // Open map with dealership location
                       // window.open(`https://www.google.com/maps/search/?api=1&query=${spaceToPlus(dealership.name)}`, '_blank');
-                      setModalView('map');
+                      setSelectedDealershipIndex(null);
+                      openDealershipModal('map');
                     }}
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

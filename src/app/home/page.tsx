@@ -96,7 +96,7 @@ export default function Home({setTabIndex, muted, coor}: any){
   
   const firstName = fullName ? fullName.split(' ')[0] : '';
 
-  return loading && !campaigns ? (
+  return loading || (!homeCategories && !homeVideo && !collab)  ? (
   <Loader />
 ) : (
   <>

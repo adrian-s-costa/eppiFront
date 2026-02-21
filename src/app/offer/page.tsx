@@ -264,7 +264,6 @@ export default function SpecificOffer(){
                     onClick={() => {
                       // Open map with dealership location
                       // window.open(`https://www.google.com/maps/search/?api=1&query=${spaceToPlus(dealership.name)}`, '_blank');
-                      setSelectedDealershipIndex(null);
                       openDealershipModal('map');
                     }}
                   >

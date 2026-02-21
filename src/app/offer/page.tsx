@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/card"
 import Link from "next/link";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { log } from "console";
 
 
 export default function SpecificOffer(){
@@ -264,6 +265,8 @@ export default function SpecificOffer(){
                     onClick={() => {
                       // Open map with dealership location
                       // window.open(`https://www.google.com/maps/search/?api=1&query=${spaceToPlus(dealership.name)}`, '_blank');
+                      console.log("dealerships:", dealerships);
+                      console.log("dealership", dealership);
                       openDealershipModal('map');
                     }}
                   >

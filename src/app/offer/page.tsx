@@ -666,8 +666,11 @@ export default function SpecificOffer(){
                             disableDefaultUI: true,
                           }}
                         >
-                          {isUnique ?
-                          [dealership].map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
+                          {
+                          
+                          isUnique ?
+                          
+                          [...dealership].map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
                             <MarkerF
                               key={dealership.id}
                               position={dealership.coordinates}

@@ -254,8 +254,6 @@ export default function Profile (){
             <IoIosArrowForward className="text-xl text-slate-400"/>
           </motion.button> */}
 
-          <hr className="mx-4"/>
-
           {/* Editar informações */}
           <motion.button
             whileTap={{ scale: 0.98 }}

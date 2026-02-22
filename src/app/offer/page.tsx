@@ -665,7 +665,7 @@ export default function SpecificOffer(){
                             <MarkerF
                               key={dealership.id}
                               position={dealership.coordinates}
-                              onClick={() => setSelectedDealershipIndex(index)}
+                              onClick={() => setSelectedDealershipIndex(-1)}
                             />
                           ))
                            : dealerships.map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
@@ -679,7 +679,7 @@ export default function SpecificOffer(){
                       )}
 
                       <AnimatePresence>
-                        {selectedDealershipIndex !== null && !isUnique && (
+                        {selectedDealershipIndex !== null && (
                           <motion.div
                             className="absolute left-0 right-0 bottom-4 px-5"
                             initial={{ y: 80, opacity: 0 }}
@@ -689,14 +689,18 @@ export default function SpecificOffer(){
                             <div
                               className="bg-white rounded-2xl shadow-lg p-4 flex space-x-4 cursor-pointer"
                               onClick={() => {
-                                const d = dealerships[selectedDealershipIndex];
-                                router.push(`/offer?id=${d.offerId}`);
+                                if (selectedDealershipIndex === -1) {
+                                  setSelectedDealershipIndex(null);
+                                } else {
+                                  const d = dealerships[selectedDealershipIndex];
+                                  router.push(`/offer?id=${d.offerId}`);
+                                }
                               }}
                             >
                               <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
                                 <Image
-                                  src={dealerships[selectedDealershipIndex].image}
-                                  alt={dealerships[selectedDealershipIndex].name}
+                                  src={selectedDealershipIndex === -1 ? dealership.image : dealerships[selectedDealershipIndex].image}
+                                  alt={selectedDealershipIndex === -1 ? dealership.name : dealerships[selectedDealershipIndex].name}
                                   width={80}
                                   height={80}
                                   className="w-full h-full object-cover"
@@ -704,13 +708,13 @@ export default function SpecificOffer(){
                               </div>
                               <div className="flex-1">
                                 <h3 className="font-semibold">
-                                  {dealerships[selectedDealershipIndex].name}
+                                  {selectedDealershipIndex === -1 ? dealership.name : dealerships[selectedDealershipIndex].name}
                                 </h3>
                                 <p className="text-sm text-gray-600">
-                                  {dealerships[selectedDealershipIndex].address}
+                                  {selectedDealershipIndex === -1 ? dealership.address : dealerships[selectedDealershipIndex].address}
                                 </p>
                                 <span className="text-xs text-gray-500">
-                                  {dealerships[selectedDealershipIndex].distance}
+                                  {selectedDealershipIndex === -1 ? dealership.distance : dealerships[selectedDealershipIndex].distance}
                                 </span>
                               </div>
                             </div>

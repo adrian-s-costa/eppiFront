@@ -57,6 +57,9 @@ export default function SpecificOffer(){
   const [idForReq, setIdForReq] = useState<any>(null);
 
 
+  const extendedDealerships = dealership ? [dealership, ...dealerships.filter((d: any) => d.id !== dealership.id)] : dealerships;
+
+
   const updateId = (id: any) => {
     setIdForReq(id)
   }
@@ -351,7 +354,7 @@ export default function SpecificOffer(){
               {/* Filtros */}
               <div className="flex flex-col xs:flex-row xs:items-center justify-between mb-4 gap-2">
                 <div className="flex items-center flex-wrap gap-x-2 gap-y-1">
-                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">{dealerships.length + " resultados"}</span>
+                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">{extendedDealerships.length + " resultados"}</span>
                 </div>
                 <div className="flex items-center flex-wrap gap-2">
                   <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">
@@ -368,7 +371,7 @@ export default function SpecificOffer(){
               {/* Conteúdo da visualização */}
               {currentView === 'list' ? (
                 <div className="space-y-4">
-                  {dealerships && dealerships.slice(0, 3).map((dealership: any) => (
+                  {extendedDealerships && extendedDealerships.slice(0, 3).map((dealership: any) => (
                     <div key={dealership.id} className="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 hover:shadow-md transition-shadow">
                       <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
                         <Image
@@ -690,7 +693,7 @@ export default function SpecificOffer(){
                               className="bg-white rounded-2xl shadow-lg p-4 flex space-x-4 cursor-pointer"
                               onClick={() => {
                                 if (selectedDealershipIndex === -1) {
-                                  setSelectedDealershipIndex(null);
+                                  setIsDealershipModalOpen(false);
                                 } else {
                                   const d = dealerships[selectedDealershipIndex];
                                   router.push(`/offer?id=${d.offerId}`);

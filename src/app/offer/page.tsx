@@ -696,7 +696,6 @@ export default function SpecificOffer(){
                                   setIsDealershipModalOpen(false);
                                 } else {
                                   const d = dealerships[selectedDealershipIndex];
-                                  setIsDealershipModalOpen(false);
                                   router.push(`/offer?id=${d.offerId}`);
                                 }
                               }}

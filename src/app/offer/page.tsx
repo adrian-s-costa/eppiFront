@@ -31,7 +31,6 @@ import Link from "next/link";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { log } from "console";
 import { set } from "date-fns";
-import Loader from "../loader/page";
 
 
 export default function SpecificOffer(){
@@ -56,7 +55,6 @@ export default function SpecificOffer(){
   const [isUnique, setIsUnique] = useState<any>(false);
   const [dealership, setDealership] = useState<any>(null);
   const [idForReq, setIdForReq] = useState<any>(null);
-  const [loading, setLoading] = useState<any>(false);
 
 
   const extendedDealerships = dealership ? [dealership, ...dealerships.filter((d: any) => d.id !== dealership.id)] : dealerships;
@@ -67,7 +65,6 @@ export default function SpecificOffer(){
   }
   
   useEffect(() => {
-    setLoading(true);
     try {
       getDealerships({storeCode: storeCode || "-1"}).then((res)=>{
         setDealerships(res);
@@ -83,7 +80,6 @@ export default function SpecificOffer(){
     } catch (error) {
       console.error(error)
     }
-    setLoading(false);
   }, [idForReq])
 
   const openDealershipModal = (view: 'list' | 'map') => {
@@ -209,7 +205,6 @@ export default function SpecificOffer(){
 
 
   return (
-    loading ? <Loader/> : 
       <div className="w-full min-h-screen h-full bg-white p-5 pb-20 lg:flex lg:justify-center lg:items-center lg:flex-col">
         <div className="lg:w-[60vw]">
           <div className="w-full flex justify-between items-center  relative">

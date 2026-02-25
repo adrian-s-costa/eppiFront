@@ -1,55 +1,33 @@
 "use client"
 
-import { MdArrowBackIos } from "react-icons/md";
-import { FaWhatsapp } from "react-icons/fa";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
- 
-import { useState, useEffect, useRef, Key, SetStateAction, AwaitedReactNode, JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from "react";
-import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
-import ReadMore from "../_components/readMore/readMore";
-import { getCampaignByDealershipId, getCampaigns, getDealershipById, getDealerships, getOneCampaign } from "../../../utils/api/service";
-import ModalImage from "react-modal-image";
 import { AnimatePresence, motion } from "framer-motion";
-import { BoxedAccordion, BoxedAccordionItem, IconAcademicLight, IconInformationRegular } from '@telefonica/mistica';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import Link from "next/link";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import { log } from "console";
-import { set } from "date-fns";
+import { getCampaignByDealershipId, getDealershipById, getDealerships } from "../../../utils/api/service";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import OfferHeader from "../../components/OfferHeader";
+import DealershipInfoCard from "../../components/DealershipInfoCard";
+import CampaignsList from "../../components/CampaignsList";
+import DealershipsList from "../../components/DealershipsList";
+import DealershipsMap from "../../components/DealershipsMap";
+import SuccessModal from "../../components/SuccessModal";
+import DealershipModal from "../../components/DealershipModal";
+import FloatingButton from "../../components/FloatingButton";
 
 
 export default function SpecificOffer(){
   const [showFloatingButton, setShowFloatingButton] = useState(false);
   const [currentView, setCurrentView] = useState<'list' | 'map'>('list');
   const dealershipsSectionRef = useRef<HTMLDivElement>(null);
-  const [isScrolled, setIsScrolled] = useState(false);
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
-  const lat = searchParams.get('lat');
-  const long = searchParams.get('long');
   const storeCode = searchParams.get('storeCode');
   const [contact, setContact] = useState<Boolean>(false);
-  //const [carOffer, setCarOffer] = useState<any>();
   const [preview, setPreview] = useState<string | null>(null);
   const [successOpen, setSuccessOpen] = useState<boolean>(false);
-  const [ campaigns, setCampaigns ] = useState<any>()
+  const [campaigns, setCampaigns] = useState<any>(null);
   const [isDealershipModalOpen, setIsDealershipModalOpen] = useState(false);
-  const [modalView, setModalView] = useState<'list' | 'map'>('list');
   const [selectedDealershipIndex, setSelectedDealershipIndex] = useState<number | null>(null);
   const [dealerships, setDealerships] = useState<any>(null);
   const [isUnique, setIsUnique] = useState<any>(false);
@@ -64,36 +42,10 @@ export default function SpecificOffer(){
   const updateId = (id: any) => {
     setIdForReq(id)
   }
-  
-  useEffect(() => {
-    setIsLoading(true);
-    try {
-      getDealerships({storeCode: storeCode || "-1"}).then((res)=>{
-        setDealerships(res);
-      })
-    } catch (error) {
-      console.error(error)
-    }
-
-    try {
-      getDealershipById(idForReq || id).then((res)=>{
-        setDealership(res);
-        setIsLoading(false);
-      })
-    } catch (error) {
-      console.error(error)
-      setIsLoading(false);
-    }
-  }, [idForReq])
 
   const openDealershipModal = (view: 'list' | 'map') => {
-    setModalView(view);
     setIsDealershipModalOpen(true);
   };
-
-  const { isLoaded: isMapLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyB0dQQVgCQwjRzOZb4nCpBtPA1brvFLPHI",
-  });
 
   // Efeito para controlar o scroll e mostrar/ocultar o botão flutuante
   useEffect(() => {
@@ -130,19 +82,29 @@ export default function SpecificOffer(){
     };
   }, []);
 
-  // useEffect(() => {
-  //   try {
-  //     getCampaigns().then((res) => {
-  //       setCampaigns(res);
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, [])
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchData = async () => {
+      try {
+        const [dealershipsRes, dealershipRes] = await Promise.all([
+          getDealerships({storeCode: storeCode || "-1"}),
+          getDealershipById(idForReq || id)
+        ]);
+        setDealerships(dealershipsRes);
+        setDealership(dealershipRes);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [idForReq, id, storeCode]);
 
   useEffect(()=>{
     try {
-      getCampaignByDealershipId(id).then((res) => {
+      getCampaignByDealershipId(id).then((res: any) => {
         setCampaigns(res);
       });
     } catch (error) {
@@ -164,8 +126,6 @@ export default function SpecificOffer(){
   }, [isDealershipModalOpen]);
 
   
-  const router = useRouter();
-
   const openSuccess = () => setSuccessOpen(true);
 
   const handleContact = async () => {
@@ -185,55 +145,42 @@ export default function SpecificOffer(){
           fantasia: localStorage.getItem('user'),
           email_cliente: localStorage.getItem('email'), 
           celular_cliente: localStorage.getItem('number'), 
-          descricao: `${localStorage.getItem("user")} quer iniciar uma negociação do produto: ${dealership.name}`,
-          valor: dealership.name,
+          descricao: `${localStorage.getItem("user")} quer iniciar uma negociação do produto: ${dealership?.name}`,
+          valor: dealership?.name,
         })
       });
+      
       if (!response.ok) {
         throw new Error('Failed to fetch video');
       }
+      
       const responseData = await response.json();
-      
-      const encodedText = encodeURIComponent('Olá! Gostaria de mais informações.');
-      const whatsappUrl = `https://wa.me/67992214009?text=${encodedText}`;
-      
       openSuccess();
     } catch (error) {
       console.error('Error fetching video:', error);
     }
   }
 
-  function spaceToPlus(text: string): string {
-    return text.replace(/ /g, "+");
-  }
+  const handleMapClick = () => {
+    setIsUnique(true);
+    openDealershipModal('map');
+  };
+
+  const handleFloatingButtonClick = () => {
+    setSelectedDealershipIndex(null);
+    setIsUnique(false);
+    openDealershipModal(currentView);
+  };
 
 
   return (
       <div className="w-full min-h-screen h-full bg-white p-5 pb-20 lg:flex lg:justify-center lg:items-center lg:flex-col">
         <div className="lg:w-[60vw]">
           {/* Loading Screen */}
-          {isLoading && (
-            <div className="fixed inset-0 z-50 bg-white flex items-center justify-center">
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 border-4 border-[#8609A3] border-t-transparent rounded-full animate-spin"></div>
-                <p className="mt-4 text-gray-600 text-sm">Carregando...</p>
-              </div>
-            </div>
-          )}
+          {isLoading && <LoadingSpinner />}
           
-          <div className="w-full flex justify-between items-center  relative">
-            <div className="flex h-full items-center">
-              <MdArrowBackIos className='text-2xl top-[17px] left-0 cursor-pointer text-black' onClick={() => {router.push("/tab")} } />
-              <h1 className="xxs:text-sm xs:text-lg font-bold">{dealership && dealership.name}</h1>
-            </div>
-            
-            <Image 
-              src={"https://res.cloudinary.com/dmo7nzytn/image/upload/v1757886696/Logo_Horizontal_164x48_-_A_AGENCIA_logo_rvbbq5.svg"} 
-              alt={""}
-              width={70}
-              height={1160}          
-            />            
-          </div>
+          {/* Header */}
+          <OfferHeader dealershipName={dealership?.name} />
           
           {/* Main Image */}
           <div className="relative w-full h-64 rounded-xl overflow-hidden mt-5">
@@ -249,97 +196,18 @@ export default function SpecificOffer(){
 
           {/* Dealership Info Card */}
           {dealership && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className="mt-6 bg-white rounded-xl shadow-md overflow-hidden"
-            >
-              <div className="p-5">
-                <h2 className="text-xl font-bold text-gray-900">{dealership.name}</h2>
-                
-                {/* Rating */}
-                <div className="flex items-center mt-2">
-                  <div className="flex text-yellow-400">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-5 h-5" fill={i < 4 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <span className="ml-2 text-gray-600">{`${dealership.rating} (${dealership.reviews} avaliações)`}</span>
-                </div>
-
-                {/* Buttons */}
-                <div className="flex gap-3 mt-4">
-                  <button 
-                    onClick={handleContact}
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
-                  >
-                    <FaWhatsapp className="text-xl"/>
-                    Negocie pelo WhatsApp
-                  </button>
-                  <button 
-                    className="flex items-center justify-center p-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                    onClick={() => {
-                      // Open map with dealership location
-                      // window.open(`https://www.google.com/maps/search/?api=1&query=${spaceToPlus(dealership.name)}`, '_blank');
-                      console.log("dealerships:", dealerships);
-                      console.log("dealership", dealership);
-                      setIsUnique(true);
-                      openDealershipModal('map');
-                    }}
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="border-t border-gray-100 p-5">
-                <h3 className="font-semibold text-gray-900 mb-3">Descrição</h3>
-                <ReadMore 
-                  text={dealership?.description || ''}
-                  maxLength={150}
-                />
-              </div>
-            </motion.div>
+            <DealershipInfoCard
+              dealership={dealership}
+              onContact={handleContact}
+              onMapClick={handleMapClick}
+            />
           )}
 
-          {
-            !campaigns || campaigns.length === 0 ? null :
-            <div className="mt-12">
-              <h1 className={`text-lg font-bold mb-4`}>O que há de novo</h1>
-              <div className="flex overflow-x-scroll gap-3">
-                {campaigns && campaigns
-                // .filter((carro: any) => carro.uf.includes(uf))
-                .map((carro: any, index: number)=>{
-                  return <Link
-                    href={{
-                      pathname: '/offerProduct',
-                      query: { id: carro.id },
-                    }}
-                    key={index}
-                    className="relative"
-                  >
-                    <Image quality={100} priority={true} className="xxs:w-[202px] xxs:h-[117px] xs:w-[232px] xs:h-[147px] rounded-lg mb-2 xs:min-w-[232px] xs:min-h-[147px] xxs:min-w-[202px] xxs:min-h-[117px] bg-cover" src={carro.imgSrc!} alt={""} width={230} height={125}/>
-                    <div className="flex flex-col gap-1 xxs:w-[202px] xs:w-[232px]">
-                      <span className="xs:text-base xxs:text-sm font-semibold">{carro.title}</span>
-                      <span className="xs:text-sm xxs:text-xs">{carro.desc}</span>
-                      <span className="text-[#838383] xs:text-base xxs:text-sm dark:text-black">{carro.price}</span>
-                    </div>
-                  </Link>
-                })}
-              </div>
-            </div>
-          }
-          {/* Seção de visualização (Lista/Mapa) */}
-          {
-            dealerships && dealerships.length > 0 ?
-              <div ref={dealershipsSectionRef} className="mt-6 sm:mt-8">
+          {/* Campaigns List */}
+          <CampaignsList campaigns={campaigns} />
+          {/* Other Dealerships Section */}
+          {dealerships && dealerships.length > 0 && (
+            <div ref={dealershipsSectionRef} className="mt-6 sm:mt-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
                 <h1 className="text-base sm:text-lg font-bold whitespace-nowrap">Outras unidades</h1>
                 <div className="w-full sm:w-auto flex bg-gray-100 rounded-lg p-0.5">
@@ -365,10 +233,10 @@ export default function SpecificOffer(){
                 </div>
               </div>
 
-              {/* Filtros */}
+              {/* Filters */}
               <div className="flex flex-col xs:flex-row xs:items-center justify-between mb-4 gap-2">
                 <div className="flex items-center flex-wrap gap-x-2 gap-y-1">
-                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">{dealerships.length + " resultados"}</span>
+                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">{extendedDealerships.length + " resultados"}</span>
                 </div>
                 <div className="flex items-center flex-wrap gap-2">
                   <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">
@@ -382,124 +250,20 @@ export default function SpecificOffer(){
                 </div>
               </div>
 
-              {/* Conteúdo da visualização */}
+              {/* Content */}
               {currentView === 'list' ? (
-                <div className="space-y-4">
-                  {extendedDealerships && extendedDealerships.slice(0, 3).map((dealership: any) => (
-                    <div key={dealership.id} className="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 hover:shadow-md transition-shadow">
-                      <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
-                        <Image
-                          src={dealership.image}
-                          alt={dealership.name}
-                          width={80}
-                          height={80}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{dealership.name}</h3>
-                        <p className="text-sm text-gray-600">{dealership.address}</p>
-                        <div className="flex items-center mt-1">
-                          <div className="flex text-yellow-400">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <svg key={star} className="w-4 h-4" fill={star <= 4 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                              </svg>
-                            ))}
-                          </div>
-                          <span className="text-xs text-gray-500 ml-1">{dealership.rating.toFixed(1)} ({dealership.reviews})</span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-sm text-gray-500 block">{dealership.distance}</span>
-                        <Link
-                          href={{
-                            pathname: `/offer`,
-                            query: { id: dealership.id, storeCode: dealership.storeCode},
-                          }}
-                        >
-                          <button
-                            className="mt-2 px-3 py-1 bg-[#8609A3] text-white text-xs rounded-full hover:bg-[#6e0885] transition-colors"
-                            onClick={() => {
-                              updateId(dealership.id);
-                            }}
-                          >
-                            Ver ofertas
-                          </button>
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <DealershipsList 
+                  dealerships={extendedDealerships} 
+                  onUpdateId={updateId}
+                />
               ) : (
-                <div className="relative h-[500px] rounded-lg overflow-hidden">
-                  {!isMapLoaded ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                      <p className="text-gray-500 text-sm">Carregando mapa...</p>
-                    </div>
-                  ) : (
-                    <GoogleMap
-                      mapContainerStyle={{ width: "100%", height: "100%" }}
-                      center={selectedDealershipIndex !== null && !isUnique ? dealerships[selectedDealershipIndex].coordinates : dealership.coordinates}
-                      zoom={12}
-                      options={{
-                        disableDefaultUI: true,
-                      }}
-                    >
-                      {dealerships.map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
-                        <MarkerF
-                          key={dealership.id}
-                          position={dealership.coordinates}
-                          onClick={() => setSelectedDealershipIndex(index)}
-                        />
-                      ))}
-                    </GoogleMap>
-                  )}
-
-                  <AnimatePresence>
-                    {selectedDealershipIndex !== null && (
-                      <motion.div
-                        className="absolute left-0 right-0 bottom-4 px-4"
-                        initial={{ y: 80, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: 80, opacity: 0 }}
-                      >
-                        <div
-                          className="bg-white rounded-2xl shadow-lg p-4 flex space-x-4 cursor-pointer"
-                          onClick={() => {
-                            const d = dealerships[selectedDealershipIndex];
-                            router.push(`/offer?id=${d.offerId}`);
-                          }}
-                        >
-                          <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
-                            <Image
-                              src={dealerships[selectedDealershipIndex].image}
-                              alt={dealerships[selectedDealershipIndex].name}
-                              width={80}
-                              height={80}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold">
-                              {dealerships[selectedDealershipIndex].name}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              {dealerships[selectedDealershipIndex].address}
-                            </p>
-                            <span className="text-xs text-gray-500">
-                              {dealerships[selectedDealershipIndex].distance}
-                            </span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                <DealershipsMap 
+                  dealerships={extendedDealerships}
+                  mainDealership={dealership}
+                />
               )}
-              </div>
-            : null
-          }
+            </div>
+          )}
           {/* Preview Modal */}
           <AnimatePresence>
             {preview && (
@@ -538,272 +302,27 @@ export default function SpecificOffer(){
           </AnimatePresence>
 
           {/* Success Modal */}
-          <AnimatePresence>
-            {successOpen && (
-              <motion.div
-                className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={()=> setSuccessOpen(false)}
-              >
-                <motion.div
-                  initial={{ y: 24, opacity: 0, scale: 0.98 }}
-                  animate={{ y: 0, opacity: 1, scale: 1 }}
-                  exit={{ y: 12, opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.22, ease: "easeOut" }}
-                  className="relative w-full max-w-md bg-white rounded-2xl p-6 text-center shadow-2xl"
-                  onClick={(e)=> e.stopPropagation()}
-                >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 340, damping: 18 }}
-                    className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-4"
-                  >
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M20 7L9 18L4 13" stroke="#059669" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </motion.div>
-                  <h3 className="text-lg font-semibold text-black">Contato enviado!</h3>
-                  <p className="text-slate-600 mt-1">Recebemos seu interesse. Em breve um vendedor falará com você.</p>
-                  <div className="mt-6 grid grid-cols-2 gap-3">
-                    <button
-                      className="w-full py-3 rounded-xl border border-slate-200 text-slate-700"
-                      onClick={()=> setSuccessOpen(false)}
-                    >
-                      Fechar
-                    </button>
-                    <button
-                      className="w-full py-3 rounded-xl bg-[#8609A3] text-white font-semibold"
-                      onClick={()=> { setSuccessOpen(false); router.push('/tab'); }}
-                    >
-                      Ir para início
-                    </button>
-                  </div>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <SuccessModal 
+            isOpen={successOpen} 
+            onClose={() => setSuccessOpen(false)} 
+          />
           
-          {/* Modal de concessionárias (lista / mapa) */}
-          <AnimatePresence>
-            {isDealershipModalOpen && (
-              <motion.div
-                className="fixed inset-0 z-50 bg-white"
-                initial={{ y: '100%' }}
-                animate={{ y: 0 }}
-                exit={{ y: '100%' }}
-                transition={{ type: 'spring', damping: 30, stiffness: 260 }}
-              >
-                <div className="p-5 flex items-center justify-between border-b border-gray-200">
-                  <div className="flex items-center">
-                    <MdArrowBackIos
-                      className="text-2xl cursor-pointer text-black"
-                      onClick={() => setIsDealershipModalOpen(false)}
-                    />
-                    <h2 className="ml-2 text-base font-bold">
-                      {dealership?.name || 'BYD Itavema'}
-                    </h2>
-                  </div>
-                  <Image 
-                    src={"https://res.cloudinary.com/dmo7nzytn/image/upload/v1757886696/Logo_Horizontal_164x48_-_A_AGENCIA_logo_rvbbq5.svg"} 
-                    alt={""}
-                    width={70}
-                    height={1160}          
-                  />
-                </div>
-
-                <div className="px-5 pt-4">
-                  <div className="flex bg-gray-100 rounded-lg p-0.5">
-                    <button
-                      onClick={() => setModalView('list')}
-                      className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm ${modalView === 'list' ? 'bg-white shadow-sm text-[#8609A3]' : 'text-gray-500'}`}
-                    >
-                      <span>Lista</span>
-                    </button>
-                    <button
-                      onClick={() => setModalView('map')}
-                      className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm ${modalView === 'map' ? 'bg-white shadow-sm text-[#8609A3]' : 'text-gray-500'}`}
-                    >
-                      <span>Mapa</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mt-4 h-[calc(100vh-150px)]">
-                  {modalView === 'list' ? (
-                    <div className="h-full overflow-y-auto px-5 pb-6 space-y-4">
-                      {dealerships.map((dealership: { id: Key | null | undefined; offerId: any; image: string | StaticImport; name: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<AwaitedReactNode> | null | undefined; address: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; distance: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }, index: any) => (
-                        <div
-                          key={dealership.id}
-                          className="bg-white rounded-xl shadow-sm p-4 flex items-center space-x-4"
-                          onClick={() => {
-                            router.push(`/offer?id=${dealership.offerId}`);
-                          }}
-                        >
-                          <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
-                            <Image
-                              src={dealership.image}
-                              alt={dealership.name as string}
-                              width={80}
-                              height={80}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold">{dealership.name}</h3>
-                            <p className="text-sm text-gray-600">{dealership.address}</p>
-                            <span className="text-xs text-gray-500">{dealership.distance}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="relative h-full">
-                      {!isMapLoaded ? (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                          <p className="text-gray-500 text-sm">Carregando mapa...</p>
-                        </div>
-                      ) : (
-                        <GoogleMap
-                          mapContainerStyle={{ width: "100%", height: "100%" }}
-                          center={selectedDealershipIndex !== null && !isUnique ? dealerships[selectedDealershipIndex].coordinates : dealership.coordinates}
-                          zoom={12}
-                          options={{
-                            disableDefaultUI: true,
-                          }}
-                        >
-                          {
-                          
-                          isUnique ?
-                          
-                          [dealership].map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
-                            <MarkerF
-                              key={dealership.id}
-                              position={dealership.coordinates}
-                              onClick={() => setSelectedDealershipIndex(-1)}
-                            />
-                          ))
-                           : dealerships.map((dealership: { id: Key | null | undefined; coordinates: google.maps.LatLng | google.maps.LatLngLiteral; }, index: SetStateAction<number | null>) => (
-                            <MarkerF
-                              key={dealership.id}
-                              position={dealership.coordinates}
-                              onClick={() => setSelectedDealershipIndex(index)}
-                            />
-                          ))}
-                        </GoogleMap>
-                      )}
-
-                      <AnimatePresence>
-                        {selectedDealershipIndex !== null && (
-                          <motion.div
-                            className="absolute left-0 right-0 bottom-4 px-5"
-                            initial={{ y: 80, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: 80, opacity: 0 }}
-                          >
-                            <div
-                              className="bg-white rounded-2xl shadow-lg p-4 flex space-x-4 cursor-pointer"
-                              onClick={() => {
-                                if (selectedDealershipIndex === -1) {
-                                  setIsDealershipModalOpen(false);
-                                } else {
-                                  const d = dealerships[selectedDealershipIndex];
-                                  router.push(`/offer?id=${d.offerId}`);
-                                }
-                              }}
-                            >
-                              <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
-                                <Image
-                                  src={selectedDealershipIndex === -1 ? dealership.image : dealerships[selectedDealershipIndex].image}
-                                  alt={selectedDealershipIndex === -1 ? dealership.name : dealerships[selectedDealershipIndex].name}
-                                  width={80}
-                                  height={80}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <div className="flex-1">
-                                <h3 className="font-semibold">
-                                  {selectedDealershipIndex === -1 ? dealership.name : dealerships[selectedDealershipIndex].name}
-                                </h3>
-                                <p className="text-sm text-gray-600">
-                                  {selectedDealershipIndex === -1 ? dealership.address : dealerships[selectedDealershipIndex].address}
-                                </p>
-                                <span className="text-xs text-gray-500">
-                                  {selectedDealershipIndex === -1 ? dealership.distance : dealerships[selectedDealershipIndex].distance}
-                                </span>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Dealership Modal */}
+          <DealershipModal
+            isOpen={isDealershipModalOpen}
+            onClose={() => setIsDealershipModalOpen(false)}
+            dealerships={dealerships || []}
+            mainDealership={dealership}
+            isUnique={isUnique}
+            onUpdateId={updateId}
+          />
           
-          {/* Botão flutuante */}
-          <AnimatePresence>
-            {showFloatingButton && !isDealershipModalOpen && (
-              <motion.div
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 100, opacity: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="fixed bottom-6 left-0 right-0 z-50 px-4 flex justify-center"
-              >
-                <div className="relative max-w-md w-full">
-                  {/* Brilho roxo sutil */}
-                  <motion.div 
-                    className="absolute inset-0 bg-[#9c27b0] rounded-full filter blur-md opacity-20"
-                    animate={{
-                      opacity: [0.15, 0.25, 0.15],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatType: 'reverse',
-                      ease: "easeInOut"
-                    }}
-                  />
-                  <button
-                    onClick={() => {
-                      if (currentView === 'list') {
-                        setSelectedDealershipIndex(null);
-                        openDealershipModal('list');
-                        setIsUnique(false);
-                      } else {
-                        setSelectedDealershipIndex(null);
-                        openDealershipModal('map');
-                        setIsUnique(false);
-                      }
-                    }}
-                    className="relative w-full bg-[#8609A3] hover:bg-[#6e0885] text-white font-medium py-3 px-6 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-105"
-                  >
-                    {currentView === 'list' ? (
-                      <>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                        <span className="whitespace-nowrap">Ver lista completa</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <span className="whitespace-nowrap">Ver no mapa</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Floating Button */}
+          <FloatingButton
+            show={showFloatingButton && !isDealershipModalOpen}
+            currentView={currentView}
+            onClick={handleFloatingButtonClick}
+          />
         </div>
       </div>
   )   

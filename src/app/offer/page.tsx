@@ -55,6 +55,7 @@ export default function SpecificOffer(){
   const [isUnique, setIsUnique] = useState<any>(false);
   const [dealership, setDealership] = useState<any>(null);
   const [idForReq, setIdForReq] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
   const extendedDealerships = dealership ? [dealership, ...dealerships.filter((d: any) => d.id !== dealership.id)] : dealerships;
@@ -65,6 +66,7 @@ export default function SpecificOffer(){
   }
   
   useEffect(() => {
+    setIsLoading(true);
     try {
       getDealerships({storeCode: storeCode || "-1"}).then((res)=>{
         setDealerships(res);
@@ -76,9 +78,11 @@ export default function SpecificOffer(){
     try {
       getDealershipById(idForReq || id).then((res)=>{
         setDealership(res);
+        setIsLoading(false);
       })
     } catch (error) {
       console.error(error)
+      setIsLoading(false);
     }
   }, [idForReq])
 
@@ -207,6 +211,16 @@ export default function SpecificOffer(){
   return (
       <div className="w-full min-h-screen h-full bg-white p-5 pb-20 lg:flex lg:justify-center lg:items-center lg:flex-col">
         <div className="lg:w-[60vw]">
+          {/* Loading Screen */}
+          {isLoading && (
+            <div className="fixed inset-0 z-50 bg-white flex items-center justify-center">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 border-4 border-[#8609A3] border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600 text-sm">Carregando...</p>
+              </div>
+            </div>
+          )}
+          
           <div className="w-full flex justify-between items-center  relative">
             <div className="flex h-full items-center">
               <MdArrowBackIos className='text-2xl top-[17px] left-0 cursor-pointer text-black' onClick={() => {router.push("/tab")} } />
@@ -354,7 +368,7 @@ export default function SpecificOffer(){
               {/* Filtros */}
               <div className="flex flex-col xs:flex-row xs:items-center justify-between mb-4 gap-2">
                 <div className="flex items-center flex-wrap gap-x-2 gap-y-1">
-                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">{extendedDealerships.length + " resultados"}</span>
+                  <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">{dealerships.length + " resultados"}</span>
                 </div>
                 <div className="flex items-center flex-wrap gap-2">
                   <span className="text-xs xs:text-sm text-gray-600 whitespace-nowrap">

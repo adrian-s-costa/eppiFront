@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-e639beba'], (function (workbox) { 'use strict';
+define(['./workbox-5892720b'], (function (workbox) { 'use strict';
 
   importScripts("worker-development.js");
   self.skipWaiting();

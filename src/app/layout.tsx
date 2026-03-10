@@ -7,7 +7,6 @@
   import { GoogleOAuthProvider } from '@react-oauth/google';
   import DeepLinkListener from '../app/_components/DeepLinkListener';
 
-
   const inter = Inter({ subsets: ["latin"] });
   const mont = Montserrat({ subsets: ["latin"] });
   const APP_NAME = "Éppi";
@@ -82,6 +81,7 @@
             <meta name="apple-mobile-web-app-capable" content="yes"/>
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
             <link rel="apple-touch-icon" href="/icons/icon-192.png"></link>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
             <Pwa />
           </body>
         </GoogleOAuthProvider>

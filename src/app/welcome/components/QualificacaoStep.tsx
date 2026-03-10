@@ -9,6 +9,7 @@ interface QualificacaoStepProps {
     tipoAtendimento: string
     volumeClientes: string
     quantidadeUnidades: string
+    linkRedirect?: string | undefined
   }
   onNext: () => void
   onBack: () => void
@@ -18,6 +19,7 @@ interface QualificacaoStepProps {
     tipoAtendimento: string
     volumeClientes: string
     quantidadeUnidades: string
+    linkRedirect?: string | undefined
   }) => void
 }
 
@@ -75,11 +77,12 @@ export default function QualificacaoStep({ data, onNext, onBack, onUpdate }: Qua
   }
 
   const isFormValid = () => {
-    return Object.values(data).every(value => value !== '')
+    const { tipoOperacao, estruturaAtendimento, tipoAtendimento, volumeClientes, quantidadeUnidades } = data
+    return tipoOperacao !== '' && estruturaAtendimento !== '' && tipoAtendimento !== '' && volumeClientes !== '' && quantidadeUnidades !== ''
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mx-5 mb-5">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">
         Qualifiquemos seu negócio
       </h1>

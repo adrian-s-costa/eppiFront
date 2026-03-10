@@ -9,6 +9,7 @@ import PaymentStep from './components/PaymentStep'
 
 export default function WelcomePage() {
   const [currentStep, setCurrentStep] = useState(0)
+  const [linkPayment, setLinkPayment] = useState<string>('');
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward')
   const [formData, setFormData] = useState({
     lead: {
@@ -21,8 +22,8 @@ export default function WelcomePage() {
       estruturaAtendimento: '',
       tipoAtendimento: '',
       volumeClientes: '',
-      quantidadeUnidades: ''
-    }
+      quantidadeUnidades: '',
+    },
   })
 
   const steps = ['Lead', 'Qualificação', 'Plano', 'Pagamento', 'Conteúdo']
@@ -130,15 +131,18 @@ export default function WelcomePage() {
               onNext={handleNext}
               onBack={handleBack}
               leadData={formData.lead}
+              setLinkPayment={setLinkPayment}
             />
           </StepTransition>
 
           <StepTransition isActive={currentStep === 3} direction={direction}>
+            <></>
             <PaymentStep
-              data={formData}
+              data={formData.qualificacao}
               onNext={handleNext}
               onBack={handleBack}
-              index={currentStep}
+              isActive={currentStep === 3}
+              linkPayment={linkPayment}
             />
           </StepTransition>
 

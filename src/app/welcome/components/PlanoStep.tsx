@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { use, useEffect, useRef, useState } from 'react'
 import { createApproval } from '../../../../utils/api/service'
 
 interface PlanoStepProps {
@@ -16,6 +16,7 @@ interface PlanoStepProps {
     whatsapp: string
     email: string
   }
+  setLinkPayment: (link: string) => void
   onNext: () => void
   onBack: () => void
 }
@@ -86,12 +87,13 @@ function getPlanoRecomendado(data: PlanoStepProps['data']): Plano {
   }
 }
 
-export default function PlanoStep({ data, leadData, onNext, onBack }: PlanoStepProps) {
+export default function PlanoStep({ data, leadData, onNext, onBack, setLinkPayment }: PlanoStepProps) {
   const [cupom, setCupom] = useState('')
   const [cupomAplicado, setCupomAplicado] = useState('')
   const [desconto, setDesconto] = useState(0)
   const [erroCupom, setErroCupom] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const linkRef = useRef<any>(null);
   
   const plano = getPlanoRecomendado(data)
   
@@ -102,7 +104,6 @@ export default function PlanoStep({ data, leadData, onNext, onBack }: PlanoStepP
   const precoOriginalFormatado = desconto > 0 ? plano.preco : undefined
   const id = typeof window !== "undefined" ? window.localStorage.getItem("id") : false;
 
-
   const handleNextWithApproval = async () => {
     setIsLoading(true)
     try {
@@ -112,21 +113,20 @@ export default function PlanoStep({ data, leadData, onNext, onBack }: PlanoStepP
         amount: 1,
         userId: id
       }
-      
+    
       await createApproval(approvalData).then((res) => {
-        console.log('Resposta da API:', res)
+        if (res && res.link) {
+          setLinkPayment(res.link)
+        }
+        onNext()
       }).catch((err) => {
         console.log('Erro na requisição:', err)
       })
-      
-      console.log('Approval criado com sucesso!')
-      onNext()
     } catch (error) {
       console.error('Erro ao criar approval:', error)
-      // Mesmo com erro, permite prosseguir (pode ser ajustado conforme necessidade)
-      onNext()
+      
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 

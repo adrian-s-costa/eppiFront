@@ -113,9 +113,6 @@ export default function PlanoStep({ data, leadData, onNext, onBack }: PlanoStepP
         userId: id
       }
       
-      console.log('Enviando dados para API:', approvalData)
-      console.log('JSON.stringify:', JSON.stringify(approvalData))
-      
       await createApproval(approvalData).then((res) => {
         console.log('Resposta da API:', res)
       }).catch((err) => {

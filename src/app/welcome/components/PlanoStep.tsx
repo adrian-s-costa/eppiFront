@@ -109,7 +109,7 @@ export default function PlanoStep({ data, leadData, onNext, onBack }: PlanoStepP
       const approvalData = { 
         email: leadData.email,
         plan: plano.nome,
-        amount: precoComDesconto,
+        amount: 1,
         userId: id
       }
       

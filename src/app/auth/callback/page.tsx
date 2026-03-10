@@ -16,7 +16,7 @@ export default function AuthCallback() {
         const data = JSON.parse(decodeURIComponent(dataEncoded));
 
         // Salva os dados
-        localStorage.setItem('user', "HUMPTY");
+        localStorage.setItem('user', data.name);
         localStorage.setItem('id', data.id);
         localStorage.setItem('email', data.email);
         localStorage.setItem('number', data.cellphone);

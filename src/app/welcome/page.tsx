@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import React from 'react'
 
 // Components
 import { StepTransition, LeadStep, QualificacaoStep, PlanoStep } from './components'
+import PaymentStep from './components/PaymentStep'
 
 export default function WelcomePage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -49,61 +51,58 @@ export default function WelcomePage() {
   return (
     <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
       {/* Progress Indicator */}
-      <div className="px-4 pt-8 pb-6">
+      <div className="px-2 sm:px-4 pt-6 sm:pt-8 pb-4 sm:pb-6">
         <div className="max-w-md mx-auto">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-gray-600">Etapa {currentStep + 1} de {steps.length}</span>
-            <span className="text-sm font-medium text-gray-900">{steps[currentStep]}</span>
-          </div>
+          
           
           {/* Progress Steps */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-between space-x-1 sm:space-x-2 overflow-x-auto">
             {steps.map((step, index) => (
-              <div key={step} className="flex items-center">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-                    index === currentStep
-                      ? 'bg-[#8609A3] text-white'
-                      : index < currentStep
-                      ? 'bg-purple-100 text-purple-800'
-                      : 'bg-gray-100 text-gray-500'
-                  }`}
-                >
-                  {index < currentStep ? '✓' : index + 1}
+              <React.Fragment key={step}>
+                <div className="flex flex-col items-center flex-shrink-0 min-w-0">
+                  <div
+                    className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-medium ${
+                      index === currentStep
+                        ? 'bg-[#8609A3] text-white'
+                        : index < currentStep
+                        ? 'bg-purple-100 text-purple-800'
+                        : 'bg-gray-100 text-gray-500'
+                    }`}
+                  >
+                    {index < currentStep ? '✓' : index + 1}
+                  </div>
+                  <span
+                    className={`mt-1 text-center text-xs sm:text-xs leading-tight whitespace-nowrap ${
+                      index === currentStep
+                        ? 'text-[#8609A3] font-medium'
+                        : index < currentStep
+                        ? 'text-purple-800'
+                        : 'text-gray-400'
+                    }`}
+                  >
+                    {step}
+                  </span>
                 </div>
                 {index < steps.length - 1 && (
                   <div
-                    className={`w-8 h-0.5 mx-2 ${
+                    className={`flex-shrink-0 w-4 sm:w-8 h-0.5 mt-3 sm:mt-4 ${
                       index < currentStep ? 'bg-[#8609A3]' : 'bg-gray-200'
                     }`}
                   />
                 )}
-              </div>
+              </React.Fragment>
             ))}
           </div>
-          
-          {/* Step Labels */}
-          <div className="flex justify-between mt-2">
-            {steps.map((step, index) => (
-              <span
-                key={step}
-                className={`text-xs ${
-                  index === currentStep
-                    ? 'text-[#8609A3] font-medium'
-                    : index < currentStep
-                    ? 'text-purple-800'
-                    : 'text-gray-400'
-                }`}
-              >
-                {step}
-              </span>
-            ))}
+
+          <div className="flex w-full sm:flex-row sm:items-center sm:justify-center gap-2 sm:gap-0 mb-2 mt-5">
+            <span className="text-xs sm:text-sm text-gray-600 w-full text-center">Etapa {currentStep + 1} de {steps.length}</span>
           </div>
+
         </div>
       </div>
 
       {/* Form Content with Transition */}
-      <div className="flex-1 px-4 pb-8 relative">
+      <div className="flex-1 px-2 sm:px-4 pb-4 sm:pb-8 relative">
         <div className="max-w-md mx-auto">
           {/* Lead Step */}
           <StepTransition isActive={currentStep === 0} direction={direction}>
@@ -130,6 +129,16 @@ export default function WelcomePage() {
               data={formData.qualificacao}
               onNext={handleNext}
               onBack={handleBack}
+              leadData={formData.lead}
+            />
+          </StepTransition>
+
+          <StepTransition isActive={currentStep === 3} direction={direction}>
+            <PaymentStep
+              data={formData}
+              onNext={handleNext}
+              onBack={handleBack}
+              index={currentStep}
             />
           </StepTransition>
 

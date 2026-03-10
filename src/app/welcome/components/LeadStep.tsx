@@ -91,93 +91,100 @@ export default function LeadStep({ data, onNext, onUpdate }: LeadStepProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
-        Bem-vindo à Éppi
-      </h1>
-      <p className="text-gray-600 mb-8">
-        Preencha seus dados para criar sua conta
-      </p>
+    <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4 sm:p-6">
 
-      {/* Full Name Field */}
-      <div>
-        <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
-          Nome Completo
-        </label>
-        <input
-          type="text"
-          id="fullName"
-          value={data.fullName}
-          onChange={(e) => handleInputChange('fullName', e.target.value)}
-          placeholder="Seu nome completo"
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#8609A3] focus:border-transparent outline-none transition-colors ${
-            errors.fullName
-              ? 'border-red-500 bg-red-50'
-              : 'border-gray-300'
-          }`}
-        />
-        {errors.fullName && (
-          <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>
-        )}
+        <div className="text-center sm:text-left">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+            Bem-vindo à Éppi
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
+            Preencha seus dados para criar sua conta
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          {/* Full Name Field */}
+          <div>
+            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+              Nome Completo
+            </label>
+            <input
+              type="text"
+              id="fullName"
+              value={data.fullName}
+              onChange={(e) => handleInputChange('fullName', e.target.value)}
+              placeholder="Seu nome completo"
+              className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-[#8609A3] focus:border-transparent outline-none transition-colors ${
+                errors.fullName
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-gray-300'
+              }`}
+            />
+            {errors.fullName && (
+              <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.fullName}</p>
+            )}
+          </div>
+
+          {/* WhatsApp Field */}
+          <div>
+            <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 mb-2">
+              WhatsApp
+            </label>
+            <input
+              type="tel"
+              id="whatsapp"
+              value={data.whatsapp}
+              onChange={(e) => handleWhatsAppChange(e.target.value)}
+              placeholder="(11) 99999-9999"
+              maxLength={15}
+              className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-[#8609A3] focus:border-transparent outline-none transition-colors ${
+                errors.whatsapp
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-gray-300'
+              }`}
+            />
+            {errors.whatsapp && (
+              <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.whatsapp}</p>
+            )}
+          </div>
+
+          {/* Email Field */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              E-mail
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={data.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              placeholder="seu@email.com"
+              className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-[#8609A3] focus:border-transparent outline-none transition-colors ${
+                errors.email
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-gray-300'
+              }`}
+            />
+            {errors.email && (
+              <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.email}</p>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-[#8609A3] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#5b056e] focus:ring-2 focus:ring-[#8609A3] focus:ring-offset-2 outline-none transition-colors text-sm sm:text-base"
+          >
+            Continuar
+          </button>
+        </form>
       </div>
-
-      {/* WhatsApp Field */}
-      <div>
-        <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 mb-2">
-          WhatsApp
-        </label>
-        <input
-          type="tel"
-          id="whatsapp"
-          value={data.whatsapp}
-          onChange={(e) => handleWhatsAppChange(e.target.value)}
-          placeholder="(11) 99999-9999"
-          maxLength={15}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#8609A3] focus:border-transparent outline-none transition-colors ${
-            errors.whatsapp
-              ? 'border-red-500 bg-red-50'
-              : 'border-gray-300'
-          }`}
-        />
-        {errors.whatsapp && (
-          <p className="mt-1 text-sm text-red-600">{errors.whatsapp}</p>
-        )}
-      </div>
-
-      {/* Email Field */}
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-          E-mail
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={data.email}
-          onChange={(e) => handleInputChange('email', e.target.value)}
-          placeholder="seu@email.com"
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#8609A3] focus:border-transparent outline-none transition-colors ${
-            errors.email
-              ? 'border-red-500 bg-red-50'
-              : 'border-gray-300'
-          }`}
-        />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-        )}
-      </div>
-
-      {/* Submit Button */}
-      <button
-        type="submit"
-        className="w-full bg-[#8609A3] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#5b056e] focus:ring-2 focus:ring-[#8609A3] focus:ring-offset-2 outline-none transition-colors"
-      >
-        Continuar
-      </button>
 
       {/* Privacy Message */}
-      <p className="text-xs text-gray-500 text-center mt-6">
+      <p className="text-xs text-gray-500 text-center">
         Seus dados serão protegidos e usados apenas para sua conta
       </p>
-    </form>
+    </div>
   )
 }

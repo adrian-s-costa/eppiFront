@@ -168,8 +168,12 @@ export default function Profile (){
         return;
       }
 
-      if (res.lastPaymentStatus == "reproved" || res.lastPaymentStaus == "pending") {
+      if (res.lastPaymentStatus == "reproved" || res.lastPaymentStaus == "pending" || res.lastPaymentStaus == "in_process") {
         return router.push(`status/${res.lastPaymentId}`)
+      }
+
+      if (res.lastPaymentStaus == "in_process") {
+        return router.push(`statusInProcess/${res.lastPaymentId}`)
       }
   
       if (res.lastPaymentStaus == "approved"){

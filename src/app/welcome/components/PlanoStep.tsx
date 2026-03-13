@@ -5,6 +5,7 @@ import { createApproval } from '../../../../utils/api/service'
 
 interface PlanoStepProps {
   data: {
+    linkRedirect: string | undefined
     tipoOperacao: string
     estruturaAtendimento: string
     tipoAtendimento: string
@@ -12,13 +13,14 @@ interface PlanoStepProps {
     quantidadeUnidades: string
   }
   leadData: {
-    fullName: string
-    whatsapp: string
-    email: string
+    brandName: string
   }
-  setLinkPayment: (link: string) => void
+  setData: (data: any) => void
   onNext: () => void
   onBack: () => void
+  setLinkPayment: (link: string) => void
+  setPlanoData: (plano: { nome: string; preco: string; precoComDesconto: number }) => void
+  isActive?: boolean
 }
 
 interface Plano {
@@ -39,7 +41,7 @@ function getPlanoRecomendado(data: PlanoStepProps['data']): Plano {
       (estruturaAtendimento === 'apenas_eu' && volumeClientes === 'ate50')) {
     return {
       nome: 'Éppi Local',
-      preco: 'R$ 297/mês',
+      preco: 'R$5/mês',
       descricao: 'Perfeito para autônomos e pequenos negócios',
       features: [
         'Perfil completo no app',
@@ -87,7 +89,7 @@ function getPlanoRecomendado(data: PlanoStepProps['data']): Plano {
   }
 }
 
-export default function PlanoStep({ data, leadData, onNext, onBack, setLinkPayment }: PlanoStepProps) {
+export default function PlanoStep({ data, leadData, setData, onNext, onBack, setLinkPayment, setPlanoData }: PlanoStepProps) {
   const [cupom, setCupom] = useState('')
   const [cupomAplicado, setCupomAplicado] = useState('')
   const [desconto, setDesconto] = useState(0)
@@ -107,26 +109,33 @@ export default function PlanoStep({ data, leadData, onNext, onBack, setLinkPayme
   const handleNextWithApproval = async () => {
     setIsLoading(true)
     try {
+      // Passar os dados do plano para o PaymentStep
+      setPlanoData({
+        nome: plano.nome,
+        preco: plano.preco,
+        precoComDesconto: precoComDesconto
+      })
+
+      // Atualizar o qualificacao com o cupom usado
+      setData((prev: any) => ({
+        ...prev,
+        qualificacao: {
+          ...prev.qualificacao,
+          cupom: cupomAplicado
+        }
+      }))
+
       const approvalData = { 
-        email: leadData.email,
+        brandName: leadData.brandName,
         plan: plano.nome,
-        amount: 1,
+        amount: precoComDesconto,
         userId: id
       }
     
-      await createApproval(approvalData).then((res) => {
-        if (res && res.link) {
-          setLinkPayment(res.link)
-        }
-        onNext()
-      }).catch((err) => {
-        console.log('Erro na requisição:', err)
-      })
-    } catch (error) {
-      console.error('Erro ao criar approval:', error)
-      
+      //await createApproval(approvalData).then((res) => {
+      onNext()
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 

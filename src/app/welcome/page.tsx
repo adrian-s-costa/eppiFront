@@ -1,21 +1,24 @@
 'use client'
 
 import { useState } from 'react'
-import React from 'react'
-
-// Components
-import { StepTransition, LeadStep, QualificacaoStep, PlanoStep } from './components'
+import StepTransition from './components/StepTransition'
+import LeadStep from './components/LeadStep'
+import VinculoStep from './components/VinculoStep'
+import QualificacaoStep from './components/QualificacaoStep'
+import PlanoStep from './components/PlanoStep'
 import PaymentStep from './components/PaymentStep'
+import React from 'react'
 
 export default function WelcomePage() {
   const [currentStep, setCurrentStep] = useState(0)
   const [linkPayment, setLinkPayment] = useState<string>('');
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward')
   const [formData, setFormData] = useState({
-    lead: {
-      fullName: '',
-      whatsapp: '',
-      email: ''
+    brand: {
+      brandName: ''
+    },
+    vinculo: {
+      tipoVinculo: ''
     },
     qualificacao: {
       tipoOperacao: '',
@@ -23,10 +26,17 @@ export default function WelcomePage() {
       tipoAtendimento: '',
       volumeClientes: '',
       quantidadeUnidades: '',
+      linkRedirect: '',
+      cupom: ''
+    },
+    plano: {
+      nome: '',
+      preco: '',
+      precoComDesconto: 0
     },
   })
 
-  const steps = ['Lead', 'Qualificação', 'Plano', 'Pagamento', 'Conteúdo']
+  const steps = ['Marca', 'Vínculo', 'Qualificação', 'Plano', 'Pagamento', 'Conteúdo']
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -42,7 +52,7 @@ export default function WelcomePage() {
     }
   }
 
-  const updateFormData = (step: 'lead' | 'qualificacao', data: any) => {
+  const updateFormData = (step: 'brand' | 'vinculo' | 'qualificacao' | 'plano', data: any) => {
     setFormData(prev => ({
       ...prev,
       [step]: data
@@ -108,14 +118,25 @@ export default function WelcomePage() {
           {/* Lead Step */}
           <StepTransition isActive={currentStep === 0} direction={direction}>
             <LeadStep
-              data={formData.lead}
+              data={formData.brand}
               onNext={handleNext}
-              onUpdate={(data) => updateFormData('lead', data)}
+              onUpdate={(data) => updateFormData('brand', data)}
+            />
+          </StepTransition>
+
+          {/* Vínculo Step */}
+          <StepTransition isActive={currentStep === 1} direction={direction}>
+            <VinculoStep
+              data={formData.vinculo}
+              brandName={formData.brand.brandName}
+              onNext={handleNext}
+              onBack={handleBack}
+              onUpdate={(data) => updateFormData('vinculo', data)}
             />
           </StepTransition>
 
           {/* Qualificação Step */}
-          <StepTransition isActive={currentStep === 1} direction={direction}>
+          <StepTransition isActive={currentStep === 2} direction={direction}>
             <QualificacaoStep
               data={formData.qualificacao}
               onNext={handleNext}
@@ -125,23 +146,27 @@ export default function WelcomePage() {
           </StepTransition>
 
           {/* Plano Step */}
-          <StepTransition isActive={currentStep === 2} direction={direction}>
+          <StepTransition isActive={currentStep === 3} direction={direction}>
             <PlanoStep
               data={formData.qualificacao}
               onNext={handleNext}
               onBack={handleBack}
-              leadData={formData.lead}
+              leadData={formData.brand}
+              setData={setFormData}
               setLinkPayment={setLinkPayment}
+              setPlanoData={(plano) => updateFormData('plano', plano)}
             />
           </StepTransition>
 
-          <StepTransition isActive={currentStep === 3} direction={direction}>
+          {/* Payment Step */}
+          <StepTransition isActive={currentStep === 4} direction={direction}>
             <></>
             <PaymentStep
               data={formData.qualificacao}
+              plano={formData.plano}
               onNext={handleNext}
               onBack={handleBack}
-              isActive={currentStep === 3}
+              isActive={currentStep === 4}
               linkPayment={linkPayment}
             />
           </StepTransition>

@@ -163,6 +163,11 @@ export default function Profile (){
 
   const handlePlan = () => {
     getUser(userMail).then((res) => {
+
+      console.log(res.lastPaymentStatus);
+
+      console.log(res.lastPaymentStatus == "reproved" || res.lastPaymentStaus == "pending" || res.lastPaymentStaus == "in_process" || res.lastPaymentStaus == "rejected")
+
       if (res && !res.lastPaymentStatus) {
         router.push('/welcome');
         return;

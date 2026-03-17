@@ -163,25 +163,20 @@ export default function Profile (){
 
   const handlePlan = () => {
     getUser(userMail).then((res) => {
-
-      console.log(res.lastPaymentStatus);
-
-      console.log(res.lastPaymentStatus == "reproved" || res.lastPaymentStaus == "pending" || res.lastPaymentStaus == "in_process" || res.lastPaymentStaus == "rejected")
-
       if (res && !res.lastPaymentStatus) {
         router.push('/welcome');
         return;
       }
 
-      if (res.lastPaymentStatus == "reproved" || res.lastPaymentStaus == "pending" || res.lastPaymentStaus == "in_process" || res.lastPaymentStaus == "rejected") {
-        return router.push(`status/${res.lastPaymentId}`)
-      }
-
-      if (res.lastPaymentStaus == "in_process") {
+      if (res.lastPaymentStatus == "reproved" || res.lastPaymentStatus == "pending" || res.lastPaymentStatus == "in_process" || res.lastPaymentStatus == "rejected") {
         return router.push(`statusInProcess/${res.lastPaymentId}`)
       }
+
+      if (res.lastPaymentStatus == "in_process") {
+        return router.push(`status/${res.lastPaymentId}`)
+      }
   
-      if (res.lastPaymentStaus == "approved"){
+      if (res.lastPaymentStatus == "approved"){
         return toast.info("Você já possui um plano ativo. Entre em contato com o suporte para mais informações.", {
           position: "top-center",
           autoClose: 5000,
@@ -196,8 +191,6 @@ export default function Profile (){
     }).catch((error)=>{
       console.error("Erro ao verificar plano do usuário:", error);
     })
-
-    router.push('/welcome');
   }
   
   const userName = typeof window !== "undefined" ? window.localStorage.getItem("user") : false;

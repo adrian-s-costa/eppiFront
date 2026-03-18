@@ -181,16 +181,7 @@ export default function Profile (){
       }
   
       if (res.lastPaymentStatus == "approved"){
-        return toast.info("Você já possui um plano ativo. Entre em contato com o suporte para mais informações.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        return router.push(`dealerships/create`)
       }
     }).catch((error)=>{
       console.error("Erro ao verificar plano do usuário:", error);

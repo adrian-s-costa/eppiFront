@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from 'next/navigation'
+import { config } from '../../../../config'
+import axios from 'axios'
 import { initMercadoPago, CardPayment } from "@mercadopago/sdk-react";
-import { config } from "../../../../config";
 import Script from "next/script";
 
 initMercadoPago("TEST-2cd9892d-3d8b-49d3-9add-9d7e2b7d0bb2", {
@@ -39,11 +41,14 @@ export default function Checkout({
   linkPayment,
 }: PaymentStepProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const amount = Number(plano?.precoComDesconto)
 
   const id = typeof window !== "undefined" ? window.localStorage.getItem("id") : false;
 
   const { cupom } = data;
+
+  const router = useRouter();
 
   const initialization = useMemo(() => {
     return {
@@ -76,8 +81,8 @@ export default function Checkout({
       console.log("Resposta do pagamento:", data);
       
       if (res.ok) {
-        alert("Assinatura criada!");
-        onNext();
+        setShowModal(true);
+        //onNext();
       } else {
         alert("Erro ao criar assinatura: " + (data.message || "Erro desconhecido"));
       }
@@ -93,6 +98,36 @@ export default function Checkout({
 
   return (
     <>
+      {/* Modal de Sucesso */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Pedido de Assinatura Criado!
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Sua assinatura foi criada com sucesso e está sendo processada. Você será redirecionado automaticamente.
+              </p>
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  router.push('/pendencia');
+                }}
+                className="w-full px-4 py-2 bg-[#8609A3] text-white rounded-lg font-medium hover:bg-[#5b056e] transition-colors"
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Script
         id="mp-security"
         src="https://www.mercadopago.com/v2/security.js"

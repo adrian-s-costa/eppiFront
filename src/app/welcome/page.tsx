@@ -36,7 +36,7 @@ export default function WelcomePage() {
     },
   })
 
-  const steps = ['Marca', 'Vínculo', 'Qualificação', 'Plano', 'Pagamento', 'Conteúdo']
+  const steps = ['Marca', 'Vínculo', 'Qualificação', 'Plano', 'Pagamento']
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {

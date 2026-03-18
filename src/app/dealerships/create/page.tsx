@@ -185,7 +185,11 @@ export default function CreateDealership() {
           position: 'top-center',
           autoClose: 3000,
         })
-        router.push('/dealerships')
+        
+        setTimeout(() => {
+          router.push('/tab?options=0')
+        }, 1500)
+
       } else {
         const errorData = await response.json()
         throw new Error(errorData.message || 'Erro ao cadastrar concessionária')

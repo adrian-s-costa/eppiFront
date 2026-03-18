@@ -29,7 +29,8 @@ export default function DealershipInfoCard({ dealership, onContact, onMapClick }
         <h2 className="text-xl font-bold text-gray-900">{dealership.name}</h2>
         
         {/* Rating */}
-        <div className="flex items-center mt-2">
+        {(dealership.rating && dealership.reviews) && (
+          <div className="flex items-center mt-2">
           <div className="flex text-yellow-400">
             {[...Array(5)].map((_, i) => (
               <svg key={i} className="w-5 h-5" fill={i < 4 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
@@ -39,6 +40,8 @@ export default function DealershipInfoCard({ dealership, onContact, onMapClick }
           </div>
           <span className="ml-2 text-gray-600">{`${dealership.rating} (${dealership.reviews} avaliações)`}</span>
         </div>
+        )}
+        
 
         {/* Buttons */}
         <div className="flex gap-3 mt-4">

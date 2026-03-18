@@ -153,7 +153,7 @@ export default function CreateDealership() {
         }
   
         if (awsResponse && awsResponse.data) {
-          imageUrl = `https://storage.googleapis.com/videos-grupo-fera/dealerships/${uniqueFileName}` 
+          imageUrl = `https://storage.googleapis.com/videos-grupo-fera/profile-pictures/${uniqueFileName}` 
         } else {
           throw new Error('Erro no upload da imagem')
         }

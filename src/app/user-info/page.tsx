@@ -167,7 +167,7 @@ export default function UserInfo(){
       console.log(error)
       console.error('Erro durante o upload:', error.message);
       notify(error.message);
-      //setLoading(false);
+      setLoading(false);
     }
   }
 

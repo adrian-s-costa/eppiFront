@@ -42,6 +42,11 @@ export default function HomeTab() {
   }, []);
 
   useEffect(() => {
+
+    if (options) {
+      setTabIndex(Number(options));
+    }
+
     const storedPage = typeof window !== "undefined" ? localStorage.getItem("page") : "0";
     setTabIndex(Number(storedPage));
   }, []);

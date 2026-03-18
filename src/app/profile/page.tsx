@@ -167,7 +167,11 @@ export default function Profile (){
         router.push('/welcome');
         return;
       }
-
+      
+      if (res.lastPaymentStatus == "waiting_payment") {
+        return router.push('/pendencia')
+      }
+      
       if (res.lastPaymentStatus == "reproved" || res.lastPaymentStatus == "pending" || res.lastPaymentStatus == "in_process" || res.lastPaymentStatus == "rejected") {
         return router.push(`statusInProcess/${res.lastPaymentId}`)
       }

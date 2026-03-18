@@ -3,8 +3,9 @@
 import { useState, useMemo } from "react";
 import { initMercadoPago, CardPayment } from "@mercadopago/sdk-react";
 import { config } from "../../../../config";
+import Script from "next/script";
 
-initMercadoPago("APP_USR-8acb300a-595d-477b-b48e-caf8cc55a615", {
+initMercadoPago("TEST-2cd9892d-3d8b-49d3-9add-9d7e2b7d0bb2", {
   locale: "pt-BR",
 });
 
@@ -56,8 +57,6 @@ export default function Checkout({
     try {
       setIsSubmitting(true);
       
-      console.log("Enviando requisição de pagamento...");
-      
       const res = await fetch(`${config.API_URL}/process_payment/preapproval`, {
         method: "POST",
         headers: {
@@ -68,7 +67,8 @@ export default function Checkout({
           amount,
           planName: plano?.nome || "Éppi Local",
           cupom,
-          id
+          id,
+          //deviceId
         }),
       });
 
@@ -92,62 +92,77 @@ export default function Checkout({
   if (!isActive) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-      <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-full max-w-md">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Resumo do Plano</h3>
-        <div className="space-y-1">
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Plano:</span> {plano?.nome || 'Carregando...'}
-          </p>
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Valor:</span> {plano?.preco || 'Carregando...'}
-          </p>
-          {data?.cupom && (
-            <p className="text-sm text-green-600">
-              <span className="font-medium">Cupom aplicado:</span> {data.cupom}
+    <>
+      <Script
+        id="mp-security"
+        src="https://www.mercadopago.com/v2/security.js"
+        strategy="afterInteractive"
+        onLoad={() => {
+          console.log("security carregado");
+          console.log("MP_DEVICE_SESSION_ID", (window as any).MP_DEVICE_SESSION_ID);
+          console.log("deviceId", (window as any).deviceId);
+        }}
+        onError={() => {
+          console.error("falha ao carregar security.js");
+        }}
+      />
+      <div className="flex flex-col items-center justify-center h-full">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-full max-w-md">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Resumo do Plano</h3>
+          <div className="space-y-1">
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">Plano:</span> {plano?.nome || 'Carregando...'}
             </p>
-          )}
-          {plano?.precoComDesconto && plano.precoComDesconto !== parseInt(plano.preco.replace(/\D/g, '')) && (
-            <p className="text-sm text-green-600 font-medium">
-              Valor com desconto: R$ {plano.precoComDesconto.toFixed(2)}
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">Valor:</span> {plano?.preco || 'Carregando...'}
             </p>
+            {data?.cupom && (
+              <p className="text-sm text-green-600">
+                <span className="font-medium">Cupom aplicado:</span> {data.cupom}
+              </p>
+            )}
+            {plano?.precoComDesconto && plano.precoComDesconto !== parseInt(plano.preco.replace(/\D/g, '')) && (
+              <p className="text-sm text-green-600 font-medium">
+                Valor com desconto: R$ {plano.precoComDesconto.toFixed(2)}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="border rounded-lg p-4 w-full max-w-md bg-white">
+          <CardPayment
+            initialization={initialization}
+            onSubmit={onSubmit}
+            onReady={() => console.log("Brick pronto")}
+            onError={(error) => console.error("MP Brick error:", error)}
+            customization={{
+              visual: {
+                hideFormTitle: true,
+              },
+              paymentMethods: {
+                maxInstallments: 1,
+              },
+            }}
+          />
+          
+          {isSubmitting && (
+            <div className="mt-4 text-center">
+              <div className="inline-flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#8609A3] mr-2"></div>
+                <span className="text-sm text-gray-600">Processando pagamento...</span>
+              </div>
+            </div>
           )}
         </div>
-      </div>
 
-      <div className="border rounded-lg p-4 w-full max-w-md bg-white">
-        <CardPayment
-          initialization={initialization}
-          onSubmit={onSubmit}
-          onReady={() => console.log("Brick pronto")}
-          onError={(error) => console.error("MP Brick error:", error)}
-          customization={{
-            visual: {
-              hideFormTitle: true,
-            },
-            paymentMethods: {
-              maxInstallments: 1,
-            },
-          }}
-        />
-        
-        {isSubmitting && (
-          <div className="mt-4 text-center">
-            <div className="inline-flex items-center">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#8609A3] mr-2"></div>
-              <span className="text-sm text-gray-600">Processando pagamento...</span>
-            </div>
-          </div>
-        )}
+        <button
+          type="button"
+          onClick={onBack}
+          className="mt-4 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
+        >
+          Voltar
+        </button>
       </div>
-
-      <button
-        type="button"
-        onClick={onBack}
-        className="mt-4 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
-      >
-        Voltar
-      </button>
-    </div>
+    </>
   );
 }

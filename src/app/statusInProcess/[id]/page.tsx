@@ -2,10 +2,13 @@
 
 import { StatusScreen } from '@mercadopago/sdk-react';
 import { initMercadoPago } from '@mercadopago/sdk-react';
+import { useRouter } from "next/navigation";
 
 initMercadoPago('APP_USR-8f6a300a-b0ba-4e33-a08a-87b0b8d6614c');
 
 export default function Status({ params }: { params: { id: string } }){
+
+    const router = useRouter();
 
     const initialization = {
         paymentId: params.id,
@@ -28,6 +31,11 @@ export default function Status({ params }: { params: { id: string } }){
                 onReady={onReady}
                 onError={onError}
             />
+            <div className='w-full flex justify-center'>
+                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => router.push("/welcome")}>
+                    Tentar novamente
+                </button>
+            </div>
         </>
     )
 }

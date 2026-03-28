@@ -30,7 +30,7 @@ export default function DeepLinkListener() {
 
           if (state) {
             try{
-              const response = await fetch("https://grupoferaapi.shop/auth/google/register-native", {
+              const response = await fetch("https://api.meueppi.com/auth/google/register-native", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ code: code })
@@ -48,7 +48,7 @@ export default function DeepLinkListener() {
           }
           
           else {
-            const response = await fetch("https://grupoferaapi.shop/auth/google/native", {
+            const response = await fetch("https://api.meueppi.com/auth/google/native", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ code: code })

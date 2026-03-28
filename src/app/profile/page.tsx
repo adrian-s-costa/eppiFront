@@ -7,7 +7,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { config } from "../../../config";
-import { handleSub } from "../../../utils/api/service";
+import { getUser, handleSub } from "../../../utils/api/service";
 import { urlB64ToUint8Array } from "@/lib/utils";
 import { PushNotifications } from '@capacitor/push-notifications';
 import { useEffect, useState } from "react";
@@ -161,10 +161,38 @@ export default function Profile (){
     }
   };
 
+  const handlePlan = () => {
+    getUser(userMail).then((res) => {
+      if (res && !res.lastPaymentStatus) {
+        router.push('/welcome');
+        return;
+      }
+      
+      if (res.lastPaymentStatus == "waiting_payment") {
+        return router.push('/pendencia')
+      }
+      
+      if (res.lastPaymentStatus == "reproved" || res.lastPaymentStatus == "pending" || res.lastPaymentStatus == "in_process" || res.lastPaymentStatus == "rejected") {
+        return router.push(`statusInProcess/${res.lastPaymentId}`)
+      }
+
+      if (res.lastPaymentStatus == "in_process") {
+        return router.push(`status/${res.lastPaymentId}`)
+      }
+  
+      if (res.lastPaymentStatus == "approved"){
+        return router.push(`dealerships/create`)
+      }
+    }).catch((error)=>{
+      console.error("Erro ao verificar plano do usuário:", error);
+    })
+  }
+  
   const userName = typeof window !== "undefined" ? window.localStorage.getItem("user") : false;
   const userMail = typeof window !== "undefined" ? window.localStorage.getItem("email") : false;
   const cep = typeof window !== "undefined" ? window.localStorage.getItem("cep") : false;
   const pfpUrl = typeof window !== "undefined" ? window.localStorage.getItem("pfpUrl") : false;
+
 
   useEffect(()=>{
 
@@ -210,6 +238,20 @@ export default function Profile (){
             <div className="flex items-center">
               <IoExit className="text-xl text-slate-500 mr-3"/>
               <span className="text-black">Sair</span>
+            </div>
+            <IoIosArrowForward className="text-xl text-slate-400"/>
+          </motion.button>
+          <hr className="mx-4"/>
+
+          {/* Plano */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            className="w-full px-4 py-4 flex items-center justify-between"
+            onClick={()=>{ handlePlan() }}
+          >
+            <div className="flex items-center">
+              <IoExit className="text-xl text-slate-500 mr-3"/>
+              <span className="text-black">Adquirir plano</span>
             </div>
             <IoIosArrowForward className="text-xl text-slate-400"/>
           </motion.button>

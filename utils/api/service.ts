@@ -308,6 +308,25 @@ const handleSub = async (data: any) => {
   }
 }
 
+const createApproval = async (data: any) => {
+  try {
+    const response = await fetch(`${config.API_URL}/process_payment/preapproval`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "ngrok-skip-browser-warning": "69420"
+      },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to create approval: ${response.status} - ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.log('Error creating approval:', error);
+  }
+}
+
 export {
   getVideos,
   getVideoById,
@@ -330,5 +349,6 @@ export {
   getDealershipById,
   getCollab,
   getCampaignByDealershipId,
-  sentNotificationByLocation
+  sentNotificationByLocation,
+  createApproval
 }

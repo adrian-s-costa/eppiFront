@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { searchBrands } from '@/utils/api/brand'
+import { getAllDealerships } from '../../../../utils/api/service'
 import router from 'next/router'
 
 interface Brand {
@@ -50,8 +50,11 @@ export default function LeadStep({ data, onNext, onUpdate }: LeadStepProps) {
     if (field === 'brandName' && value.trim().length > 1) {
       setIsSearching(true)
       try {
-        const results = await searchBrands(value)
-        setSearchResults(results)
+        const results = await getAllDealerships()
+        const filteredResults = results.filter((dealership: any) => 
+          dealership.name.toLowerCase().includes(value.toLowerCase())
+        )
+        setSearchResults(filteredResults)
         setShowResults(true)
       } catch (error) {
         console.error('Erro ao buscar marcas:', error)

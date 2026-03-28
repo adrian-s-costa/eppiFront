@@ -121,6 +121,17 @@ async function getCollab() {
   return res.json()
 }
 
+async function getAllDealerships() {
+  const res = await fetch(config.API_URL + `/dealerships`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "ngrok-skip-browser-warning": "69420"
+    },
+  })
+  return res.json()
+}
+
 async function getOneCampaign(id: any) {
   const res = await fetch(config.API_URL + `/texts/home/campaigns/${id}`, {
     method: 'GET',
@@ -350,5 +361,6 @@ export {
   getCollab,
   getCampaignByDealershipId,
   sentNotificationByLocation,
-  createApproval
+  createApproval,
+  getAllDealerships
 }
